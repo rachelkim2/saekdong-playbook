@@ -1850,30 +1850,74 @@ function IdChip({ id, onClick }) {
   return <span className="chip-id" onClick={onClick} role="button">{id}</span>;
 }
 
+// 구글드라이브 URL에서 file ID 추출 (여러 형태 지원)
+function getDriveId(url) {
+  if (!url) return null;
+  let m = url.match(/\/file\/d\/([a-zA-Z0-9_-]{20,})/);
+  if (m) return m[1];
+  m = url.match(/[?&]id=([a-zA-Z0-9_-]{20,})/);
+  if (m) return m[1];
+  m = url.match(/\/d\/([a-zA-Z0-9_-]{20,})/);
+  if (m) return m[1];
+  return null;
+}
+
 function Thumb({ title, type, thumbnailUrl, driveUrl }) {
   const icon = type==="banner" ? "🖼️" : type==="shortform" ? "📱" : type==="viral_pa" ? "🌀" : "🎬";
-  const inner = thumbnailUrl ? (
-    <div style={{aspectRatio:"4/3", minHeight:"96px", position:"relative", borderRadius:"6px", overflow:"hidden", border:"1px solid #E5DDD0"}}>
-      <img src={thumbnailUrl} alt={title}
+  const driveId = getDriveId(driveUrl);
+  const [playing, setPlaying] = useState(false);
+
+  // drive_url 있고 thumbnail_url 없으면 드라이브에서 자동 썸네일 가져오기
+  const effectiveThumb = thumbnailUrl || (driveId ? `https://lh3.googleusercontent.com/d/${driveId}=w500` : null);
+
+  // 카드 안 iframe 재생 모드
+  if (playing && driveId) {
+    return (
+      <div style={{aspectRatio:"4/3", minHeight:"96px", position:"relative", borderRadius:"6px", overflow:"hidden", border:"1px solid #E5DDD0", background:"#000"}}>
+        <iframe src={`https://drive.google.com/file/d/${driveId}/preview`}
+          style={{width:"100%", height:"100%", border:"none"}}
+          allow="autoplay; fullscreen" allowFullScreen
+          title={title} />
+        <button onClick={(e)=>{e.preventDefault(); e.stopPropagation(); setPlaying(false);}}
+          style={{position:"absolute", top:"4px", right:"4px", width:"22px", height:"22px", borderRadius:"50%", background:"rgba(0,0,0,0.65)", color:"white", border:"none", cursor:"pointer", fontSize:"12px", lineHeight:1, display:"flex", alignItems:"center", justifyContent:"center"}}
+          title="닫기">×</button>
+      </div>
+    );
+  }
+
+  const inner = effectiveThumb ? (
+    <div style={{aspectRatio:"4/3", minHeight:"96px", position:"relative", borderRadius:"6px", overflow:"hidden", border:"1px solid #E5DDD0", cursor: driveId ? "pointer" : "default"}}
+         onClick={driveId ? (e)=>{e.preventDefault(); e.stopPropagation(); setPlaying(true);} : undefined}>
+      <img src={effectiveThumb} alt={title}
         style={{width:"100%", height:"100%", objectFit:"cover"}}
-        onError={(e)=>{ e.target.style.display="none"; e.target.parentElement.classList.add("placeholder-thumb"); e.target.parentElement.innerHTML = `<div class="text-lg">${icon}</div><div class="mt-1 font-medium leading-tight" style="font-size:11px">${title}</div>`; }} />
+        onError={(e)=>{ e.target.style.display="none"; e.target.parentElement.classList.add("placeholder-thumb"); const playIco = driveId ? `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none"><div style="width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.65);color:white;display:flex;align-items:center;justify-content:center;font-size:14px">▶</div></div>` : ""; e.target.parentElement.innerHTML = `<div class="text-lg">${icon}</div><div class="mt-1 font-medium leading-tight" style="font-size:11px">${title}</div>${playIco}`; }} />
+      {driveId && (
+        <div style={{position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", pointerEvents:"none"}}>
+          <div style={{width:"36px", height:"36px", borderRadius:"50%", background:"rgba(0,0,0,0.65)", color:"white", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"14px", paddingLeft:"3px"}}>▶</div>
+        </div>
+      )}
       <div style={{position:"absolute", bottom:0, left:0, right:0, padding:"4px 6px", background:"linear-gradient(to top, rgba(0,0,0,0.7), transparent)", color:"white", fontSize:"10px", fontWeight:500, lineHeight:1.2}}>
         {title}
       </div>
+      {driveUrl && (
+        <a href={driveUrl} target="_blank" rel="noopener noreferrer"
+           onClick={(e)=>e.stopPropagation()}
+           title="Drive에서 열기"
+           style={{position:"absolute", top:"4px", right:"4px", width:"22px", height:"22px", borderRadius:"4px", background:"rgba(0,0,0,0.5)", color:"white", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"11px", textDecoration:"none"}}>↗</a>
+      )}
     </div>
   ) : (
-    <div className="placeholder-thumb" style={{aspectRatio:"4/3", minHeight:"96px"}}>
+    <div className="placeholder-thumb" style={{aspectRatio:"4/3", minHeight:"96px", position:"relative", cursor: driveId ? "pointer" : "default"}}
+         onClick={driveId ? (e)=>{e.preventDefault(); setPlaying(true);} : undefined}>
       <div className="text-lg">{icon}</div>
       <div className="mt-1 font-medium leading-tight">{title}</div>
+      {driveId && (
+        <div style={{position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", pointerEvents:"none"}}>
+          <div style={{width:"32px", height:"32px", borderRadius:"50%", background:"rgba(0,0,0,0.55)", color:"white", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"13px", paddingLeft:"3px"}}>▶</div>
+        </div>
+      )}
     </div>
   );
-  if (driveUrl) {
-    return (
-      <a href={driveUrl} target="_blank" rel="noopener noreferrer" title="Drive에서 열기">
-        {inner}
-      </a>
-    );
-  }
   return inner;
 }
 
