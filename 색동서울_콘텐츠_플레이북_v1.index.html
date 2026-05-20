@@ -11,16 +11,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
 <style>
   :root {
     --bg-cream: #FAF7F1;
     --bg-cream-deep: #F4EFE5;
     --bg-paper: #FFFDF8;
     --ink: #2B2520;
-    --ink-soft: #5A4F47;
-    --ink-mute: #8C7F73;
+    --ink-soft: #4A3F37;
+    --ink-mute: #6F6359;
     --line: #E5DDD0;
     --line-soft: #EFE8DA;
     --terra: #C97B5E;
@@ -38,8 +39,13 @@
   html, body, #root {
     background: var(--bg-cream);
     color: var(--ink);
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    letter-spacing: -0.005em;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'ss10' on;
   }
   body {
     background-image:
@@ -48,13 +54,14 @@
     background-size: 4px 4px, 7px 7px;
     background-position: 0 0, 2px 2px;
   }
-  .font-display { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; letter-spacing: -0.01em; }
+  .font-display { font-family: 'Pretendard Variable', 'Pretendard', -apple-system, sans-serif; font-weight: 700; letter-spacing: -0.022em; line-height: 1.25; }
+  .font-display.semibold { font-weight: 600; }
   .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
   .chip-id {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px; font-weight: 600;
     padding: 1px 6px; border-radius: 4px;
-    background: #F4EFE5; color: #5A4F47;
+    background: #F4EFE5; color: #4A3F37;
     cursor: pointer;
   }
   .chip-id:hover { background: #F0D9CE; color: #A85F44; }
@@ -72,29 +79,29 @@
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #E5DDD0; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: #8C7F73; }
+  ::-webkit-scrollbar-thumb:hover { background: #6F6359; }
   .tree-link { fill: none; stroke: #E5DDD0; stroke-width: 1.5; }
   .tree-link-abandoned { stroke-dasharray: 3, 3; opacity: 0.5; }
   .placeholder-thumb {
     background: linear-gradient(135deg, #F4EFE5 0%, #EFE8DA 100%);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    color: #8C7F73; font-size: 11px;
+    color: #6F6359; font-size: 11px;
     border: 1px solid #E5DDD0;
     border-radius: 6px;
     text-align: center;
     padding: 8px;
   }
   .tab-active { background: #2B2520; color: #FFFDF8; }
-  .tab-inactive { background: #FFFDF8; color: #5A4F47; border: 1px solid #E5DDD0; }
+  .tab-inactive { background: #FFFDF8; color: #4A3F37; border: 1px solid #E5DDD0; }
   .track-active { background: #C97B5E; color: white; }
-  .track-inactive { background: #FFFDF8; color: #5A4F47; border: 1px solid #E5DDD0; }
+  .track-inactive { background: #FFFDF8; color: #4A3F37; border: 1px solid #E5DDD0; }
   .speech-bubble { background: #F4EFE5; padding: 8px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; }
   details > summary { cursor: pointer; list-style: none; }
   details > summary::-webkit-details-marker { display: none; }
   .anim-fade { animation: fadeIn 0.25s ease; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
   .filter-active { background: #C97B5E; color: white; }
-  .filter-inactive { background: #FFFDF8; color: #5A4F47; border: 1px solid #E5DDD0; }
+  .filter-inactive { background: #FFFDF8; color: #4A3F37; border: 1px solid #E5DDD0; }
   .filter-active:hover, .filter-inactive:hover { opacity: 0.85; }
 </style>
 </head>
@@ -2173,7 +2180,7 @@ const INSIGHTS = [
 function Pill({ status, children, className="" }) {
   const cls = `status-${status}`;
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium border ${cls} ${status==="abandoned"?"abandoned-strike":""} ${className}`}>
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${cls} ${status==="abandoned"?"abandoned-strike":""} ${className}`}>
       <span className={`inline-block w-1.5 h-1.5 rounded-full dot-${status}`}></span>
       {children || statusLabel(status)}
     </span>
@@ -2390,7 +2397,7 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
         const title = h.title.length > MAX_CHARS ? h.title.slice(0, MAX_CHARS-1)+"…" : h.title;
         sel.append("title").text(`[${h.id}] ${h.title}\n\n${h.full_text}`);
         // 배경 흰색 박스 (오버랩 방지용)
-        const textEl = sel.append("text").attr("x",36).attr("dy",3.5).attr("fill","#5A4F47")
+        const textEl = sel.append("text").attr("x",36).attr("dy",3.5).attr("fill","#4A3F37")
           .style("font-size","11px").style("font-family","Pretendard")
           .style("pointer-events","none")
           .text(title);
@@ -2436,7 +2443,7 @@ function ViewOverview({ track, jumpTo }) {
           <div key={k} className="card-deep p-4">
             <div className="flex items-center gap-2 mb-2">
               <span className={`w-2 h-2 rounded-full dot-${k}`}></span>
-              <span className="text-xs ink-soft" style={{color:"#5A4F47"}}>{label}</span>
+              <span className="text-xs ink-soft" style={{color:"#4A3F37"}}>{label}</span>
             </div>
             <div className="font-display text-3xl" style={{color:"#2B2520"}}>{counts[k]}</div>
           </div>
@@ -2454,10 +2461,10 @@ function ViewOverview({ track, jumpTo }) {
               <div key={ins.id} className="border-l-2 pl-3 cursor-pointer hover:opacity-80" style={{borderColor:"#C97B5E"}} onClick={()=>jumpTo("V3", ins.id)}>
                 <div className="flex items-center gap-2 mb-1">
                   <IdChip id={ins.id} />
-                  <span className="text-[11px] ink-soft" style={{color:"#8C7F73"}}>{ins.validated_by_content_ids.length}건 검증</span>
+                  <span className="text-xs ink-soft" style={{color:"#6F6359"}}>{ins.validated_by_content_ids.length}건 검증</span>
                 </div>
                 <div className="font-medium text-sm leading-snug" style={{color:"#2B2520"}}>{ins.headline}</div>
-                <div className="text-xs mt-1" style={{color:"#5A4F47"}}>{ins.one_line}</div>
+                <div className="text-xs mt-1" style={{color:"#4A3F37"}}>{ins.one_line}</div>
               </div>
             ))}
           </div>
@@ -2469,8 +2476,8 @@ function ViewOverview({ track, jumpTo }) {
             {sourceCounts.map(({s,n})=>(
               <div key={s}>
                 <div className="flex items-center justify-between text-xs mb-1">
-                  <span style={{color:"#5A4F47"}}>{SOURCE_TYPE_LABEL[s]}</span>
-                  <span className="font-mono" style={{color:"#8C7F73"}}>{n}건</span>
+                  <span style={{color:"#4A3F37"}}>{SOURCE_TYPE_LABEL[s]}</span>
+                  <span className="font-mono" style={{color:"#6F6359"}}>{n}건</span>
                 </div>
                 <div className="h-2 rounded-full overflow-hidden" style={{background:"#F4EFE5"}}>
                   <div style={{width:`${(n/maxN)*100}%`, background:"#C97B5E", height:"100%"}}></div>
@@ -2486,11 +2493,11 @@ function ViewOverview({ track, jumpTo }) {
         <div className="divide-y" style={{borderColor:"#EFE8DA"}}>
           {recent.map(h=>(
             <div key={h.id} className="py-2.5 flex items-center gap-3 cursor-pointer hover:bg-cream-deep -mx-2 px-2 rounded" onClick={()=>jumpTo("V4", h.id)}>
-              <div className="font-mono text-[11px] w-20" style={{color:"#8C7F73"}}>{h.updated_date}</div>
+              <div className="font-mono text-xs w-20" style={{color:"#6F6359"}}>{h.updated_date}</div>
               <IdChip id={h.id} />
               <Pill status={h.status} />
               <div className="text-sm flex-1 truncate" style={{color:"#2B2520"}}>{h.title}</div>
-              <span className="text-[11px] ink-mute hidden md:inline" style={{color:"#8C7F73"}}>#{h.category}</span>
+              <span className="text-xs ink-mute hidden md:inline" style={{color:"#6F6359"}}>#{h.category}</span>
             </div>
           ))}
         </div>
@@ -2516,39 +2523,39 @@ function ViewMindMap({ track, jumpTo }) {
     <div className="anim-fade grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-5">
       <aside className="space-y-4">
         <div className="card-deep p-3">
-          <div className="text-[11px] font-semibold mb-2 ink-soft" style={{color:"#5A4F47"}}>상태</div>
+          <div className="text-xs font-semibold mb-2 ink-soft" style={{color:"#4A3F37"}}>상태</div>
           <div className="flex flex-wrap gap-1.5">
             {["validated","in_progress","needs_more_data","abandoned"].map(s=>(
               <button key={s} onClick={()=>toggle(setFStatus, fStatus, s)}
-                className={`text-[11px] px-2 py-1 rounded-full ${fStatus.has(s)?"filter-active":"filter-inactive"}`}>
+                className={`text-xs px-2 py-1 rounded-full ${fStatus.has(s)?"filter-active":"filter-inactive"}`}>
                 {statusLabel(s)}
               </button>
             ))}
           </div>
         </div>
         <div className="card-deep p-3">
-          <div className="text-[11px] font-semibold mb-2 ink-soft" style={{color:"#5A4F47"}}>주제</div>
+          <div className="text-xs font-semibold mb-2 ink-soft" style={{color:"#4A3F37"}}>주제</div>
           <div className="flex flex-wrap gap-1.5">
             {allCats.map(c=>(
               <button key={c} onClick={()=>toggle(setFCategory, fCategory, c)}
-                className={`text-[11px] px-2 py-1 rounded-full ${fCategory.has(c)?"filter-active":"filter-inactive"}`}>
+                className={`text-xs px-2 py-1 rounded-full ${fCategory.has(c)?"filter-active":"filter-inactive"}`}>
                 #{c}
               </button>
             ))}
           </div>
         </div>
         <div className="card-deep p-3">
-          <div className="text-[11px] font-semibold mb-2 ink-soft" style={{color:"#5A4F47"}}>출처</div>
+          <div className="text-xs font-semibold mb-2 ink-soft" style={{color:"#4A3F37"}}>출처</div>
           <div className="flex flex-wrap gap-1.5">
             {["internal_evolved","competitor_followup","trend_test","serendipity"].map(s=>(
               <button key={s} onClick={()=>toggle(setFSource, fSource, s)}
-                className={`text-[11px] px-2 py-1 rounded-full ${fSource.has(s)?"filter-active":"filter-inactive"}`}>
+                className={`text-xs px-2 py-1 rounded-full ${fSource.has(s)?"filter-active":"filter-inactive"}`}>
                 {SOURCE_TYPE_LABEL[s]}
               </button>
             ))}
           </div>
         </div>
-        <div className="text-[11px] leading-relaxed p-3 rounded card" style={{color:"#8C7F73"}}>
+        <div className="text-xs leading-relaxed p-3 rounded card" style={{color:"#6F6359"}}>
           노드 클릭 → 자세히 보기로 이동. 노드 위 hover → 가설 풀텍스트 툴팁.
           폐기 가설은 취소선 + 점선 라인.
         </div>
@@ -2567,7 +2574,7 @@ function ViewSuccessFormula({ track, jumpTo }) {
     <div className="anim-fade">
       <div className="mb-4 flex items-baseline justify-between">
         <h2 className="font-display text-2xl" style={{color:"#2B2520"}}>성공공식 — 검증된 인사이트 갤러리</h2>
-        <span className="text-xs" style={{color:"#8C7F73"}}>총 {validated.length}건 검증됨 · 클릭으로 가설/콘텐츠 점프</span>
+        <span className="text-xs" style={{color:"#6F6359"}}>총 {validated.length}건 검증됨 · 클릭으로 가설/콘텐츠 점프</span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {validated.map(ins => {
@@ -2576,10 +2583,10 @@ function ViewSuccessFormula({ track, jumpTo }) {
             <div key={ins.id} className="card-deep p-4 flex flex-col">
               <div className="flex items-center gap-2 mb-2">
                 <IdChip id={ins.id} />
-                <span className="text-[10px] px-1.5 rounded" style={{background:"#F0D9CE", color:"#A85F44"}}>#{ins.track==="A"?"롱폼":ins.track==="D"?"바이럴":"숏폼·배너"}</span>
+                <span className="text-xs px-1.5 rounded" style={{background:"#F0D9CE", color:"#A85F44"}}>#{ins.track==="A"?"롱폼":ins.track==="D"?"바이럴":"숏폼·배너"}</span>
               </div>
               <h3 className="font-display text-lg leading-tight mb-1.5" style={{color:"#2B2520"}}>{ins.headline}</h3>
-              <p className="text-xs mb-3" style={{color:"#5A4F47"}}>{ins.one_line}</p>
+              <p className="text-xs mb-3" style={{color:"#4A3F37"}}>{ins.one_line}</p>
 
               <div className="grid grid-cols-2 gap-2 mb-3">
                 {linkedContents.slice(0,4).map(c => {
@@ -2589,7 +2596,7 @@ function ViewSuccessFormula({ track, jumpTo }) {
                     <div key={c.id} className="relative">
                       <Thumb title={c.title} type={c.type} thumbnailUrl={c.thumbnail_url} driveUrl={c.drive_url} />
                       {roas && (
-                        <span className="absolute top-1 right-1 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded" style={{background:"#2B2520", color:"#FFFDF8"}}>
+                        <span className="absolute top-1 right-1 text-xs font-mono font-bold px-1.5 py-0.5 rounded" style={{background:"#2B2520", color:"#FFFDF8"}}>
                           ROAS {(roas*100).toFixed(0)}%
                         </span>
                       )}
@@ -2604,7 +2611,7 @@ function ViewSuccessFormula({ track, jumpTo }) {
                 </summary>
                 <ul className="mt-2 space-y-1">
                   {ins.reproduction_checklist.map((c,i)=>(
-                    <li key={i} className="text-xs flex gap-1.5" style={{color:"#5A4F47"}}>
+                    <li key={i} className="text-xs flex gap-1.5" style={{color:"#4A3F37"}}>
                       <span style={{color:"#C97B5E"}}>□</span>{c}
                     </li>
                   ))}
@@ -2614,7 +2621,7 @@ function ViewSuccessFormula({ track, jumpTo }) {
               <div className="mt-auto pt-2 border-t" style={{borderColor:"#EFE8DA"}}>
                 {(ins.synergy_with.length+ins.cross_track_ref.length>0) && (
                   <div className="flex flex-wrap gap-1 items-center">
-                    <span className="text-[10px]" style={{color:"#8C7F73"}}>시너지:</span>
+                    <span className="text-xs" style={{color:"#6F6359"}}>시너지:</span>
                     {ins.synergy_with.map(s => (
                       <button key={s} onClick={()=>jumpTo("V3", s)} className="chip-id">{s}</button>
                     ))}
@@ -2722,12 +2729,12 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
         <button onClick={()=>{setLocalQuery("");setFilterCategory("");setFilterStatus("");setFilterSource("");}}
           className="px-2 py-1.5 rounded-md hover:opacity-80"
           style={{background:"#F0D9CE", color:"#A85F44", border:"1px solid #C97B5E"}}>초기화</button>
-        <span className="ml-auto font-mono" style={{color:"#8C7F73"}}>{hasSearch ? `전체 ${HYPOTHESES.length}건 중 ${filtered.length}건 매칭` : `현재 트랙 ${filtered.length}건`}</span>
+        <span className="ml-auto font-mono" style={{color:"#6F6359"}}>{hasSearch ? `전체 ${HYPOTHESES.length}건 중 ${filtered.length}건 매칭` : `현재 트랙 ${filtered.length}건`}</span>
       </div>
 
     <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-4">
       <aside className="card-deep p-2 max-h-[78vh] overflow-y-auto">
-        <div className="text-[11px] px-2 py-1 ink-mute" style={{color:"#8C7F73"}}>가설 {filtered.length}건</div>
+        <div className="text-xs px-2 py-1 ink-mute" style={{color:"#6F6359"}}>가설 {filtered.length}건</div>
         {filtered.map(h=>(
           <button key={h.id} onClick={()=>handlePick(h)}
             className={`w-full text-left p-2 rounded mb-1 ${sel?.id===h.id ? "bg-cream-deep" : "hover:bg-cream-deep"}`}
@@ -2735,9 +2742,9 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
             <div className="flex items-center gap-1.5 mb-0.5">
               <IdChip id={h.id} />
               <span className={`w-1.5 h-1.5 rounded-full dot-${h.status}`}></span>
-              <span className="text-[10px]" style={{color:"#8C7F73"}}>#{h.category}</span>
+              <span className="text-xs" style={{color:"#6F6359"}}>#{h.category}</span>
               {h.track !== track && TRACKS[h.track] && (
-                <span className="text-[10px] ml-auto px-1 rounded" style={{background:"#F0D9CE", color:"#A85F44"}}>{TRACKS[h.track].icon}</span>
+                <span className="text-xs ml-auto px-1 rounded" style={{background:"#F0D9CE", color:"#A85F44"}}>{TRACKS[h.track].icon}</span>
               )}
             </div>
             <div className={`text-[12px] leading-snug ${h.status==="abandoned"?"abandoned-strike":""}`} style={{color:"#2B2520"}}>{h.title}</div>
@@ -2753,13 +2760,13 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                 <div className="flex items-center gap-2">
                   <IdChip id={sel.id} />
                   <Pill status={sel.status} />
-                  <span className="text-[11px] px-1.5 rounded" style={{background:"#F0D9CE", color:"#A85F44"}}>#{sel.category}</span>
-                  <span className="text-[11px]" style={{color:"#8C7F73"}}>{SOURCE_TYPE_LABEL[sel.source_type]}</span>
+                  <span className="text-xs px-1.5 rounded" style={{background:"#F0D9CE", color:"#A85F44"}}>#{sel.category}</span>
+                  <span className="text-xs" style={{color:"#6F6359"}}>{SOURCE_TYPE_LABEL[sel.source_type]}</span>
                 </div>
-                <div className="text-[11px] font-mono" style={{color:"#8C7F73"}}>{sel.created_date} → {sel.updated_date}</div>
+                <div className="text-xs font-mono" style={{color:"#6F6359"}}>{sel.created_date} → {sel.updated_date}</div>
               </div>
               <h2 className="font-display text-2xl leading-tight mb-3" style={{color:"#2B2520"}}>{sel.title}</h2>
-              <p className="text-sm leading-relaxed" style={{color:"#5A4F47"}}>{sel.full_text}</p>
+              <p className="text-sm leading-relaxed" style={{color:"#4A3F37"}}>{sel.full_text}</p>
             </div>
 
             {/* 가계도 */}
@@ -2767,7 +2774,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
               <h3 className="font-display text-lg mb-3" style={{color:"#2B2520"}}>가계도</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
                 <div>
-                  <div className="text-[11px] mb-1.5" style={{color:"#8C7F73"}}>부모</div>
+                  <div className="text-xs mb-1.5" style={{color:"#6F6359"}}>부모</div>
                   {sel.parent_id ? (
                     (() => {
                       const p = hyps.find(x=>x.id===sel.parent_id);
@@ -2779,12 +2786,12 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                           </div>
                           <div className={`text-[12px] leading-snug ${p.status==="abandoned"?"abandoned-strike":""}`} style={{color:"#2B2520"}}>{p.title}</div>
                         </button>
-                      ) : <span style={{color:"#8C7F73"}}>—</span>;
+                      ) : <span style={{color:"#6F6359"}}>—</span>;
                     })()
-                  ) : <span className="text-[12px]" style={{color:"#8C7F73"}}>없음 (최상위 가설)</span>}
+                  ) : <span className="text-[12px]" style={{color:"#6F6359"}}>없음 (최상위 가설)</span>}
                 </div>
                 <div>
-                  <div className="text-[11px] mb-1.5" style={{color:"#8C7F73"}}>현재</div>
+                  <div className="text-xs mb-1.5" style={{color:"#6F6359"}}>현재</div>
                   <div className="card p-2.5 border-terra" style={{borderColor:"#C97B5E", borderWidth:"1.5px"}}>
                     <div className="flex items-center gap-1.5 mb-1">
                       <IdChip id={sel.id} />
@@ -2794,7 +2801,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                   </div>
                 </div>
                 <div>
-                  <div className="text-[11px] mb-1.5" style={{color:"#8C7F73"}}>자식 ({sel.children_ids.length})</div>
+                  <div className="text-xs mb-1.5" style={{color:"#6F6359"}}>자식 ({sel.children_ids.length})</div>
                   <div className="space-y-1.5">
                     {sel.children_ids.map(cid => {
                       const c = hyps.find(x=>x.id===cid);
@@ -2809,7 +2816,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                         </button>
                       );
                     })}
-                    {sel.children_ids.length===0 && <span className="text-[12px]" style={{color:"#8C7F73"}}>—</span>}
+                    {sel.children_ids.length===0 && <span className="text-[12px]" style={{color:"#6F6359"}}>—</span>}
                   </div>
                 </div>
               </div>
@@ -2822,7 +2829,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs">
                     <thead>
-                      <tr style={{color:"#8C7F73"}} className="text-left">
+                      <tr style={{color:"#6F6359"}} className="text-left">
                         <th className="pb-2 pr-2 font-semibold">콘텐츠</th>
                         <th className="pb-2 pr-2 font-semibold">베리</th>
                         <th className="pb-2 pr-2 font-semibold">지출</th>
@@ -2849,20 +2856,20 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                                 ) : c.title}
                               </div>
                               {c.drive_url && (
-                                <a href={c.drive_url} target="_blank" rel="noopener noreferrer" className="text-[10px] inline-flex items-center gap-1 mt-0.5 hover:underline" style={{color:"#4F7A4C"}}>
+                                <a href={c.drive_url} target="_blank" rel="noopener noreferrer" className="text-xs inline-flex items-center gap-1 mt-0.5 hover:underline" style={{color:"#4F7A4C"}}>
                                   📎 Drive 열기
                                 </a>
                               )}
-                              <div className="text-[10px] mt-0.5" style={{color:"#8C7F73"}}>{c.live_date}</div>
+                              <div className="text-xs mt-0.5" style={{color:"#6F6359"}}>{c.live_date}</div>
                             </td>}
                             <td className="py-2 pr-2">{v.name}</td>
                             <td className="py-2 pr-2 font-mono">{fmtKRW(v.metrics?.spend)}</td>
-                            <td className="py-2 pr-2 font-mono font-semibold" style={{color:(v.metrics?.roas||0)>=1.5?"#4F7A4C":(v.metrics?.roas||0)<1?"#9C7080":"#5A4F47"}}>{fmtRoas(v.metrics?.roas)}</td>
+                            <td className="py-2 pr-2 font-mono font-semibold" style={{color:(v.metrics?.roas||0)>=1.5?"#4F7A4C":(v.metrics?.roas||0)<1?"#9C7080":"#4A3F37"}}>{fmtRoas(v.metrics?.roas)}</td>
                             <td className="py-2 pr-2 font-mono">{fmtPct(v.metrics?.ctr)}</td>
                             <td className="py-2 pr-2 font-mono">{fmtPct(v.metrics?.cvr)}</td>
                             <td className="py-2 pr-2 font-mono">{fmtKRW(v.metrics?.cpc)}</td>
                             {i===0 && <td rowSpan={c.variations.length} className="py-2 align-top">
-                              <span className="text-[10px] px-1.5 py-0.5 rounded" style={{background:c.status==="on"?"#DDE9D9":"#E8D9DE", color:c.status==="on"?"#4F7A4C":"#6F4F5C"}}>{c.status.toUpperCase()}</span>
+                              <span className="text-xs px-1.5 py-0.5 rounded" style={{background:c.status==="on"?"#DDE9D9":"#E8D9DE", color:c.status==="on"?"#4F7A4C":"#6F4F5C"}}>{c.status.toUpperCase()}</span>
                             </td>}
                           </tr>
                         ));
@@ -2883,7 +2890,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                       <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold" style={{background:"#F0D9CE", color:"#A85F44"}}>
                         {name[0]}
                       </div>
-                      <span className="text-xs font-semibold" style={{color:"#5A4F47"}}>{name}</span>
+                      <span className="text-xs font-semibold" style={{color:"#4A3F37"}}>{name}</span>
                     </div>
                     <div className="speech-bubble">{comment}</div>
                   </div>
@@ -2906,7 +2913,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                           <Pill status="validated" />
                         </div>
                         <div className="font-medium text-sm leading-snug" style={{color:"#2B2520"}}>{ins.headline}</div>
-                        <div className="text-xs mt-1" style={{color:"#5A4F47"}}>{ins.one_line}</div>
+                        <div className="text-xs mt-1" style={{color:"#4A3F37"}}>{ins.one_line}</div>
                       </button>
                     );
                   })}
@@ -2921,7 +2928,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                 {sel.source_pages.map((p,i)=>{
                   const url = lookupSourceUrl(p.name);
                   return (
-                    <li key={i} className="text-sm flex items-center gap-2" style={{color:"#5A4F47"}}>
+                    <li key={i} className="text-sm flex items-center gap-2" style={{color:"#4A3F37"}}>
                       <span style={{color:"#C97B5E"}}>•</span>
                       {url ? (
                         <a href={url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-flex items-center gap-1" style={{color:"#A85F44"}}>
@@ -2931,7 +2938,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                       ) : (
                         <span>{p.name}</span>
                       )}
-                      <span className="text-[11px] font-mono" style={{color:"#8C7F73"}}>{p.date}</span>
+                      <span className="text-xs font-mono" style={{color:"#6F6359"}}>{p.date}</span>
                     </li>
                   );
                 })}
@@ -2972,7 +2979,7 @@ function ViewTracker() {
   });
 
   function roasColor(r) {
-    if (r === null || r === undefined) return "#8C7F73";
+    if (r === null || r === undefined) return "#6F6359";
     if (r >= 1.8) return "#4F7A4C";
     if (r >= 1.2) return "#7A8F5A";
     if (r >= 1.0) return "#C29A3A";
@@ -2982,7 +2989,7 @@ function ViewTracker() {
     return {
       "완료": "#4F7A4C", "편집": "#C29A3A", "촬영": "#C29A3A",
       "기획": "#6A7FA0", "드랍": "#9C7080",
-    }[s] || "#8C7F73";
+    }[s] || "#6F6359";
   }
   function formatIcon(f) {
     return { "롱폼":"🎬", "숏폼":"📱", "배너":"🖼️", "카드뉴스":"📰" }[f] || "📄";
@@ -2998,16 +3005,16 @@ function ViewTracker() {
     if (p===null || p<=0 || n(m?.spend)===null) return null;
     return Math.round(m.spend / p);
   }
-  const dash = <span style={{color:"#8C7F73"}}>—</span>;
+  const dash = <span style={{color:"#6F6359"}}>—</span>;
 
   return (
     <div className="anim-fade">
       <div className="mb-3 flex items-baseline justify-between">
         <div>
           <h2 className="font-display text-2xl" style={{color:"#2B2520"}}>운영 트래커</h2>
-          <p className="text-xs" style={{color:"#5A4F47"}}>
+          <p className="text-xs" style={{color:"#4A3F37"}}>
             출처: <a href="https://docs.google.com/spreadsheets/d/1uOX7BEYSkfMgD3ESPbWBq5Lv8wLmlN3b9FQNawKQ-BE/edit" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{color:"#A85F44"}}>[색동] 2026 콘텐츠 트래커_v2 ↗</a>
-            <span className="ml-2 font-mono" style={{color:"#8C7F73"}}>총 {TRACKER.length}건 · 필터 후 {filtered.length}건</span>
+            <span className="ml-2 font-mono" style={{color:"#6F6359"}}>총 {TRACKER.length}건 · 필터 후 {filtered.length}건</span>
           </p>
         </div>
       </div>
@@ -3046,7 +3053,7 @@ function ViewTracker() {
       <div className="card-deep overflow-x-auto">
         <table className="w-full text-xs">
           <thead style={{background:"#F4EFE5"}}>
-            <tr style={{color:"#5A4F47"}}>
+            <tr style={{color:"#4A3F37"}}>
               <th className="p-2 text-left font-semibold">담당자</th>
               <th className="p-2 text-left font-semibold">콘텐츠명</th>
               <th className="p-2 text-left font-semibold">소구점</th>
@@ -3072,41 +3079,41 @@ function ViewTracker() {
               return (
                 <React.Fragment key={idx}>
                   <tr className="hover:bg-cream-deep cursor-pointer" onClick={()=>setExpandedRow(expanded?null:idx)} style={{color:"#2B2520"}}>
-                    <td className="p-2"><span className="font-mono text-[10px] px-1.5 py-0.5 rounded" style={{background:"#F4EFE5", color:"#5A4F47"}}>{r.o}</span></td>
+                    <td className="p-2"><span className="font-mono text-xs px-1.5 py-0.5 rounded" style={{background:"#F4EFE5", color:"#4A3F37"}}>{r.o}</span></td>
                     <td className="p-2 font-medium">{r.n}</td>
-                    <td className="p-2"><span className="text-[10px] px-1.5 py-0.5 rounded" style={{background:"#F0D9CE", color:"#A85F44"}}>#{r.a}</span></td>
+                    <td className="p-2"><span className="text-xs px-1.5 py-0.5 rounded" style={{background:"#F0D9CE", color:"#A85F44"}}>#{r.a}</span></td>
                     <td className="p-2">{formatIcon(r.f)} {r.f}</td>
                     <td className="p-2">
-                      {r.s && <span className="text-[10px] px-1.5 py-0.5 rounded" style={{background:statusColor(r.s)+"22", color:statusColor(r.s), border:"1px solid "+statusColor(r.s)+"55"}}>{r.s}</span>}
+                      {r.s && <span className="text-xs px-1.5 py-0.5 rounded" style={{background:statusColor(r.s)+"22", color:statusColor(r.s), border:"1px solid "+statusColor(r.s)+"55"}}>{r.s}</span>}
                     </td>
                     <td className="p-2 text-right font-mono">{n(m.spend)!==null ? fmtKRW(m.spend) : dash}</td>
-                    <td className="p-2 text-right font-mono" style={{color:"#5A4F47"}}>{n(m.cpm)!==null ? fmtKRW(m.cpm) : dash}</td>
-                    <td className="p-2 text-right font-mono" style={{color:"#5A4F47"}}>{n(m.cpc)!==null ? fmtKRW(m.cpc) : dash}</td>
-                    <td className="p-2 text-right font-mono" style={{color:"#5A4F47"}}>{n(m.ctr)!==null ? fmtPct(m.ctr) : dash}</td>
-                    <td className="p-2 text-right font-mono" style={{color:"#5A4F47"}}>{n(m.cvr)!==null ? fmtPct(m.cvr) : dash}</td>
+                    <td className="p-2 text-right font-mono" style={{color:"#4A3F37"}}>{n(m.cpm)!==null ? fmtKRW(m.cpm) : dash}</td>
+                    <td className="p-2 text-right font-mono" style={{color:"#4A3F37"}}>{n(m.cpc)!==null ? fmtKRW(m.cpc) : dash}</td>
+                    <td className="p-2 text-right font-mono" style={{color:"#4A3F37"}}>{n(m.ctr)!==null ? fmtPct(m.ctr) : dash}</td>
+                    <td className="p-2 text-right font-mono" style={{color:"#4A3F37"}}>{n(m.cvr)!==null ? fmtPct(m.cvr) : dash}</td>
                     <td className="p-2 text-right font-mono">{p!==null ? fmt(p) : dash}</td>
                     <td className="p-2 text-right font-mono">{cpaVal!==null ? fmtKRW(cpaVal) : dash}</td>
                     <td className="p-2 text-right font-mono font-semibold" style={{color: roasColor(m.roas)}}>{n(m.roas)!==null ? fmtRoas(m.roas) : dash}</td>
-                    <td className="p-2 text-center"><span style={{color:"#8C7F73"}}>{expanded ? "▾" : "▸"}</span></td>
+                    <td className="p-2 text-center"><span style={{color:"#6F6359"}}>{expanded ? "▾" : "▸"}</span></td>
                   </tr>
                   {expanded && (
                     <tr style={{background:"#FAF7F1"}}>
                       <td colSpan="14" className="p-3">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-2">
                           <div>
-                            <div className="text-[10px] font-semibold mb-1" style={{color:"#A85F44"}}>가설</div>
-                            <div className="text-[11px] leading-relaxed" style={{color:"#2B2520"}}>{r.hyp || "—"}</div>
+                            <div className="text-xs font-semibold mb-1" style={{color:"#A85F44"}}>가설</div>
+                            <div className="text-xs leading-relaxed" style={{color:"#2B2520"}}>{r.hyp || "—"}</div>
                           </div>
                           <div>
-                            <div className="text-[10px] font-semibold mb-1" style={{color:"#A85F44"}}>인사이트</div>
-                            <div className="text-[11px] leading-relaxed" style={{color:"#2B2520"}}>{r.ins || "—"}</div>
+                            <div className="text-xs font-semibold mb-1" style={{color:"#A85F44"}}>인사이트</div>
+                            <div className="text-xs leading-relaxed" style={{color:"#2B2520"}}>{r.ins || "—"}</div>
                           </div>
                           <div>
-                            <div className="text-[10px] font-semibold mb-1" style={{color:"#A85F44"}}>다음 액션</div>
-                            <div className="text-[11px] leading-relaxed" style={{color:"#2B2520"}}>{r.next || "—"}</div>
+                            <div className="text-xs font-semibold mb-1" style={{color:"#A85F44"}}>다음 액션</div>
+                            <div className="text-xs leading-relaxed" style={{color:"#2B2520"}}>{r.next || "—"}</div>
                           </div>
                         </div>
-                        <div className="flex gap-4 text-[10px] pt-2 border-t" style={{borderColor:"#EFE8DA", color:"#8C7F73"}}>
+                        <div className="flex gap-4 text-xs pt-2 border-t" style={{borderColor:"#EFE8DA", color:"#6F6359"}}>
                           <span>기획주차: {r.wP}</span>
                           <span>아웃풋: {r.wO}</span>
                           <span>AOV: {n(m.aov)!==null ? fmtKRW(m.aov) : "—"}</span>
@@ -3120,7 +3127,7 @@ function ViewTracker() {
           </tbody>
         </table>
       </div>
-      <div className="mt-3 text-[11px] text-center" style={{color:"#8C7F73"}}>
+      <div className="mt-3 text-xs text-center" style={{color:"#6F6359"}}>
         행 클릭 → 가설·인사이트·다음 액션 펼치기 · 구매=spend×ROAS/AOV · CPA=spend/구매
       </div>
     </div>
@@ -3169,9 +3176,9 @@ function App() {
           <div className="flex-1">
             <div className="flex items-baseline gap-2">
               <h1 className="font-display text-xl tracking-tight" style={{color:"#2B2520"}}>{META.title}</h1>
-              <span className="text-[11px] font-mono px-1.5 py-0.5 rounded" style={{background:"#F4EFE5", color:"#8C7F73"}}>{META.version}</span>
+              <span className="text-xs font-mono px-1.5 py-0.5 rounded" style={{background:"#F4EFE5", color:"#6F6359"}}>{META.version}</span>
             </div>
-            <div className="text-[11px] mt-0.5" style={{color:"#8C7F73"}}>밀키토너 — 가설·검증·인사이트 가계도</div>
+            <div className="text-xs mt-0.5" style={{color:"#6F6359"}}>밀키토너 — 가설·검증·인사이트 가계도</div>
           </div>
           <div className="relative">
             <input
@@ -3186,7 +3193,7 @@ function App() {
               <div className="absolute top-full right-0 mt-1 w-96 card-deep p-2 max-h-96 overflow-y-auto z-40">
                 {["H","C","I"].map(k => searchResults[k].length>0 && (
                   <div key={k} className="mb-2">
-                    <div className="text-[10px] font-semibold px-2 py-1" style={{color:"#8C7F73"}}>
+                    <div className="text-xs font-semibold px-2 py-1" style={{color:"#6F6359"}}>
                       {k==="H"?"가설":k==="C"?"콘텐츠":"인사이트"} ({searchResults[k].length})
                     </div>
                     {searchResults[k].slice(0,5).map(item=>(
@@ -3204,24 +3211,24 @@ function App() {
                   </div>
                 ))}
                 {Object.values(searchResults).every(a=>a.length===0) && (
-                  <div className="p-3 text-xs text-center" style={{color:"#8C7F73"}}>검색 결과 없음</div>
+                  <div className="p-3 text-xs text-center" style={{color:"#6F6359"}}>검색 결과 없음</div>
                 )}
               </div>
             )}
           </div>
           <div className="text-right">
-            <div className="text-[10px]" style={{color:"#8C7F73"}}>마지막 업데이트</div>
-            <div className="text-xs font-mono" style={{color:"#5A4F47"}}>{META.lastUpdate}</div>
+            <div className="text-xs" style={{color:"#6F6359"}}>마지막 업데이트</div>
+            <div className="text-xs font-mono" style={{color:"#4A3F37"}}>{META.lastUpdate}</div>
           </div>
         </div>
 
         {/* Resources row */}
         <div className="max-w-[1400px] mx-auto px-5 pb-2 flex items-center flex-wrap gap-1.5">
-          <span className="text-[10px] mr-1" style={{color:"#8C7F73"}}>리소스:</span>
+          <span className="text-xs mr-1" style={{color:"#6F6359"}}>리소스:</span>
           {RESOURCES.map((r,i)=>(
             <a key={i} href={r.url} target="_blank" rel="noopener noreferrer"
-              className="text-[11px] px-2 py-0.5 rounded-full hover:opacity-80"
-              style={{background:"#F4EFE5", color:"#5A4F47", border:"1px solid #E5DDD0"}}>
+              className="text-xs px-2 py-0.5 rounded-full hover:opacity-80"
+              style={{background:"#F4EFE5", color:"#4A3F37", border:"1px solid #E5DDD0"}}>
               {r.label} <span style={{fontSize:"9px", opacity:0.6}}>↗</span>
             </a>
           ))}
@@ -3238,7 +3245,7 @@ function App() {
               className={`px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-1.5 ${track===t.id?"track-active":"track-inactive"}`}>
               <span>{t.icon}</span>
               <span>{t.label}</span>
-              <span className="text-[10px] opacity-75 hidden md:inline">— {t.desc}</span>
+              <span className="text-xs opacity-75 hidden md:inline">— {t.desc}</span>
             </button>
           ))}
         </div>
@@ -3277,7 +3284,7 @@ function App() {
         ) : null}
       </main>
 
-      <footer className="max-w-[1400px] mx-auto px-5 pb-8 pt-4 text-center text-[11px]" style={{color:"#8C7F73"}}>
+      <footer className="max-w-[1400px] mx-auto px-5 pb-8 pt-4 text-center text-xs" style={{color:"#6F6359"}}>
         색동서울 콘텐츠 플레이북 v1.0 · 출처: 노션 위클리 체크인 시리즈 / 콘텐츠 리뷰 / 우지 전달 (2025.11~2026.05) ·
         다음 콘텐츠 기획 시작 전 5분 안에 「비슷한 가설 시도됐는지 / 어디서 파생됐는지 / 현재 어디까지 왔는지 / 다음 재료」 찾기
       </footer>
