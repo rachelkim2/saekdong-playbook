@@ -16,25 +16,25 @@
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
 <style>
   :root {
-    --bg-cream: #FAF7F1;
-    --bg-cream-deep: #F4EFE5;
-    --bg-paper: #FFFDF8;
-    --ink: #2B2520;
-    --ink-soft: #4A3F37;
-    --ink-mute: #6F6359;
-    --line: #E5DDD0;
-    --line-soft: #EFE8DA;
-    --terra: #C97B5E;
-    --terra-deep: #A85F44;
-    --terra-soft: #F0D9CE;
+    --bg-cream: #FFFFFF;
+    --bg-cream-deep: #FAF8F4;
+    --bg-paper: #FFFFFF;
+    --ink: #1A1A1A;
+    --ink-soft: #1A1A1A;
+    --ink-mute: #6B6B6B;
+    --line: #EBE7E0;
+    --line-soft: #F3EFE8;
+    --terra: #FFCB05;
+    --terra-deep: #1A1A1A;
+    --terra-soft: #FFF5C9;
     --validated: #4F7A4C;
-    --validated-bg: #DDE9D9;
-    --inprogress: #C29A3A;
-    --inprogress-bg: #F1E6C2;
-    --needs: #6A7FA0;
-    --needs-bg: #DCE3EE;
-    --abandoned: #9C7080;
-    --abandoned-bg: #E8D9DE;
+    --validated-bg: #E1EFDA;
+    --inprogress: #B58B1F;
+    --inprogress-bg: #FAEFCC;
+    --needs: #5F7295;
+    --needs-bg: #E1E7F0;
+    --abandoned: #8A6573;
+    --abandoned-bg: #EAE0E5;
   }
   html, body, #root {
     background: var(--bg-cream);
@@ -48,11 +48,7 @@
     font-feature-settings: 'ss10' on;
   }
   body {
-    background-image:
-      radial-gradient(rgba(43, 37, 32, 0.018) 1px, transparent 1px),
-      radial-gradient(rgba(43, 37, 32, 0.012) 1px, transparent 1px);
-    background-size: 4px 4px, 7px 7px;
-    background-position: 0 0, 2px 2px;
+    background: var(--bg-cream);
   }
   .font-display { font-family: 'Pretendard Variable', 'Pretendard', -apple-system, sans-serif; font-weight: 700; letter-spacing: -0.022em; line-height: 1.25; }
   .font-display.semibold { font-weight: 600; }
@@ -61,47 +57,47 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px; font-weight: 600;
     padding: 1px 6px; border-radius: 4px;
-    background: #F4EFE5; color: #4A3F37;
+    background: #FAF8F4; color: #1A1A1A;
     cursor: pointer;
   }
-  .chip-id:hover { background: #F0D9CE; color: #A85F44; }
-  .status-validated { background: #DDE9D9; color: #4F7A4C; border: 1px solid #4F7A4C; }
-  .status-in_progress { background: #F1E6C2; color: #7A5F1F; border: 1px solid #C29A3A; }
-  .status-needs_more_data { background: #DCE3EE; color: #4D5E7E; border: 1px solid #6A7FA0; }
-  .status-abandoned { background: #E8D9DE; color: #6F4F5C; border: 1px solid #9C7080; }
+  .chip-id:hover { background: #FFF5C9; color: #1A1A1A; }
+  .status-validated { background: #E1EFDA; color: #4F7A4C; border: 1px solid #4F7A4C; }
+  .status-in_progress { background: #FAEFCC; color: #7A5F1F; border: 1px solid #B58B1F; }
+  .status-needs_more_data { background: #E1E7F0; color: #4D5E7E; border: 1px solid #6A7FA0; }
+  .status-abandoned { background: #EAE0E5; color: #6F4F5C; border: 1px solid #8A6573; }
   .abandoned-strike { text-decoration: line-through; text-decoration-thickness: 1px; }
   .dot-validated { background: #4F7A4C; }
-  .dot-in_progress { background: #C29A3A; }
+  .dot-in_progress { background: #B58B1F; }
   .dot-needs_more_data { background: #6A7FA0; }
-  .dot-abandoned { background: #9C7080; }
-  .card { background: #FFFDF8; border: 1px solid #E5DDD0; border-radius: 8px; }
-  .card-deep { background: #FFFDF8; border: 1px solid #E5DDD0; border-radius: 10px; box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
+  .dot-abandoned { background: #8A6573; }
+  .card { background: #FFFFFF; border: 1px solid #EBE7E0; border-radius: 5px; }
+  .card-deep { background: #FFFFFF; border: 1px solid #EBE7E0; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #E5DDD0; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: #6F6359; }
-  .tree-link { fill: none; stroke: #E5DDD0; stroke-width: 1.5; }
+  ::-webkit-scrollbar-thumb { background: #EBE7E0; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #6B6B6B; }
+  .tree-link { fill: none; stroke: #EBE7E0; stroke-width: 1.5; }
   .tree-link-abandoned { stroke-dasharray: 3, 3; opacity: 0.5; }
   .placeholder-thumb {
-    background: linear-gradient(135deg, #F4EFE5 0%, #EFE8DA 100%);
+    background: linear-gradient(135deg, #FAF8F4 0%, #F3EFE8 100%);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    color: #6F6359; font-size: 11px;
-    border: 1px solid #E5DDD0;
+    color: #6B6B6B; font-size: 11px;
+    border: 1px solid #EBE7E0;
     border-radius: 6px;
     text-align: center;
     padding: 8px;
   }
-  .tab-active { background: #2B2520; color: #FFFDF8; }
-  .tab-inactive { background: #FFFDF8; color: #4A3F37; border: 1px solid #E5DDD0; }
-  .track-active { background: #C97B5E; color: white; }
-  .track-inactive { background: #FFFDF8; color: #4A3F37; border: 1px solid #E5DDD0; }
-  .speech-bubble { background: #F4EFE5; padding: 8px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; }
+  .tab-active { background: #1A1A1A; color: #FFFFFF; }
+  .tab-inactive { background: #FFFFFF; color: #1A1A1A; border: 1px solid #EBE7E0; }
+  .track-active { background: #FFCB05; color: #1A1A1A; border: 1px solid #FFCB05; font-weight: 600; }
+  .track-inactive { background: #FFFFFF; color: #1A1A1A; border: 1px solid #EBE7E0; }
+  .speech-bubble { background: #FAF8F4; padding: 8px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; }
   details > summary { cursor: pointer; list-style: none; }
   details > summary::-webkit-details-marker { display: none; }
   .anim-fade { animation: fadeIn 0.25s ease; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
-  .filter-active { background: #C97B5E; color: white; }
-  .filter-inactive { background: #FFFDF8; color: #4A3F37; border: 1px solid #E5DDD0; }
+  .filter-active { background: #1A1A1A; color: white; }
+  .filter-inactive { background: #FFFFFF; color: #1A1A1A; border: 1px solid #EBE7E0; }
   .filter-active:hover, .filter-inactive:hover { opacity: 0.85; }
 </style>
 </head>
@@ -902,7 +898,7 @@ const TRACKS = {
   A: { id: "A", icon: "🎬", label: "롱폼", desc: "" },
   D: { id: "D", icon: "🌀", label: "바이럴 (PA·PPL)", desc: "" },
   B: { id: "B", icon: "📱", label: "숏폼·배너", desc: "" },
-  E: { id: "E", icon: "📊", label: "운영 트래커", desc: "콘텐츠 raw 데이터" },
+  E: { id: "E", icon: "📊", label: "운영 트래커", desc: "" },
 };
 
 const SOURCE_TYPE_LABEL = {
@@ -911,6 +907,43 @@ const SOURCE_TYPE_LABEL = {
   trend_test: "트렌드 테스트",
   serendipity: "우연",
 };
+
+const CATEGORY_DESCRIPTIONS = {
+  "메시지": "콘텐츠가 전달하는 핵심 가치·소구점. 백색화, 화잘먹, 기미잡티 등 무엇을 약속하느냐.",
+  "후킹": "영상 도입부에서 이탈을 막는 인트로 설계·시선 끌기 장치.",
+  "페르소나": "등장 인물·화자의 성별/연령/말투/직업 — 신뢰감을 만드는 요소.",
+  "BNA": "Before & After. 변화 증거·비교 컷·효과 입증 구성.",
+  "구조": "영상 플로우·시퀀스·자막 배치 등 서사 구성.",
+  "경쟁사": "타사 브랜드·경쟁 카테고리 레퍼런스·팔로업 가설.",
+  "카피": "광고 카피·문구·헤드라인의 표현·언어.",
+  "시즌": "시즌·시기·이벤트(가정의달, 5월 특가 등) 활용.",
+  "포맷": "광고 매체 유형(롱폼/숏폼/배너/카드뉴스) 자체에 대한 가설.",
+  "신규카테고리": "신제품 라인업 확장·새로운 제품 카테고리 진입 가설.",
+  "내부도출": "자체 데이터 분석에서 도출된 신규 가설."
+};
+
+// 가설의 추가 태그 (META 광고관리자 소재명 맨끝 suffix 기반의 주제 그룹)
+const TAG_DESCRIPTIONS = {
+  "AI": "AI 콘텐츠 — AI 비타, AI 노래, 랩배틀 AI, 카톡노래AI 등 인공지능 활용",
+  "불신제거": "불신·의혹 반박 포맷 — 또플반박, 진상반박, 악플반박, 댓글삭제 계열",
+  "영상언어": "무성·영상 언어 중심 — BGM/자막만, 내레이션 없는 영상 위주"
+};
+const TAG_KEYWORDS = {
+  "AI": [/\bai\b/i, /ai비타/i, /ai피부/i, /ai콘텐츠/i, /ai트랜드/i, /ai트렌드/i, /랩배틀.?ai/i, /ai.?노래/i, /카톡노래/i, /고민ai/i, /안녕나는/i, /인공지능/i],
+  "불신제거": [/불신제거/, /불신.?제거/, /또플반박/, /악플반박/, /진상반박/, /댓글삭제/, /해명/, /오해/],
+  "영상언어": [/영상.?언어/, /무성/, /무음/]
+};
+function computeTags(h) {
+  if (!h) return [];
+  const blob = ((h.title||"") + " " + (h.full_text||"")).toLowerCase();
+  const out = [];
+  for (const tag in TAG_KEYWORDS) {
+    if (TAG_KEYWORDS[tag].some(re => re.test(blob))) out.push(tag);
+  }
+  return out;
+}
+
+
 
 const HYPOTHESES = [
   // ====== TRACK A — 롱폼 + PA ======
@@ -2218,7 +2251,7 @@ function Thumb({ title, type, thumbnailUrl, driveUrl }) {
   // 카드 안 iframe 재생 모드
   if (playing && driveId) {
     return (
-      <div style={{aspectRatio:"4/3", minHeight:"96px", position:"relative", borderRadius:"6px", overflow:"hidden", border:"1px solid #E5DDD0", background:"#000"}}>
+      <div style={{aspectRatio:"4/3", minHeight:"96px", position:"relative", borderRadius:"6px", overflow:"hidden", border:"1px solid #EBE7E0", background:"#000"}}>
         <iframe src={`https://drive.google.com/file/d/${driveId}/preview`}
           style={{width:"100%", height:"100%", border:"none"}}
           allow="autoplay; fullscreen" allowFullScreen
@@ -2231,7 +2264,7 @@ function Thumb({ title, type, thumbnailUrl, driveUrl }) {
   }
 
   const inner = effectiveThumb ? (
-    <div style={{aspectRatio:"4/3", minHeight:"96px", position:"relative", borderRadius:"6px", overflow:"hidden", border:"1px solid #E5DDD0", cursor: driveId ? "pointer" : "default"}}
+    <div style={{aspectRatio:"4/3", minHeight:"96px", position:"relative", borderRadius:"6px", overflow:"hidden", border:"1px solid #EBE7E0", cursor: driveId ? "pointer" : "default"}}
          onClick={driveId ? (e)=>{e.preventDefault(); e.stopPropagation(); setPlaying(true);} : undefined}>
       <img src={effectiveThumb} alt={title}
         style={{width:"100%", height:"100%", objectFit:"cover"}}
@@ -2369,21 +2402,24 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
     nodes.each(function(d){
       const sel = d3.select(this);
       if (d.data.isRoot) {
+        sel.append("title").text(d.data.name);
         sel.append("rect").attr("x",-90).attr("y",-14).attr("width",180).attr("height",28).attr("rx",14)
-          .attr("fill","#2B2520").attr("stroke","#2B2520");
-        sel.append("text").attr("text-anchor","middle").attr("dy",4).attr("fill","#FFFDF8")
+          .attr("fill","#1A1A1A").attr("stroke","#1A1A1A");
+        sel.append("text").attr("text-anchor","middle").attr("dy",4).attr("fill","#FFFFFF")
           .style("font-size","12px").style("font-weight","600").style("font-family","Pretendard")
           .text(d.data.name);
       } else if (d.data.isCat) {
+        const catDesc = (typeof CATEGORY_DESCRIPTIONS !== "undefined" && CATEGORY_DESCRIPTIONS[d.data.name]) || d.data.name;
+        sel.append("title").text(`#${d.data.name}\n\n${catDesc}`);
         sel.append("rect").attr("x",-50).attr("y",-12).attr("width",100).attr("height",24).attr("rx",4)
-          .attr("fill","#F0D9CE").attr("stroke","#C97B5E");
-        sel.append("text").attr("text-anchor","middle").attr("dy",4).attr("fill","#A85F44")
+          .attr("fill","#FFF5C9").attr("stroke","#FFCB05");
+        sel.append("text").attr("text-anchor","middle").attr("dy",4).attr("fill","#7A5F00")
           .style("font-size","11px").style("font-weight","600").style("font-family","Pretendard")
           .text("#"+d.data.name);
       } else {
         const h = d.data.h;
-        const color = {validated:"#4F7A4C", in_progress:"#C29A3A", needs_more_data:"#6A7FA0", abandoned:"#9C7080"}[h.status];
-        const bg = {validated:"#DDE9D9", in_progress:"#F1E6C2", needs_more_data:"#DCE3EE", abandoned:"#E8D9DE"}[h.status];
+        const color = {validated:"#4F7A4C", in_progress:"#B58B1F", needs_more_data:"#6A7FA0", abandoned:"#8A6573"}[h.status];
+        const bg = {validated:"#E1EFDA", in_progress:"#FAEFCC", needs_more_data:"#E1E7F0", abandoned:"#EAE0E5"}[h.status];
         // ID 배지
         sel.append("rect").attr("x",-30).attr("y",-10).attr("width",60).attr("height",20).attr("rx",10)
           .attr("fill",bg).attr("stroke",color).attr("stroke-width",1.2);
@@ -2397,7 +2433,7 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
         const title = h.title.length > MAX_CHARS ? h.title.slice(0, MAX_CHARS-1)+"…" : h.title;
         sel.append("title").text(`[${h.id}] ${h.title}\n\n${h.full_text}`);
         // 배경 흰색 박스 (오버랩 방지용)
-        const textEl = sel.append("text").attr("x",36).attr("dy",3.5).attr("fill","#4A3F37")
+        const textEl = sel.append("text").attr("x",36).attr("dy",3.5).attr("fill","#1A1A1A")
           .style("font-size","11px").style("font-family","Pretendard")
           .style("pointer-events","none")
           .text(title);
@@ -2406,7 +2442,7 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
         sel.insert("rect", "text:nth-of-type(2)")
           .attr("x", bbox.x - 3).attr("y", bbox.y - 1)
           .attr("width", bbox.width + 6).attr("height", bbox.height + 2)
-          .attr("fill", "#FFFDF8").attr("opacity", 0.85).attr("rx", 2);
+          .attr("fill", "#FFFFFF").attr("opacity", 0.85).attr("rx", 2);
         // 다시 텍스트를 최상단으로
         sel.append(() => textEl.remove().node());
       }
@@ -2443,9 +2479,9 @@ function ViewOverview({ track, jumpTo }) {
           <div key={k} className="card-deep p-4">
             <div className="flex items-center gap-2 mb-2">
               <span className={`w-2 h-2 rounded-full dot-${k}`}></span>
-              <span className="text-xs ink-soft" style={{color:"#4A3F37"}}>{label}</span>
+              <span className="text-xs ink-soft" style={{color:"#1A1A1A"}}>{label}</span>
             </div>
-            <div className="font-display text-3xl" style={{color:"#2B2520"}}>{counts[k]}</div>
+            <div className="font-display text-3xl" style={{color:"#1A1A1A"}}>{counts[k]}</div>
           </div>
         ))}
       </div>
@@ -2453,34 +2489,34 @@ function ViewOverview({ track, jumpTo }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <div className="card-deep p-5">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-display text-xl" style={{color:"#2B2520"}}>강력하게 검증된 인사이트 Top 3</h3>
-            <button onClick={()=>jumpTo("V3")} className="text-xs underline" style={{color:"#A85F44"}}>전체보기 →</button>
+            <h3 className="font-display text-xl" style={{color:"#1A1A1A"}}>강력하게 검증된 인사이트 Top 3</h3>
+            <button onClick={()=>jumpTo("V3")} className="text-xs underline" style={{color:"#1A1A1A"}}>전체보기 →</button>
           </div>
           <div className="space-y-3">
             {top3.map(ins => (
-              <div key={ins.id} className="border-l-2 pl-3 cursor-pointer hover:opacity-80" style={{borderColor:"#C97B5E"}} onClick={()=>jumpTo("V3", ins.id)}>
+              <div key={ins.id} className="border-l-2 pl-3 cursor-pointer hover:opacity-80" style={{borderColor:"#1A1A1A"}} onClick={()=>jumpTo("V3", ins.id)}>
                 <div className="flex items-center gap-2 mb-1">
                   <IdChip id={ins.id} />
-                  <span className="text-xs ink-soft" style={{color:"#6F6359"}}>{ins.validated_by_content_ids.length}건 검증</span>
+                  <span className="text-xs ink-soft" style={{color:"#6B6B6B"}}>{ins.validated_by_content_ids.length}건 검증</span>
                 </div>
-                <div className="font-medium text-sm leading-snug" style={{color:"#2B2520"}}>{ins.headline}</div>
-                <div className="text-xs mt-1" style={{color:"#4A3F37"}}>{ins.one_line}</div>
+                <div className="font-medium text-sm leading-snug" style={{color:"#1A1A1A"}}>{ins.headline}</div>
+                <div className="text-xs mt-1" style={{color:"#1A1A1A"}}>{ins.one_line}</div>
               </div>
             ))}
           </div>
         </div>
 
         <div className="card-deep p-5">
-          <h3 className="font-display text-xl mb-3" style={{color:"#2B2520"}}>가설 출처 분포</h3>
+          <h3 className="font-display text-xl mb-3" style={{color:"#1A1A1A"}}>가설 출처 분포</h3>
           <div className="space-y-2">
             {sourceCounts.map(({s,n})=>(
               <div key={s}>
                 <div className="flex items-center justify-between text-xs mb-1">
-                  <span style={{color:"#4A3F37"}}>{SOURCE_TYPE_LABEL[s]}</span>
-                  <span className="font-mono" style={{color:"#6F6359"}}>{n}건</span>
+                  <span style={{color:"#1A1A1A"}}>{SOURCE_TYPE_LABEL[s]}</span>
+                  <span className="font-mono" style={{color:"#6B6B6B"}}>{n}건</span>
                 </div>
-                <div className="h-2 rounded-full overflow-hidden" style={{background:"#F4EFE5"}}>
-                  <div style={{width:`${(n/maxN)*100}%`, background:"#C97B5E", height:"100%"}}></div>
+                <div className="h-2 rounded-full overflow-hidden" style={{background:"#FAF8F4"}}>
+                  <div style={{width:`${(n/maxN)*100}%`, background:"#1A1A1A", height:"100%"}}></div>
                 </div>
               </div>
             ))}
@@ -2489,15 +2525,15 @@ function ViewOverview({ track, jumpTo }) {
       </div>
 
       <div className="card-deep p-5">
-        <h3 className="font-display text-xl mb-3" style={{color:"#2B2520"}}>최근 업데이트</h3>
-        <div className="divide-y" style={{borderColor:"#EFE8DA"}}>
+        <h3 className="font-display text-xl mb-3" style={{color:"#1A1A1A"}}>최근 업데이트</h3>
+        <div className="divide-y" style={{borderColor:"#F3EFE8"}}>
           {recent.map(h=>(
             <div key={h.id} className="py-2.5 flex items-center gap-3 cursor-pointer hover:bg-cream-deep -mx-2 px-2 rounded" onClick={()=>jumpTo("V4", h.id)}>
-              <div className="font-mono text-xs w-20" style={{color:"#6F6359"}}>{h.updated_date}</div>
+              <div className="font-mono text-xs w-20" style={{color:"#6B6B6B"}}>{h.updated_date}</div>
               <IdChip id={h.id} />
               <Pill status={h.status} />
-              <div className="text-sm flex-1 truncate" style={{color:"#2B2520"}}>{h.title}</div>
-              <span className="text-xs ink-mute hidden md:inline" style={{color:"#6F6359"}}>#{h.category}</span>
+              <div className="text-sm flex-1 truncate" style={{color:"#1A1A1A"}}>{h.title}</div>
+              <span className="text-xs ink-mute hidden md:inline" style={{color:"#6B6B6B"}}>#{h.category}</span>
             </div>
           ))}
         </div>
@@ -2523,7 +2559,7 @@ function ViewMindMap({ track, jumpTo }) {
     <div className="anim-fade grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-5">
       <aside className="space-y-4">
         <div className="card-deep p-3">
-          <div className="text-xs font-semibold mb-2 ink-soft" style={{color:"#4A3F37"}}>상태</div>
+          <div className="text-xs font-semibold mb-2 ink-soft" style={{color:"#1A1A1A"}}>상태</div>
           <div className="flex flex-wrap gap-1.5">
             {["validated","in_progress","needs_more_data","abandoned"].map(s=>(
               <button key={s} onClick={()=>toggle(setFStatus, fStatus, s)}
@@ -2534,7 +2570,7 @@ function ViewMindMap({ track, jumpTo }) {
           </div>
         </div>
         <div className="card-deep p-3">
-          <div className="text-xs font-semibold mb-2 ink-soft" style={{color:"#4A3F37"}}>주제</div>
+          <div className="text-xs font-semibold mb-2 ink-soft" style={{color:"#1A1A1A"}}>주제</div>
           <div className="flex flex-wrap gap-1.5">
             {allCats.map(c=>(
               <button key={c} onClick={()=>toggle(setFCategory, fCategory, c)}
@@ -2545,7 +2581,7 @@ function ViewMindMap({ track, jumpTo }) {
           </div>
         </div>
         <div className="card-deep p-3">
-          <div className="text-xs font-semibold mb-2 ink-soft" style={{color:"#4A3F37"}}>출처</div>
+          <div className="text-xs font-semibold mb-2 ink-soft" style={{color:"#1A1A1A"}}>출처</div>
           <div className="flex flex-wrap gap-1.5">
             {["internal_evolved","competitor_followup","trend_test","serendipity"].map(s=>(
               <button key={s} onClick={()=>toggle(setFSource, fSource, s)}
@@ -2555,7 +2591,7 @@ function ViewMindMap({ track, jumpTo }) {
             ))}
           </div>
         </div>
-        <div className="text-xs leading-relaxed p-3 rounded card" style={{color:"#6F6359"}}>
+        <div className="text-xs leading-relaxed p-3 rounded card" style={{color:"#6B6B6B"}}>
           노드 클릭 → 자세히 보기로 이동. 노드 위 hover → 가설 풀텍스트 툴팁.
           폐기 가설은 취소선 + 점선 라인.
         </div>
@@ -2573,20 +2609,30 @@ function ViewSuccessFormula({ track, jumpTo }) {
   return (
     <div className="anim-fade">
       <div className="mb-4 flex items-baseline justify-between">
-        <h2 className="font-display text-2xl" style={{color:"#2B2520"}}>성공공식 — 검증된 인사이트 갤러리</h2>
-        <span className="text-xs" style={{color:"#6F6359"}}>총 {validated.length}건 검증됨 · 클릭으로 가설/콘텐츠 점프</span>
+        <h2 className="font-display text-2xl" style={{color:"#1A1A1A"}}>성공공식 — 검증된 인사이트 갤러리</h2>
+        <span className="text-xs" style={{color:"#6B6B6B"}}>총 {validated.length}건 검증됨 · 클릭으로 가설/콘텐츠 점프</span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {validated.map(ins => {
           const linkedContents = CONTENTS.filter(c => ins.validated_by_content_ids.includes(c.id));
           return (
             <div key={ins.id} className="card-deep p-4 flex flex-col">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-2 flex-wrap">
                 <IdChip id={ins.id} />
-                <span className="text-xs px-1.5 rounded" style={{background:"#F0D9CE", color:"#A85F44"}}>#{ins.track==="A"?"롱폼":ins.track==="D"?"바이럴":"숏폼·배너"}</span>
+                <span className="text-xs px-1.5 rounded" style={{background:"#1A1A1A", color:"#FFFFFF"}}>#{ins.track==="A"?"롱폼":ins.track==="D"?"바이럴":"숏폼·배너"}</span>
+                {(() => {
+                  const srcH = ins.validated_from_hypothesis_id ? HYPOTHESES.find(h => h.id === ins.validated_from_hypothesis_id) : null;
+                  return srcH?.category ? (
+                    <span className="text-xs px-1.5 rounded cursor-help"
+                      title={CATEGORY_DESCRIPTIONS[srcH.category] || srcH.category}
+                      style={{background:"#FFF5C9", color:"#7A5F00", border:"1px solid #FFCB05"}}>
+                      #{srcH.category}
+                    </span>
+                  ) : null;
+                })()}
               </div>
-              <h3 className="font-display text-lg leading-tight mb-1.5" style={{color:"#2B2520"}}>{ins.headline}</h3>
-              <p className="text-xs mb-3" style={{color:"#4A3F37"}}>{ins.one_line}</p>
+              <h3 className="font-display text-lg leading-tight mb-1.5" style={{color:"#1A1A1A"}}>{ins.headline}</h3>
+              <p className="text-xs mb-3" style={{color:"#1A1A1A"}}>{ins.one_line}</p>
 
               <div className="grid grid-cols-2 gap-2 mb-3">
                 {linkedContents.slice(0,4).map(c => {
@@ -2596,7 +2642,7 @@ function ViewSuccessFormula({ track, jumpTo }) {
                     <div key={c.id} className="relative">
                       <Thumb title={c.title} type={c.type} thumbnailUrl={c.thumbnail_url} driveUrl={c.drive_url} />
                       {roas && (
-                        <span className="absolute top-1 right-1 text-xs font-mono font-bold px-1.5 py-0.5 rounded" style={{background:"#2B2520", color:"#FFFDF8"}}>
+                        <span className="absolute top-1 right-1 text-xs font-mono font-bold px-1.5 py-0.5 rounded" style={{background:"#1A1A1A", color:"#FFFFFF"}}>
                           ROAS {(roas*100).toFixed(0)}%
                         </span>
                       )}
@@ -2606,27 +2652,27 @@ function ViewSuccessFormula({ track, jumpTo }) {
               </div>
 
               <details className="mb-2" open={openChecks[ins.id]}>
-                <summary className="text-xs font-semibold flex items-center gap-1" style={{color:"#A85F44"}}>
+                <summary className="text-xs font-semibold flex items-center gap-1" style={{color:"#1A1A1A"}}>
                   <span>▸ 재현 체크리스트 ({ins.reproduction_checklist.length})</span>
                 </summary>
                 <ul className="mt-2 space-y-1">
                   {ins.reproduction_checklist.map((c,i)=>(
-                    <li key={i} className="text-xs flex gap-1.5" style={{color:"#4A3F37"}}>
-                      <span style={{color:"#C97B5E"}}>□</span>{c}
+                    <li key={i} className="text-xs flex gap-1.5" style={{color:"#1A1A1A"}}>
+                      <span style={{color:"#1A1A1A"}}>□</span>{c}
                     </li>
                   ))}
                 </ul>
               </details>
 
-              <div className="mt-auto pt-2 border-t" style={{borderColor:"#EFE8DA"}}>
+              <div className="mt-auto pt-2 border-t" style={{borderColor:"#F3EFE8"}}>
                 {(ins.synergy_with.length+ins.cross_track_ref.length>0) && (
                   <div className="flex flex-wrap gap-1 items-center">
-                    <span className="text-xs" style={{color:"#6F6359"}}>시너지:</span>
+                    <span className="text-xs" style={{color:"#6B6B6B"}}>시너지:</span>
                     {ins.synergy_with.map(s => (
                       <button key={s} onClick={()=>jumpTo("V3", s)} className="chip-id">{s}</button>
                     ))}
                     {ins.cross_track_ref.map(s => (
-                      <button key={s} onClick={()=>jumpTo("V3", s)} className="chip-id" style={{background:"#DCE3EE", color:"#4D5E7E"}}>↔ {s}</button>
+                      <button key={s} onClick={()=>jumpTo("V3", s)} className="chip-id" style={{background:"#E1E7F0", color:"#4D5E7E"}}>↔ {s}</button>
                     ))}
                   </div>
                 )}
@@ -2642,11 +2688,12 @@ function ViewSuccessFormula({ track, jumpTo }) {
 function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
   const [localQuery, setLocalQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
+  const [filterTag, setFilterTag] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filterSource, setFilterSource] = useState("");
 
   const effectiveQuery = (localQuery || query || "").trim();
-  const hasSearch = !!(effectiveQuery || filterCategory || filterStatus || filterSource);
+  const hasSearch = !!(effectiveQuery || filterCategory || filterTag || filterStatus || filterSource);
 
   // 검색·필터 활성 시 전체 가설 풀에서 매칭, 아니면 현재 트랙만
   const basePool = hasSearch ? HYPOTHESES : HYPOTHESES.filter(h=>h.track===track);
@@ -2658,7 +2705,8 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
 
   // 키워드 매칭: 가설 직접 필드 OR 가설에 연결된 CONTENTS.title OR 연결된 INSIGHTS.headline
   function matchesKeyword(h, q) {
-    const direct = (h.id + " " + (h.title||"") + " " + (h.full_text||"") + " " + (h.category||"") + " " + (h.status||"") + " " + (SOURCE_TYPE_LABEL[h.source_type]||"")).toLowerCase();
+    const tagsBlob = computeTags(h).join(" ").toLowerCase();
+    const direct = (h.id + " " + (h.title||"") + " " + (h.full_text||"") + " " + (h.category||"") + " " + (h.status||"") + " " + (SOURCE_TYPE_LABEL[h.source_type]||"") + " " + tagsBlob).toLowerCase();
     if (direct.includes(q)) return true;
     // 가설에 직접 묶인 콘텐츠 (content_ids) + 콘텐츠에 가설로 등록된 것 (hypothesis_ids)
     const linkedC = CONTENTS.filter(c =>
@@ -2677,6 +2725,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
 
   const filtered = basePool.filter(h => {
     if (filterCategory && h.category !== filterCategory) return false;
+    if (filterTag && !computeTags(h).includes(filterTag)) return false;
     if (filterStatus && h.status !== filterStatus) return false;
     if (filterSource && h.source_type !== filterSource) return false;
     if (effectiveQuery) {
@@ -2710,44 +2759,55 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
         <input value={localQuery} onChange={(e)=>setLocalQuery(e.target.value)}
           placeholder="🔍 ID(H001)·소재명·키워드 검색"
           className="px-3 py-1.5 rounded-md w-64 focus:outline-none"
-          style={{background:"#FFFDF8", border:"1px solid #E5DDD0"}} />
+          style={{background:"#FFFFFF", border:"1px solid #EBE7E0"}} />
         <select value={filterCategory} onChange={(e)=>setFilterCategory(e.target.value)} className="px-2 py-1.5 rounded-md focus:outline-none"
-          style={{background:"#FFFDF8", border:"1px solid #E5DDD0"}}>
+          style={{background:"#FFFFFF", border:"1px solid #EBE7E0"}}>
           <option value="">가설 분류 전체</option>
           {categories.map(c=><option key={c} value={c}>{c}</option>)}
         </select>
+        <select value={filterTag} onChange={(e)=>setFilterTag(e.target.value)} className="px-2 py-1.5 rounded-md focus:outline-none"
+          title="주제 태그 필터 (META 소재명 suffix 기반 분류)"
+          style={{background:"#FFFFFF", border:"1px solid #EBE7E0"}}>
+          <option value="">주제 태그 전체</option>
+          {Object.keys(TAG_DESCRIPTIONS).map(t=><option key={t} value={t}>#{t}</option>)}
+        </select>
         <select value={filterStatus} onChange={(e)=>setFilterStatus(e.target.value)} className="px-2 py-1.5 rounded-md focus:outline-none"
-          style={{background:"#FFFDF8", border:"1px solid #E5DDD0"}}>
+          style={{background:"#FFFFFF", border:"1px solid #EBE7E0"}}>
           <option value="">상태 전체</option>
           {statusList.map(s=><option key={s} value={s}>{statusLabelMap[s]}</option>)}
         </select>
         <select value={filterSource} onChange={(e)=>setFilterSource(e.target.value)} className="px-2 py-1.5 rounded-md focus:outline-none"
-          style={{background:"#FFFDF8", border:"1px solid #E5DDD0"}}>
+          style={{background:"#FFFFFF", border:"1px solid #EBE7E0"}}>
           <option value="">출처 전체</option>
           {sourceList.map(s=><option key={s} value={s}>{SOURCE_TYPE_LABEL[s]}</option>)}
         </select>
-        <button onClick={()=>{setLocalQuery("");setFilterCategory("");setFilterStatus("");setFilterSource("");}}
+        <button onClick={()=>{setLocalQuery("");setFilterCategory("");setFilterTag("");setFilterStatus("");setFilterSource("");}}
           className="px-2 py-1.5 rounded-md hover:opacity-80"
-          style={{background:"#F0D9CE", color:"#A85F44", border:"1px solid #C97B5E"}}>초기화</button>
-        <span className="ml-auto font-mono" style={{color:"#6F6359"}}>{hasSearch ? `전체 ${HYPOTHESES.length}건 중 ${filtered.length}건 매칭` : `현재 트랙 ${filtered.length}건`}</span>
+          style={{background:"#FFF5C9", color:"#1A1A1A", border:"1px solid #1A1A1A"}}>초기화</button>
+        <span className="ml-auto font-mono" style={{color:"#6B6B6B"}}>{hasSearch ? `전체 ${HYPOTHESES.length}건 중 ${filtered.length}건 매칭` : `현재 트랙 ${filtered.length}건`}</span>
       </div>
 
     <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-4">
       <aside className="card-deep p-2 max-h-[78vh] overflow-y-auto">
-        <div className="text-xs px-2 py-1 ink-mute" style={{color:"#6F6359"}}>가설 {filtered.length}건</div>
+        <div className="text-xs px-2 py-1 ink-mute" style={{color:"#6B6B6B"}}>가설 {filtered.length}건</div>
         {filtered.map(h=>(
           <button key={h.id} onClick={()=>handlePick(h)}
             className={`w-full text-left p-2 rounded mb-1 ${sel?.id===h.id ? "bg-cream-deep" : "hover:bg-cream-deep"}`}
-            style={{background: sel?.id===h.id?"#F4EFE5":undefined}}>
-            <div className="flex items-center gap-1.5 mb-0.5">
+            style={{background: sel?.id===h.id?"#FAF8F4":undefined}}>
+            <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
               <IdChip id={h.id} />
               <span className={`w-1.5 h-1.5 rounded-full dot-${h.status}`}></span>
-              <span className="text-xs" style={{color:"#6F6359"}}>#{h.category}</span>
+              <span className="text-xs" style={{color:"#6B6B6B"}}>#{h.category}</span>
+              {computeTags(h).map(t => (
+                <span key={t} className="text-xs px-1 rounded"
+                  title={TAG_DESCRIPTIONS[t]}
+                  style={{background:"#FFF5C9", color:"#7A5F00", border:"1px solid #FFCB05"}}>#{t}</span>
+              ))}
               {h.track !== track && TRACKS[h.track] && (
-                <span className="text-xs ml-auto px-1 rounded" style={{background:"#F0D9CE", color:"#A85F44"}}>{TRACKS[h.track].icon}</span>
+                <span className="text-xs ml-auto px-1 rounded" style={{background:"#1A1A1A", color:"#FFFFFF"}}>{TRACKS[h.track].icon}</span>
               )}
             </div>
-            <div className={`text-[12px] leading-snug ${h.status==="abandoned"?"abandoned-strike":""}`} style={{color:"#2B2520"}}>{h.title}</div>
+            <div className={`text-[12px] leading-snug ${h.status==="abandoned"?"abandoned-strike":""}`} style={{color:"#1A1A1A"}}>{h.title}</div>
           </button>
         ))}
       </aside>
@@ -2760,21 +2820,21 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                 <div className="flex items-center gap-2">
                   <IdChip id={sel.id} />
                   <Pill status={sel.status} />
-                  <span className="text-xs px-1.5 rounded" style={{background:"#F0D9CE", color:"#A85F44"}}>#{sel.category}</span>
-                  <span className="text-xs" style={{color:"#6F6359"}}>{SOURCE_TYPE_LABEL[sel.source_type]}</span>
+                  <span className="text-xs px-1.5 rounded" style={{background:"#FFF5C9", color:"#1A1A1A"}}>#{sel.category}</span>
+                  <span className="text-xs" style={{color:"#6B6B6B"}}>{SOURCE_TYPE_LABEL[sel.source_type]}</span>
                 </div>
-                <div className="text-xs font-mono" style={{color:"#6F6359"}}>{sel.created_date} → {sel.updated_date}</div>
+                <div className="text-xs font-mono" style={{color:"#6B6B6B"}}>{sel.created_date} → {sel.updated_date}</div>
               </div>
-              <h2 className="font-display text-2xl leading-tight mb-3" style={{color:"#2B2520"}}>{sel.title}</h2>
-              <p className="text-sm leading-relaxed" style={{color:"#4A3F37"}}>{sel.full_text}</p>
+              <h2 className="font-display text-2xl leading-tight mb-3" style={{color:"#1A1A1A"}}>{sel.title}</h2>
+              <p className="text-sm leading-relaxed" style={{color:"#1A1A1A"}}>{sel.full_text}</p>
             </div>
 
             {/* 가계도 */}
             <div className="card-deep p-5">
-              <h3 className="font-display text-lg mb-3" style={{color:"#2B2520"}}>가계도</h3>
+              <h3 className="font-display text-lg mb-3" style={{color:"#1A1A1A"}}>가계도</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
                 <div>
-                  <div className="text-xs mb-1.5" style={{color:"#6F6359"}}>부모</div>
+                  <div className="text-xs mb-1.5" style={{color:"#6B6B6B"}}>부모</div>
                   {sel.parent_id ? (
                     (() => {
                       const p = hyps.find(x=>x.id===sel.parent_id);
@@ -2784,24 +2844,24 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                             <IdChip id={p.id} />
                             <span className={`w-1.5 h-1.5 rounded-full dot-${p.status}`}></span>
                           </div>
-                          <div className={`text-[12px] leading-snug ${p.status==="abandoned"?"abandoned-strike":""}`} style={{color:"#2B2520"}}>{p.title}</div>
+                          <div className={`text-[12px] leading-snug ${p.status==="abandoned"?"abandoned-strike":""}`} style={{color:"#1A1A1A"}}>{p.title}</div>
                         </button>
-                      ) : <span style={{color:"#6F6359"}}>—</span>;
+                      ) : <span style={{color:"#6B6B6B"}}>—</span>;
                     })()
-                  ) : <span className="text-[12px]" style={{color:"#6F6359"}}>없음 (최상위 가설)</span>}
+                  ) : <span className="text-[12px]" style={{color:"#6B6B6B"}}>없음 (최상위 가설)</span>}
                 </div>
                 <div>
-                  <div className="text-xs mb-1.5" style={{color:"#6F6359"}}>현재</div>
-                  <div className="card p-2.5 border-terra" style={{borderColor:"#C97B5E", borderWidth:"1.5px"}}>
+                  <div className="text-xs mb-1.5" style={{color:"#6B6B6B"}}>현재</div>
+                  <div className="card p-2.5 border-terra" style={{borderColor:"#1A1A1A", borderWidth:"1.5px"}}>
                     <div className="flex items-center gap-1.5 mb-1">
                       <IdChip id={sel.id} />
                       <Pill status={sel.status} />
                     </div>
-                    <div className="text-[12px]" style={{color:"#2B2520"}}>{sel.title.length>50?sel.title.slice(0,48)+"…":sel.title}</div>
+                    <div className="text-[12px]" style={{color:"#1A1A1A"}}>{sel.title.length>50?sel.title.slice(0,48)+"…":sel.title}</div>
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs mb-1.5" style={{color:"#6F6359"}}>자식 ({sel.children_ids.length})</div>
+                  <div className="text-xs mb-1.5" style={{color:"#6B6B6B"}}>자식 ({sel.children_ids.length})</div>
                   <div className="space-y-1.5">
                     {sel.children_ids.map(cid => {
                       const c = hyps.find(x=>x.id===cid);
@@ -2812,11 +2872,11 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                             <IdChip id={c.id} />
                             <span className={`w-1.5 h-1.5 rounded-full dot-${c.status}`}></span>
                           </div>
-                          <div className={`text-[12px] leading-snug ${c.status==="abandoned"?"abandoned-strike":""}`} style={{color:"#2B2520"}}>{c.title.length>60?c.title.slice(0,58)+"…":c.title}</div>
+                          <div className={`text-[12px] leading-snug ${c.status==="abandoned"?"abandoned-strike":""}`} style={{color:"#1A1A1A"}}>{c.title.length>60?c.title.slice(0,58)+"…":c.title}</div>
                         </button>
                       );
                     })}
-                    {sel.children_ids.length===0 && <span className="text-[12px]" style={{color:"#6F6359"}}>—</span>}
+                    {sel.children_ids.length===0 && <span className="text-[12px]" style={{color:"#6B6B6B"}}>—</span>}
                   </div>
                 </div>
               </div>
@@ -2825,11 +2885,11 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
             {/* 시도한 콘텐츠 */}
             {sel.content_ids.length>0 && (
               <div className="card-deep p-5">
-                <h3 className="font-display text-lg mb-3" style={{color:"#2B2520"}}>시도한 콘텐츠</h3>
+                <h3 className="font-display text-lg mb-3" style={{color:"#1A1A1A"}}>시도한 콘텐츠</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs">
                     <thead>
-                      <tr style={{color:"#6F6359"}} className="text-left">
+                      <tr style={{color:"#6B6B6B"}} className="text-left">
                         <th className="pb-2 pr-2 font-semibold">콘텐츠</th>
                         <th className="pb-2 pr-2 font-semibold">베리</th>
                         <th className="pb-2 pr-2 font-semibold">지출</th>
@@ -2840,17 +2900,17 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                         <th className="pb-2 font-semibold">상태</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y" style={{borderColor:"#EFE8DA"}}>
+                    <tbody className="divide-y" style={{borderColor:"#F3EFE8"}}>
                       {sel.content_ids.map(cid => {
                         const c = CONTENTS.find(x=>x.id===cid);
                         if (!c) return null;
                         return c.variations.map((v,i) => (
-                          <tr key={cid+i} className="hover:bg-cream-deep" style={{color:"#2B2520"}}>
+                          <tr key={cid+i} className="hover:bg-cream-deep" style={{color:"#1A1A1A"}}>
                             {i===0 && <td rowSpan={c.variations.length} className="py-2 pr-2 align-top">
                               <IdChip id={c.id} />
                               <div className="text-[12px] mt-1">
                                 {c.notion_url ? (
-                                  <a href={c.notion_url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-flex items-center gap-1" style={{color:"#2B2520"}}>
+                                  <a href={c.notion_url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-flex items-center gap-1" style={{color:"#1A1A1A"}}>
                                     {c.title}<span style={{fontSize:"9px", opacity:0.6}}>↗</span>
                                   </a>
                                 ) : c.title}
@@ -2860,16 +2920,16 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                                   📎 Drive 열기
                                 </a>
                               )}
-                              <div className="text-xs mt-0.5" style={{color:"#6F6359"}}>{c.live_date}</div>
+                              <div className="text-xs mt-0.5" style={{color:"#6B6B6B"}}>{c.live_date}</div>
                             </td>}
                             <td className="py-2 pr-2">{v.name}</td>
                             <td className="py-2 pr-2 font-mono">{fmtKRW(v.metrics?.spend)}</td>
-                            <td className="py-2 pr-2 font-mono font-semibold" style={{color:(v.metrics?.roas||0)>=1.5?"#4F7A4C":(v.metrics?.roas||0)<1?"#9C7080":"#4A3F37"}}>{fmtRoas(v.metrics?.roas)}</td>
+                            <td className="py-2 pr-2 font-mono font-semibold" style={{color:(v.metrics?.roas||0)>=1.5?"#4F7A4C":(v.metrics?.roas||0)<1?"#8A6573":"#1A1A1A"}}>{fmtRoas(v.metrics?.roas)}</td>
                             <td className="py-2 pr-2 font-mono">{fmtPct(v.metrics?.ctr)}</td>
                             <td className="py-2 pr-2 font-mono">{fmtPct(v.metrics?.cvr)}</td>
                             <td className="py-2 pr-2 font-mono">{fmtKRW(v.metrics?.cpc)}</td>
                             {i===0 && <td rowSpan={c.variations.length} className="py-2 align-top">
-                              <span className="text-xs px-1.5 py-0.5 rounded" style={{background:c.status==="on"?"#DDE9D9":"#E8D9DE", color:c.status==="on"?"#4F7A4C":"#6F4F5C"}}>{c.status.toUpperCase()}</span>
+                              <span className="text-xs px-1.5 py-0.5 rounded" style={{background:c.status==="on"?"#E1EFDA":"#EAE0E5", color:c.status==="on"?"#4F7A4C":"#6F4F5C"}}>{c.status.toUpperCase()}</span>
                             </td>}
                           </tr>
                         ));
@@ -2882,15 +2942,15 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
 
             {/* 연상평가 */}
             <div className="card-deep p-5">
-              <h3 className="font-display text-lg mb-3" style={{color:"#2B2520"}}>연상평가</h3>
+              <h3 className="font-display text-lg mb-3" style={{color:"#1A1A1A"}}>연상평가</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {Object.entries(sel.evaluations).map(([name, comment])=>(
                   <div key={name}>
                     <div className="flex items-center gap-2 mb-1.5">
-                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold" style={{background:"#F0D9CE", color:"#A85F44"}}>
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold" style={{background:"#FFF5C9", color:"#1A1A1A"}}>
                         {name[0]}
                       </div>
-                      <span className="text-xs font-semibold" style={{color:"#4A3F37"}}>{name}</span>
+                      <span className="text-xs font-semibold" style={{color:"#1A1A1A"}}>{name}</span>
                     </div>
                     <div className="speech-bubble">{comment}</div>
                   </div>
@@ -2901,7 +2961,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
             {/* 도출 인사이트 */}
             {sel.insight_ids.length>0 && (
               <div className="card-deep p-5">
-                <h3 className="font-display text-lg mb-3" style={{color:"#2B2520"}}>도출된 인사이트</h3>
+                <h3 className="font-display text-lg mb-3" style={{color:"#1A1A1A"}}>도출된 인사이트</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {sel.insight_ids.map(iid => {
                     const ins = INSIGHTS.find(x=>x.id===iid);
@@ -2912,8 +2972,8 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                           <IdChip id={iid} />
                           <Pill status="validated" />
                         </div>
-                        <div className="font-medium text-sm leading-snug" style={{color:"#2B2520"}}>{ins.headline}</div>
-                        <div className="text-xs mt-1" style={{color:"#4A3F37"}}>{ins.one_line}</div>
+                        <div className="font-medium text-sm leading-snug" style={{color:"#1A1A1A"}}>{ins.headline}</div>
+                        <div className="text-xs mt-1" style={{color:"#1A1A1A"}}>{ins.one_line}</div>
                       </button>
                     );
                   })}
@@ -2923,22 +2983,22 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
 
             {/* 출처 */}
             <div className="card-deep p-5">
-              <h3 className="font-display text-lg mb-2" style={{color:"#2B2520"}}>출처 노션 페이지</h3>
+              <h3 className="font-display text-lg mb-2" style={{color:"#1A1A1A"}}>출처 노션 페이지</h3>
               <ul className="space-y-1">
                 {sel.source_pages.map((p,i)=>{
                   const url = lookupSourceUrl(p.name);
                   return (
-                    <li key={i} className="text-sm flex items-center gap-2" style={{color:"#4A3F37"}}>
-                      <span style={{color:"#C97B5E"}}>•</span>
+                    <li key={i} className="text-sm flex items-center gap-2" style={{color:"#1A1A1A"}}>
+                      <span style={{color:"#1A1A1A"}}>•</span>
                       {url ? (
-                        <a href={url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-flex items-center gap-1" style={{color:"#A85F44"}}>
+                        <a href={url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-flex items-center gap-1" style={{color:"#1A1A1A"}}>
                           {p.name}
                           <span style={{fontSize:"10px", opacity:0.7}}>↗</span>
                         </a>
                       ) : (
                         <span>{p.name}</span>
                       )}
-                      <span className="text-xs font-mono" style={{color:"#6F6359"}}>{p.date}</span>
+                      <span className="text-xs font-mono" style={{color:"#6B6B6B"}}>{p.date}</span>
                     </li>
                   );
                 })}
@@ -2979,17 +3039,17 @@ function ViewTracker() {
   });
 
   function roasColor(r) {
-    if (r === null || r === undefined) return "#6F6359";
+    if (r === null || r === undefined) return "#6B6B6B";
     if (r >= 1.8) return "#4F7A4C";
-    if (r >= 1.2) return "#7A8F5A";
-    if (r >= 1.0) return "#C29A3A";
-    return "#9C7080";
+    if (r >= 1.2) return "#688B4F";
+    if (r >= 1.0) return "#B58B1F";
+    return "#8A6573";
   }
   function statusColor(s) {
     return {
-      "완료": "#4F7A4C", "편집": "#C29A3A", "촬영": "#C29A3A",
-      "기획": "#6A7FA0", "드랍": "#9C7080",
-    }[s] || "#6F6359";
+      "완료": "#4F7A4C", "편집": "#B58B1F", "촬영": "#B58B1F",
+      "기획": "#6A7FA0", "드랍": "#8A6573",
+    }[s] || "#6B6B6B";
   }
   function formatIcon(f) {
     return { "롱폼":"🎬", "숏폼":"📱", "배너":"🖼️", "카드뉴스":"📰" }[f] || "📄";
@@ -3005,16 +3065,16 @@ function ViewTracker() {
     if (p===null || p<=0 || n(m?.spend)===null) return null;
     return Math.round(m.spend / p);
   }
-  const dash = <span style={{color:"#6F6359"}}>—</span>;
+  const dash = <span style={{color:"#6B6B6B"}}>—</span>;
 
   return (
     <div className="anim-fade">
       <div className="mb-3 flex items-baseline justify-between">
         <div>
-          <h2 className="font-display text-2xl" style={{color:"#2B2520"}}>운영 트래커</h2>
-          <p className="text-xs" style={{color:"#4A3F37"}}>
-            출처: <a href="https://docs.google.com/spreadsheets/d/1uOX7BEYSkfMgD3ESPbWBq5Lv8wLmlN3b9FQNawKQ-BE/edit" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{color:"#A85F44"}}>[색동] 2026 콘텐츠 트래커_v2 ↗</a>
-            <span className="ml-2 font-mono" style={{color:"#6F6359"}}>총 {TRACKER.length}건 · 필터 후 {filtered.length}건</span>
+          <h2 className="font-display text-2xl" style={{color:"#1A1A1A"}}>운영 트래커</h2>
+          <p className="text-xs" style={{color:"#1A1A1A"}}>
+            출처: <a href="https://docs.google.com/spreadsheets/d/1uOX7BEYSkfMgD3ESPbWBq5Lv8wLmlN3b9FQNawKQ-BE/edit" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{color:"#1A1A1A"}}>[색동] 2026 콘텐츠 트래커_v2 ↗</a>
+            <span className="ml-2 font-mono" style={{color:"#6B6B6B"}}>총 {TRACKER.length}건 · 필터 후 {filtered.length}건</span>
           </p>
         </div>
       </div>
@@ -3022,38 +3082,38 @@ function ViewTracker() {
       <div className="card-deep p-3 mb-4 flex flex-wrap gap-2 items-center text-xs">
         <input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="🔍 콘텐츠명·가설·인사이트 검색"
           className="px-3 py-1.5 rounded-md w-64 focus:outline-none"
-          style={{background:"#FFFDF8", border:"1px solid #E5DDD0"}} />
+          style={{background:"#FFFFFF", border:"1px solid #EBE7E0"}} />
         <select value={filterOwner} onChange={(e)=>setFilterOwner(e.target.value)} className="px-2 py-1.5 rounded-md focus:outline-none"
-          style={{background:"#FFFDF8", border:"1px solid #E5DDD0"}}>
+          style={{background:"#FFFFFF", border:"1px solid #EBE7E0"}}>
           <option value="">담당자 전체</option>
           {owners.map(o=><option key={o} value={o}>{o} ({(typeof OWNERS!=="undefined" && OWNERS[o]) || o})</option>)}
         </select>
         <select value={filterAngle} onChange={(e)=>setFilterAngle(e.target.value)} className="px-2 py-1.5 rounded-md focus:outline-none"
-          style={{background:"#FFFDF8", border:"1px solid #E5DDD0"}}>
+          style={{background:"#FFFFFF", border:"1px solid #EBE7E0"}}>
           <option value="">소구점 전체</option>
           {angles.map(a=><option key={a} value={a}>{a}</option>)}
         </select>
         <select value={filterFormat} onChange={(e)=>setFilterFormat(e.target.value)} className="px-2 py-1.5 rounded-md focus:outline-none"
-          style={{background:"#FFFDF8", border:"1px solid #E5DDD0"}}>
+          style={{background:"#FFFFFF", border:"1px solid #EBE7E0"}}>
           <option value="">형식 전체</option>
           {formats.map(f=><option key={f} value={f}>{f}</option>)}
         </select>
         <select value={filterStatus} onChange={(e)=>setFilterStatus(e.target.value)} className="px-2 py-1.5 rounded-md focus:outline-none"
-          style={{background:"#FFFDF8", border:"1px solid #E5DDD0"}}>
+          style={{background:"#FFFFFF", border:"1px solid #EBE7E0"}}>
           <option value="">상태 전체</option>
           {statuses.map(s=><option key={s} value={s}>{s}</option>)}
         </select>
         <button onClick={()=>{setFilterOwner("");setFilterAngle("");setFilterFormat("");setFilterStatus("");setQuery("");}}
           className="px-2 py-1.5 rounded-md hover:opacity-80"
-          style={{background:"#F0D9CE", color:"#A85F44", border:"1px solid #C97B5E"}}>
+          style={{background:"#FFF5C9", color:"#1A1A1A", border:"1px solid #1A1A1A"}}>
           초기화
         </button>
       </div>
 
       <div className="card-deep overflow-x-auto">
         <table className="w-full text-xs">
-          <thead style={{background:"#F4EFE5"}}>
-            <tr style={{color:"#4A3F37"}}>
+          <thead style={{background:"#FAF8F4"}}>
+            <tr style={{color:"#1A1A1A"}}>
               <th className="p-2 text-left font-semibold">담당자</th>
               <th className="p-2 text-left font-semibold">콘텐츠명</th>
               <th className="p-2 text-left font-semibold">소구점</th>
@@ -3070,7 +3130,7 @@ function ViewTracker() {
               <th className="p-2 font-semibold w-6"></th>
             </tr>
           </thead>
-          <tbody className="divide-y" style={{borderColor:"#EFE8DA"}}>
+          <tbody className="divide-y" style={{borderColor:"#F3EFE8"}}>
             {filtered.map((r, idx) => {
               const expanded = expandedRow === idx;
               const m = r.m || {};
@@ -3078,42 +3138,42 @@ function ViewTracker() {
               const cpaVal = cpa(m, p);
               return (
                 <React.Fragment key={idx}>
-                  <tr className="hover:bg-cream-deep cursor-pointer" onClick={()=>setExpandedRow(expanded?null:idx)} style={{color:"#2B2520"}}>
-                    <td className="p-2"><span className="font-mono text-xs px-1.5 py-0.5 rounded" style={{background:"#F4EFE5", color:"#4A3F37"}}>{r.o}</span></td>
+                  <tr className="hover:bg-cream-deep cursor-pointer" onClick={()=>setExpandedRow(expanded?null:idx)} style={{color:"#1A1A1A"}}>
+                    <td className="p-2"><span className="font-mono text-xs px-1.5 py-0.5 rounded" style={{background:"#FAF8F4", color:"#1A1A1A"}}>{r.o}</span></td>
                     <td className="p-2 font-medium">{r.n}</td>
-                    <td className="p-2"><span className="text-xs px-1.5 py-0.5 rounded" style={{background:"#F0D9CE", color:"#A85F44"}}>#{r.a}</span></td>
+                    <td className="p-2"><span className="text-xs px-1.5 py-0.5 rounded" style={{background:"#FFF5C9", color:"#1A1A1A"}}>#{r.a}</span></td>
                     <td className="p-2">{formatIcon(r.f)} {r.f}</td>
                     <td className="p-2">
                       {r.s && <span className="text-xs px-1.5 py-0.5 rounded" style={{background:statusColor(r.s)+"22", color:statusColor(r.s), border:"1px solid "+statusColor(r.s)+"55"}}>{r.s}</span>}
                     </td>
                     <td className="p-2 text-right font-mono">{n(m.spend)!==null ? fmtKRW(m.spend) : dash}</td>
-                    <td className="p-2 text-right font-mono" style={{color:"#4A3F37"}}>{n(m.cpm)!==null ? fmtKRW(m.cpm) : dash}</td>
-                    <td className="p-2 text-right font-mono" style={{color:"#4A3F37"}}>{n(m.cpc)!==null ? fmtKRW(m.cpc) : dash}</td>
-                    <td className="p-2 text-right font-mono" style={{color:"#4A3F37"}}>{n(m.ctr)!==null ? fmtPct(m.ctr) : dash}</td>
-                    <td className="p-2 text-right font-mono" style={{color:"#4A3F37"}}>{n(m.cvr)!==null ? fmtPct(m.cvr) : dash}</td>
+                    <td className="p-2 text-right font-mono" style={{color:"#1A1A1A"}}>{n(m.cpm)!==null ? fmtKRW(m.cpm) : dash}</td>
+                    <td className="p-2 text-right font-mono" style={{color:"#1A1A1A"}}>{n(m.cpc)!==null ? fmtKRW(m.cpc) : dash}</td>
+                    <td className="p-2 text-right font-mono" style={{color:"#1A1A1A"}}>{n(m.ctr)!==null ? fmtPct(m.ctr) : dash}</td>
+                    <td className="p-2 text-right font-mono" style={{color:"#1A1A1A"}}>{n(m.cvr)!==null ? fmtPct(m.cvr) : dash}</td>
                     <td className="p-2 text-right font-mono">{p!==null ? fmt(p) : dash}</td>
                     <td className="p-2 text-right font-mono">{cpaVal!==null ? fmtKRW(cpaVal) : dash}</td>
                     <td className="p-2 text-right font-mono font-semibold" style={{color: roasColor(m.roas)}}>{n(m.roas)!==null ? fmtRoas(m.roas) : dash}</td>
-                    <td className="p-2 text-center"><span style={{color:"#6F6359"}}>{expanded ? "▾" : "▸"}</span></td>
+                    <td className="p-2 text-center"><span style={{color:"#6B6B6B"}}>{expanded ? "▾" : "▸"}</span></td>
                   </tr>
                   {expanded && (
-                    <tr style={{background:"#FAF7F1"}}>
+                    <tr style={{background:"#FFFFFF"}}>
                       <td colSpan="14" className="p-3">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-2">
                           <div>
-                            <div className="text-xs font-semibold mb-1" style={{color:"#A85F44"}}>가설</div>
-                            <div className="text-xs leading-relaxed" style={{color:"#2B2520"}}>{r.hyp || "—"}</div>
+                            <div className="text-xs font-semibold mb-1" style={{color:"#1A1A1A"}}>가설</div>
+                            <div className="text-xs leading-relaxed" style={{color:"#1A1A1A"}}>{r.hyp || "—"}</div>
                           </div>
                           <div>
-                            <div className="text-xs font-semibold mb-1" style={{color:"#A85F44"}}>인사이트</div>
-                            <div className="text-xs leading-relaxed" style={{color:"#2B2520"}}>{r.ins || "—"}</div>
+                            <div className="text-xs font-semibold mb-1" style={{color:"#1A1A1A"}}>인사이트</div>
+                            <div className="text-xs leading-relaxed" style={{color:"#1A1A1A"}}>{r.ins || "—"}</div>
                           </div>
                           <div>
-                            <div className="text-xs font-semibold mb-1" style={{color:"#A85F44"}}>다음 액션</div>
-                            <div className="text-xs leading-relaxed" style={{color:"#2B2520"}}>{r.next || "—"}</div>
+                            <div className="text-xs font-semibold mb-1" style={{color:"#1A1A1A"}}>다음 액션</div>
+                            <div className="text-xs leading-relaxed" style={{color:"#1A1A1A"}}>{r.next || "—"}</div>
                           </div>
                         </div>
-                        <div className="flex gap-4 text-xs pt-2 border-t" style={{borderColor:"#EFE8DA", color:"#6F6359"}}>
+                        <div className="flex gap-4 text-xs pt-2 border-t" style={{borderColor:"#F3EFE8", color:"#6B6B6B"}}>
                           <span>기획주차: {r.wP}</span>
                           <span>아웃풋: {r.wO}</span>
                           <span>AOV: {n(m.aov)!==null ? fmtKRW(m.aov) : "—"}</span>
@@ -3127,7 +3187,7 @@ function ViewTracker() {
           </tbody>
         </table>
       </div>
-      <div className="mt-3 text-xs text-center" style={{color:"#6F6359"}}>
+      <div className="mt-3 text-xs text-center" style={{color:"#6B6B6B"}}>
         행 클릭 → 가설·인사이트·다음 액션 펼치기 · 구매=spend×ROAS/AOV · CPA=spend/구매
       </div>
     </div>
@@ -3171,14 +3231,14 @@ function App() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="sticky top-0 z-30 backdrop-blur" style={{background:"rgba(250,247,241,0.85)", borderBottom:"1px solid #E5DDD0"}}>
+      <header className="sticky top-0 z-30 backdrop-blur" style={{background:"rgba(250,247,241,0.85)", borderBottom:"1px solid #EBE7E0"}}>
         <div className="max-w-[1400px] mx-auto px-5 py-3 flex items-center gap-4">
           <div className="flex-1">
             <div className="flex items-baseline gap-2">
-              <h1 className="font-display text-xl tracking-tight" style={{color:"#2B2520"}}>{META.title}</h1>
-              <span className="text-xs font-mono px-1.5 py-0.5 rounded" style={{background:"#F4EFE5", color:"#6F6359"}}>{META.version}</span>
+              <h1 className="font-display text-xl tracking-tight" style={{color:"#1A1A1A"}}>{META.title}</h1>
+              <span className="text-xs font-mono px-1.5 py-0.5 rounded" style={{background:"#FAF8F4", color:"#6B6B6B"}}>{META.version}</span>
             </div>
-            <div className="text-xs mt-0.5" style={{color:"#6F6359"}}>밀키토너 — 가설·검증·인사이트 가계도</div>
+            <div className="text-xs mt-0.5" style={{color:"#6B6B6B"}}>밀키토너 — 가설·검증·인사이트 가계도</div>
           </div>
           <div className="relative">
             <input
@@ -3187,13 +3247,13 @@ function App() {
               onChange={(e)=>onGlobalSearch(e.target.value)}
               placeholder="🔍 가설 · 콘텐츠 · 인사이트 검색"
               className="text-sm px-3 py-1.5 rounded-md w-72 focus:outline-none"
-              style={{background:"#FFFDF8", border:"1px solid #E5DDD0", color:"#2B2520"}}
+              style={{background:"#FFFFFF", border:"1px solid #EBE7E0", color:"#1A1A1A"}}
             />
             {searchResults && (
               <div className="absolute top-full right-0 mt-1 w-96 card-deep p-2 max-h-96 overflow-y-auto z-40">
                 {["H","C","I"].map(k => searchResults[k].length>0 && (
                   <div key={k} className="mb-2">
-                    <div className="text-xs font-semibold px-2 py-1" style={{color:"#6F6359"}}>
+                    <div className="text-xs font-semibold px-2 py-1" style={{color:"#6B6B6B"}}>
                       {k==="H"?"가설":k==="C"?"콘텐츠":"인사이트"} ({searchResults[k].length})
                     </div>
                     {searchResults[k].slice(0,5).map(item=>(
@@ -3205,30 +3265,30 @@ function App() {
                       }} className="w-full text-left p-2 rounded hover:bg-cream-deep flex items-start gap-2"
                         style={{background:undefined}}>
                         <IdChip id={item.id} />
-                        <div className="text-xs flex-1" style={{color:"#2B2520"}}>{item.title || item.headline}</div>
+                        <div className="text-xs flex-1" style={{color:"#1A1A1A"}}>{item.title || item.headline}</div>
                       </button>
                     ))}
                   </div>
                 ))}
                 {Object.values(searchResults).every(a=>a.length===0) && (
-                  <div className="p-3 text-xs text-center" style={{color:"#6F6359"}}>검색 결과 없음</div>
+                  <div className="p-3 text-xs text-center" style={{color:"#6B6B6B"}}>검색 결과 없음</div>
                 )}
               </div>
             )}
           </div>
           <div className="text-right">
-            <div className="text-xs" style={{color:"#6F6359"}}>마지막 업데이트</div>
-            <div className="text-xs font-mono" style={{color:"#4A3F37"}}>{META.lastUpdate}</div>
+            <div className="text-xs" style={{color:"#6B6B6B"}}>마지막 업데이트</div>
+            <div className="text-xs font-mono" style={{color:"#1A1A1A"}}>{META.lastUpdate}</div>
           </div>
         </div>
 
         {/* Resources row */}
         <div className="max-w-[1400px] mx-auto px-5 pb-2 flex items-center flex-wrap gap-1.5">
-          <span className="text-xs mr-1" style={{color:"#6F6359"}}>리소스:</span>
+          <span className="text-xs mr-1" style={{color:"#6B6B6B"}}>리소스:</span>
           {RESOURCES.map((r,i)=>(
             <a key={i} href={r.url} target="_blank" rel="noopener noreferrer"
               className="text-xs px-2 py-0.5 rounded-full hover:opacity-80"
-              style={{background:"#F4EFE5", color:"#4A3F37", border:"1px solid #E5DDD0"}}>
+              style={{background:"#FAF8F4", color:"#1A1A1A", border:"1px solid #EBE7E0"}}>
               {r.label} <span style={{fontSize:"9px", opacity:0.6}}>↗</span>
             </a>
           ))}
@@ -3245,7 +3305,7 @@ function App() {
               className={`px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-1.5 ${track===t.id?"track-active":"track-inactive"}`}>
               <span>{t.icon}</span>
               <span>{t.label}</span>
-              <span className="text-xs opacity-75 hidden md:inline">— {t.desc}</span>
+              {t.desc && <span className="text-xs opacity-75 hidden md:inline">— {t.desc}</span>}
             </button>
           ))}
         </div>
@@ -3284,7 +3344,7 @@ function App() {
         ) : null}
       </main>
 
-      <footer className="max-w-[1400px] mx-auto px-5 pb-8 pt-4 text-center text-xs" style={{color:"#6F6359"}}>
+      <footer className="max-w-[1400px] mx-auto px-5 pb-8 pt-4 text-center text-xs" style={{color:"#6B6B6B"}}>
         색동서울 콘텐츠 플레이북 v1.0 · 출처: 노션 위클리 체크인 시리즈 / 콘텐츠 리뷰 / 우지 전달 (2025.11~2026.05) ·
         다음 콘텐츠 기획 시작 전 5분 안에 「비슷한 가설 시도됐는지 / 어디서 파생됐는지 / 현재 어디까지 왔는지 / 다음 재료」 찾기
       </footer>
