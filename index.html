@@ -17,7 +17,7 @@
 <style>
   :root {
     --bg-cream: #FFFFFF;
-    --bg-cream-deep: #FAF8F4;
+    --bg-cream-deep: #F4F5F7;
     --bg-paper: #FFFFFF;
     --ink: #1A1A1A;
     --ink-soft: #1A1A1A;
@@ -70,8 +70,8 @@
   .dot-in_progress { background: #B58B1F; }
   .dot-needs_more_data { background: #6A7FA0; }
   .dot-abandoned { background: #8A6573; }
-  .card { background: #FFFFFF; border: 1px solid #EBE7E0; border-radius: 5px; }
-  .card-deep { background: #FFFFFF; border: 1px solid #EBE7E0; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+  .card { background: #FFFFFF; border: 1px solid #E8EAED; border-radius: 5px; }
+  .card-deep { background: #FFFFFF; border: 1px solid #E8EAED; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #EBE7E0; border-radius: 4px; }
@@ -105,9 +105,55 @@
   details > summary::-webkit-details-marker { display: none; }
   .anim-fade { animation: fadeIn 0.25s ease; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
-  .filter-active { background: #1A1A1A; color: white; }
+  .filter-active { background: #3A3733; color: #FFFFFF; border-color: #3A3733; }
   .filter-inactive { background: #FFFFFF; color: #1A1A1A; border: 1px solid #EBE7E0; }
   .filter-active:hover, .filter-inactive:hover { opacity: 0.85; }
+
+  /* ── Signal Purity Shell ── */
+  html, body, #root { background: #F4F5F7; }
+  .sp-topbar { background: #FFFFFF; height: 52px; position: relative; display: flex; align-items: center; border-bottom: 1px solid #E8EAED; }
+  .sp-topbar-accent { height: 2px; background: #FFCB05; position: absolute; bottom: -1px; left: 0; right: 0; }
+  .sp-search {
+    background: #F4F5F7;
+    border: 1px solid #E8EAED;
+    color: #3A3733;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    width: 240px;
+    outline: none;
+    font-family: inherit;
+  }
+  .sp-search::placeholder { color: #ABA89F; }
+  .sp-tabnav { background: #FFFFFF; border-bottom: 1px solid #E8EAED; height: 40px; display: flex; align-items: stretch; }
+  .sp-tab {
+    padding: 0 16px; font-size: 13px; font-weight: 500;
+    color: #ABA89F; background: transparent; border: none; cursor: pointer;
+    border-bottom: 2px solid transparent; transition: color 0.12s; white-space: nowrap;
+    font-family: inherit;
+  }
+  .sp-tab:hover { color: #3A3733; }
+  .sp-tab--active { color: #3A3733; font-weight: 600; border-bottom-color: #FFCB05; }
+  .sp-track-btn {
+    display: block; width: 100%; text-align: left;
+    padding: 7px 10px; border-radius: 5px; font-size: 13px;
+    font-weight: 500; color: #7A7773;
+    background: transparent; border: none; cursor: pointer; margin-bottom: 2px;
+    transition: background 0.1s, color 0.1s;
+    font-family: inherit;
+  }
+  .sp-track-btn:hover { background: #F4F5F7; color: #3A3733; }
+  .sp-track-btn--active { background: #FFFBEA !important; color: #5A4A00 !important; font-weight: 600; border-left: 3px solid #FFCB05; padding-left: 7px; }
+  .sp-sidebar-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    color: #C0BCB4; text-transform: uppercase; margin-bottom: 10px;
+  }
+  .sp-resource-link {
+    font-size: 11px; padding: 3px 8px; border-radius: 4px;
+    background: #F4F5F7; color: #7A7773; border: 1px solid #E8EAED;
+    text-decoration: none; white-space: nowrap;
+  }
+  .sp-resource-link:hover { color: #3A3733; }
 </style>
 </head>
 <body>
@@ -914,7 +960,6 @@ const SOURCE_TYPE_LABEL = {
   internal_evolved: "내부 도출",
   competitor_followup: "경쟁사 팔로업",
   trend_test: "트렌드 테스트",
-  serendipity: "우연",
 };
 
 const CATEGORY_DESCRIPTIONS = {
@@ -2367,11 +2412,11 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
     const containerWidth = ref.current.parentElement.clientWidth;
     const root = d3.hierarchy(data);
 
-    // nodeSize로 일관된 간격 — 행 높이 38, 열 폭 280 (텍스트 + 다음 노드 여백)
-    const rowHeight = 38;
-    const colWidth = 280;
+    // nodeSize로 일관된 간격 — 행 높이 54 (태그 줄 여백 포함), 열 폭 340
+    const rowHeight = 54;
+    const colWidth = 340;
     const treeLayout = d3.tree().nodeSize([rowHeight, colWidth])
-      .separation((a, b) => (a.parent === b.parent ? 1 : 1.2));
+      .separation((a, b) => (a.parent === b.parent ? 1.1 : 1.5));
     treeLayout(root);
 
     // 실제 bounding box 계산 (음수 좌표 포함)
@@ -2382,10 +2427,10 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
       if (d.y < minY) minY = d.y;
       if (d.y > maxY) maxY = d.y;
     });
-    const padX = 90;          // 좌우 여백 (root 박스 폭 고려)
-    const padTextRight = 220; // 텍스트가 오른쪽으로 펴지는 공간
+    const padX = 100;         // 좌우 여백 (root 박스 폭 고려)
+    const padTextRight = 300; // 텍스트가 오른쪽으로 펴지는 공간
     const svgWidth = (maxY - minY) + padX + padTextRight;
-    const svgHeight = (maxX - minX) + 60;
+    const svgHeight = (maxX - minX) + 80;
     svg.attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
     svg.attr("preserveAspectRatio", "xMinYMin meet");
     svg.style("min-width", `${Math.max(svgWidth, containerWidth)}px`);
@@ -2429,7 +2474,7 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
             if (tip) tip.style.display = "none";
           });
         sel.append("rect").attr("x",-90).attr("y",-14).attr("width",180).attr("height",28).attr("rx",14)
-          .attr("fill","#1A1A1A").attr("stroke","#1A1A1A");
+          .attr("fill","#3A3733").attr("stroke","#3A3733");
         sel.append("text").attr("text-anchor","middle").attr("dy",4).attr("fill","#FFFFFF")
           .style("font-size","12px").style("font-weight","600").style("font-family","Pretendard")
           .text(d.data.name);
@@ -2469,8 +2514,8 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
           .style("text-decoration", h.status==="abandoned" ? "line-through" : "none")
           .text(h.id);
 
-        // 타이틀 — 다음 노드와의 간격(280px) 안에 들어가도록 24자 제한
-        const MAX_CHARS = 22;
+        // 타이틀 — colWidth(340) 기준 30자 제한
+        const MAX_CHARS = 30;
         const title = h.title.length > MAX_CHARS ? h.title.slice(0, MAX_CHARS-1)+"…" : h.title;
         const tagsForNode = (typeof computeTags === "function") ? computeTags(h) : [];
         sel
@@ -2492,18 +2537,30 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
             if (tip) tip.style.display = "none";
           });
         // 배경 흰색 박스 (오버랩 방지용)
-        const textEl = sel.append("text").attr("x",36).attr("dy",3.5).attr("fill","#1A1A1A")
-          .style("font-size","11px").style("font-family","Pretendard")
-          .style("pointer-events","none")
+        const textEl = sel.append("text").attr("x",40).attr("dy",4).attr("fill","#1A1A1A")
+          .style("font-size","12px").style("font-family","Pretendard")
+          .style("font-weight","500").style("pointer-events","none")
           .text(title);
         // 텍스트 뒷배경 (가독성)
         const bbox = textEl.node().getBBox();
         sel.insert("rect", "text:nth-of-type(2)")
-          .attr("x", bbox.x - 3).attr("y", bbox.y - 1)
-          .attr("width", bbox.width + 6).attr("height", bbox.height + 2)
-          .attr("fill", "#FFFFFF").attr("opacity", 0.85).attr("rx", 2);
+          .attr("x", bbox.x - 5).attr("y", bbox.y - 3)
+          .attr("width", bbox.width + 10).attr("height", bbox.height + 6)
+          .attr("fill", "#FFFFFF").attr("opacity", 1).attr("rx", 3);
         // 다시 텍스트를 최상단으로
         sel.append(() => textEl.remove().node());
+        // 전략 태그 소형 표시 (#AI / #불신제거 / #영상언어)
+        if (tagsForNode.length) {
+          sel.append("text")
+            .attr("x", 40)
+            .attr("dy", 18)
+            .attr("fill", "#B58B1F")
+            .style("font-size", "9.5px")
+            .style("font-family", "JetBrains Mono, monospace")
+            .style("font-weight", "600")
+            .style("pointer-events", "none")
+            .text(tagsForNode.map(t=>"#"+t).join("  "));
+        }
       }
     });
   }, [hypotheses, filters, track, onNodeClick]);
@@ -2521,7 +2578,7 @@ function ViewOverview({ track, jumpTo }) {
     abandoned: hyps.filter(h=>h.status==="abandoned").length,
   };
   const top3 = INSIGHTS.filter(i=>i.track===track).slice(0,3);
-  const sourceTypes = ["internal_evolved","competitor_followup","trend_test","serendipity"];
+  const sourceTypes = ["internal_evolved","competitor_followup","trend_test"];
   const sourceCounts = sourceTypes.map(s => ({ s, n: hyps.filter(h=>h.source_type===s).length }));
   const maxN = Math.max(...sourceCounts.map(x=>x.n), 1);
   const recent = [...hyps].sort((a,b)=>b.updated_date.localeCompare(a.updated_date)).slice(0,7);
@@ -2536,46 +2593,36 @@ function ViewOverview({ track, jumpTo }) {
           {k:"abandoned", label:"폐기"},
         ].map(({k,label})=>(
           <div key={k} className="card-deep p-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-3">
               <span className={`w-2 h-2 rounded-full dot-${k}`}></span>
-              <span className="text-xs ink-soft" style={{color:"#1A1A1A"}}>{label}</span>
+              <span className="text-xs font-mono tracking-widest uppercase" style={{color:"#9B9690"}}>{label}</span>
             </div>
-            <div className="font-display text-3xl" style={{color:"#1A1A1A"}}>{counts[k]}</div>
+            <div style={{fontSize:"2rem", fontWeight:300, letterSpacing:"-0.01em", color:"#2B2825", lineHeight:1}}>{counts[k]}</div>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <div className="card-deep p-5">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-display text-xl" style={{color:"#1A1A1A"}}>강력하게 검증된 인사이트 Top 3</h3>
-            <button onClick={()=>jumpTo("V3")} className="text-xs underline" style={{color:"#1A1A1A"}}>전체보기 →</button>
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs font-mono tracking-widest uppercase" style={{color:"#9B9690"}}>검증된 인사이트 Top 3</span>
+            <button onClick={()=>jumpTo("V3")} className="text-xs" style={{color:"#9B9690"}}>전체보기 →</button>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-0">
             {top3.map(ins => (
-              <div key={ins.id} className="border-l-2 pl-3 cursor-pointer hover:opacity-80" style={{borderColor:"#1A1A1A"}} onClick={()=>jumpTo("V3", ins.id)}>
-                <div className="flex items-center gap-2 mb-1 flex-wrap">
+              <div key={ins.id} className="cursor-pointer hover:opacity-70 py-3" style={{borderBottom:"1px solid #F0EDE8"}} onClick={()=>jumpTo("V3", ins.id)}>
+                <div className="text-sm leading-relaxed mb-1.5" style={{color:"#2B2825", fontWeight:450}}>{ins.headline}</div>
+                <div className="flex items-center gap-2">
                   <IdChip id={ins.id} />
-                  {(() => {
-                    const srcH = ins.validated_from_hypothesis_id ? HYPOTHESES.find(h => h.id === ins.validated_from_hypothesis_id) : null;
-                    if (!srcH) return null;
-                    return computeTags(srcH).map(t => (
-                      <span key={t} className="text-[10px] px-1 rounded"
-                        title={TAG_DESCRIPTIONS[t]}
-                        style={{background:"#1A1A1A", color:"#FFCB05"}}>#{t}</span>
-                    ));
-                  })()}
-                  <span className="text-xs ink-soft" style={{color:"#6B6B6B"}}>{ins.validated_by_content_ids.length}건 검증</span>
+                  <span className="text-xs" style={{color:"#B0ACA6"}}>{ins.validated_by_content_ids.length}건 검증</span>
                 </div>
-                <div className="font-medium text-sm leading-snug" style={{color:"#1A1A1A"}}>{ins.headline}</div>
-                <div className="text-xs mt-1" style={{color:"#1A1A1A"}}>{ins.one_line}</div>
               </div>
             ))}
           </div>
         </div>
 
         <div className="card-deep p-5">
-          <h3 className="font-display text-xl mb-3" style={{color:"#1A1A1A"}}>가설 출처 분포</h3>
+          <span className="text-xs font-mono tracking-widest uppercase block mb-4" style={{color:"#9B9690"}}>가설 출처 분포</span>
           <div className="space-y-2">
             {sourceCounts.map(({s,n})=>(
               <div key={s}>
@@ -2584,7 +2631,7 @@ function ViewOverview({ track, jumpTo }) {
                   <span className="font-mono" style={{color:"#6B6B6B"}}>{n}건</span>
                 </div>
                 <div className="h-2 rounded-full overflow-hidden" style={{background:"#FAF8F4"}}>
-                  <div style={{width:`${(n/maxN)*100}%`, background:"#1A1A1A", height:"100%"}}></div>
+                  <div style={{width:`${(n/maxN)*100}%`, background:"#C0BCB4", height:"100%"}}></div>
                 </div>
               </div>
             ))}
@@ -2593,7 +2640,7 @@ function ViewOverview({ track, jumpTo }) {
       </div>
 
       <div className="card-deep p-5">
-        <h3 className="font-display text-xl mb-3" style={{color:"#1A1A1A"}}>최근 업데이트</h3>
+        <span className="text-xs font-mono tracking-widest uppercase block mb-4" style={{color:"#9B9690"}}>최근 업데이트</span>
         <div className="divide-y" style={{borderColor:"#F3EFE8"}}>
           {recent.map(h=>(
             <div key={h.id} className="py-2.5 flex items-center gap-3 cursor-pointer hover:bg-cream-deep -mx-2 px-2 rounded" onClick={()=>jumpTo("V4", h.id)}>
@@ -2610,65 +2657,143 @@ function ViewOverview({ track, jumpTo }) {
   );
 }
 
-function ViewMindMap({ track, jumpTo }) {
-  const hyps = useMemo(()=>HYPOTHESES.filter(h=>h.track===track), [track]);
-  const allCats = Array.from(new Set(hyps.map(h=>h.category)));
-  const [fStatus, setFStatus] = useState(new Set());
-  const [fCategory, setFCategory] = useState(new Set());
-  const [fSource, setFSource] = useState(new Set());
 
-  function toggle(setF, set, val) {
-    const next = new Set(set);
-    if (next.has(val)) next.delete(val); else next.add(val);
-    setF(next);
+function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
+  const hyps = useMemo(()=>HYPOTHESES.filter(h=>h.track===track), [track]);
+  const [selectedId, setSelectedId] = React.useState(null);
+
+  const sel = selectedId ? HYPOTHESES.find(h=>h.id===selectedId) : null;
+  const relContents = sel ? CONTENTS.filter(c=>sel.content_ids.includes(c.id)) : [];
+  const evals = sel ? Object.entries(sel.evaluations||{}) : [];
+
+  function handleNodeClick(id) {
+    setSelectedId(prev => prev === id ? null : id);
   }
 
   return (
-    <div className="anim-fade grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-5">
-      <aside className="space-y-4">
-        <div className="card-deep p-3">
-          <div className="text-xs font-semibold mb-2 ink-soft" style={{color:"#1A1A1A"}}>상태</div>
-          <div className="flex flex-wrap gap-1.5">
-            {["validated","in_progress","needs_more_data","abandoned"].map(s=>(
-              <button key={s} onClick={()=>toggle(setFStatus, fStatus, s)}
-                className={`text-xs px-2 py-1 rounded-full ${fStatus.has(s)?"filter-active":"filter-inactive"}`}>
-                {statusLabel(s)}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="card-deep p-3">
-          <div className="text-xs font-semibold mb-2 ink-soft" style={{color:"#1A1A1A"}}>주제</div>
-          <div className="flex flex-wrap gap-1.5">
-            {allCats.map(c=>(
-              <button key={c} onClick={()=>toggle(setFCategory, fCategory, c)}
-                className={`text-xs px-2 py-1 rounded-full ${fCategory.has(c)?"filter-active":"filter-inactive"}`}>
-                #{c}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="card-deep p-3">
-          <div className="text-xs font-semibold mb-2 ink-soft" style={{color:"#1A1A1A"}}>출처</div>
-          <div className="flex flex-wrap gap-1.5">
-            {["internal_evolved","competitor_followup","trend_test","serendipity"].map(s=>(
-              <button key={s} onClick={()=>toggle(setFSource, fSource, s)}
-                className={`text-xs px-2 py-1 rounded-full ${fSource.has(s)?"filter-active":"filter-inactive"}`}>
-                {SOURCE_TYPE_LABEL[s]}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="text-[12px] leading-relaxed p-3 rounded card space-y-1" style={{color:"#1A1A1A"}}>
-          <div><b style={{color:"#1A1A1A"}}>클릭</b> · 자세히 보기로 이동</div>
-          <div><b style={{color:"#1A1A1A"}}>마우스 올림</b> · 가설 풀텍스트 툴팁</div>
-          <div style={{color:"#6B6B6B"}}>폐기 가설은 취소선 · 점선</div>
-        </div>
-      </aside>
+    <div className="anim-fade">
       <div className="card-deep p-3 overflow-x-auto relative">
         <div id="mindmap-tooltip" className="mm-tooltip" style={{display:"none"}}></div>
-        <MindMap track={track} hypotheses={hyps} onNodeClick={(id)=>jumpTo("V4", id)} filters={{status:fStatus, category:fCategory, source:fSource}} />
+        <MindMap track={track} hypotheses={hyps} onNodeClick={handleNodeClick} filters={{status:fStatus||new Set(), category:fCategory||new Set(), source:fSource||new Set()}} />
       </div>
+
+      {sel && (
+        <div className="card-deep mt-3 p-5" style={{borderLeft:"3px solid #FFCB05"}}>
+          {/* header */}
+          <div style={{display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:"12px"}}>
+            <div style={{display:"flex", alignItems:"center", gap:"6px", flexWrap:"wrap"}}>
+              <IdChip id={sel.id} />
+              <Pill status={sel.status} />
+              <span style={{fontSize:"11px", color:"#9B9690"}}>#{sel.category}</span>
+              {computeTags(sel).map(t=>(
+                <span key={t} style={{fontSize:"11px", background:"#FFF8E0", color:"#B58B1F", borderRadius:"3px", padding:"1px 7px", fontWeight:600}}>#{t}</span>
+              ))}
+            </div>
+            <button onClick={()=>setSelectedId(null)} style={{color:"#C0BCB4", fontSize:"18px", lineHeight:1, background:"none", border:"none", cursor:"pointer", padding:"0 4px", flexShrink:0}}>×</button>
+          </div>
+
+          {/* hypothesis text */}
+          <div style={{fontSize:"13px", lineHeight:1.65, color:"#2B2825", marginBottom:"20px"}}>{sel.full_text || sel.title}</div>
+
+          {/* connected contents — same table as 자세히보기 */}
+          <div style={{marginBottom:"20px"}}>
+            <div className="font-mono" style={{fontSize:"10px", letterSpacing:"0.06em", color:"#9B9690", marginBottom:"10px"}}>
+              연결된 콘텐츠 {relContents.length}건
+            </div>
+            {relContents.length > 0 ? (
+              <div style={{overflowX:"auto"}}>
+                <table style={{width:"100%", fontSize:"12px", borderCollapse:"collapse"}}>
+                  <thead>
+                    <tr style={{color:"#9B9690", textAlign:"left"}}>
+                      <th style={{paddingBottom:"8px", paddingRight:"12px", fontWeight:600}}>콘텐츠</th>
+                      <th style={{paddingBottom:"8px", paddingRight:"12px", fontWeight:600}}>베리</th>
+                      <th style={{paddingBottom:"8px", paddingRight:"12px", fontWeight:600}}>지출</th>
+                      <th style={{paddingBottom:"8px", paddingRight:"12px", fontWeight:600}}>ROAS</th>
+                      <th style={{paddingBottom:"8px", paddingRight:"12px", fontWeight:600}}>CTR</th>
+                      <th style={{paddingBottom:"8px", paddingRight:"12px", fontWeight:600}}>CVR</th>
+                      <th style={{paddingBottom:"8px", paddingRight:"12px", fontWeight:600}}>CPC</th>
+                      <th style={{paddingBottom:"8px", fontWeight:600}}>상태</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {relContents.map(c =>
+                      c.variations.map((v, i) => (
+                        <tr key={c.id+i} style={{borderTop:"1px solid #F0EDE8", color:"#2B2825"}}>
+                          {i === 0 && (
+                            <td rowSpan={c.variations.length} style={{padding:"8px 12px 8px 0", verticalAlign:"top"}}>
+                              <IdChip id={c.id} />
+                              <div style={{marginTop:"4px", fontSize:"11px"}}>
+                                {c.notion_url
+                                  ? <a href={c.notion_url} target="_blank" rel="noopener noreferrer" style={{color:"#2B2825", textDecoration:"none"}}>{c.title} <span style={{opacity:0.5, fontSize:"9px"}}>↗</span></a>
+                                  : c.title}
+                              </div>
+                              {c.drive_url && (
+                                <a href={c.drive_url} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex", alignItems:"center", gap:"3px", fontSize:"11px", color:"#4F7A4C", marginTop:"2px", textDecoration:"none"}}>
+                                  📎 Drive 열기
+                                </a>
+                              )}
+                              <div style={{fontSize:"11px", color:"#9B9690", marginTop:"2px"}}>{c.live_date}</div>
+                            </td>
+                          )}
+                          <td style={{padding:"8px 12px 8px 0"}}>{v.name}</td>
+                          <td className="font-mono" style={{padding:"8px 12px 8px 0"}}>{fmtKRW(v.metrics?.spend)}</td>
+                          <td className="font-mono" style={{padding:"8px 12px 8px 0", fontWeight:600,
+                            color:(v.metrics?.roas||0)>=1.5?"#4F7A4C":(v.metrics?.roas||0)<1&&v.metrics?.roas?"#8A6573":"#2B2825"}}>
+                            {fmtRoas(v.metrics?.roas)}
+                          </td>
+                          <td className="font-mono" style={{padding:"8px 12px 8px 0"}}>{fmtPct(v.metrics?.ctr)}</td>
+                          <td className="font-mono" style={{padding:"8px 12px 8px 0"}}>{fmtPct(v.metrics?.cvr)}</td>
+                          <td className="font-mono" style={{padding:"8px 12px 8px 0"}}>{fmtKRW(v.metrics?.cpc)}</td>
+                          {i === 0 && (
+                            <td rowSpan={c.variations.length} style={{padding:"8px 0", verticalAlign:"top"}}>
+                              <span style={{fontSize:"11px", padding:"2px 7px", borderRadius:"3px",
+                                background:c.status==="on"?"#E1EFDA":"#EAE0E5",
+                                color:c.status==="on"?"#4F7A4C":"#6F4F5C"}}>
+                                {c.status.toUpperCase()}
+                              </span>
+                            </td>
+                          )}
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <span style={{fontSize:"12px", color:"#C0BCB4"}}>아직 연결된 콘텐츠 없음</span>
+            )}
+          </div>
+
+          {/* evaluations */}
+          {evals.length > 0 && (
+            <div style={{marginBottom:"20px"}}>
+              <div className="font-mono" style={{fontSize:"10px", letterSpacing:"0.06em", color:"#9B9690", marginBottom:"10px"}}>
+                연상평가
+              </div>
+              <div style={{display:"flex", flexDirection:"column", gap:"8px"}}>
+                {evals.filter(([,v])=>v&&v!=="—").map(([person, comment])=>(
+                  <div key={person} style={{display:"flex", gap:"10px", alignItems:"flex-start"}}>
+                    <div style={{width:"24px", height:"24px", borderRadius:"50%", background:"#F0EDE8", border:"1px solid #E8EAED", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"10px", fontWeight:600, color:"#6B6B6B", flexShrink:0}}>
+                      {person.charAt(0)}
+                    </div>
+                    <div>
+                      <span style={{fontSize:"11px", fontWeight:600, color:"#4B4845"}}>{person}</span>
+                      <span style={{fontSize:"11px", color:"#6B6B6B", marginLeft:"6px"}}>{comment}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* footer */}
+          <div style={{borderTop:"1px solid #F0EDE8", paddingTop:"12px"}}>
+            <button onClick={()=>jumpTo("V4", sel.id)} style={{fontSize:"13px", color:"#2B2825", fontWeight:500, background:"none", border:"none", cursor:"pointer", padding:0}}>
+              자세히 보기 →
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -2679,7 +2804,7 @@ function ViewSuccessFormula({ track, jumpTo }) {
   return (
     <div className="anim-fade">
       <div className="mb-4 flex items-baseline justify-between">
-        <h2 className="font-display text-2xl" style={{color:"#1A1A1A"}}>성공공식 — 검증된 인사이트 갤러리</h2>
+        <h2 className="font-display text-2xl" style={{color:"#1A1A1A"}}>성공공식</h2>
         <span className="text-xs" style={{color:"#6B6B6B"}}>총 {validated.length}건 검증됨 · 클릭으로 가설/콘텐츠 점프</span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -2687,31 +2812,33 @@ function ViewSuccessFormula({ track, jumpTo }) {
           const linkedContents = CONTENTS.filter(c => ins.validated_by_content_ids.includes(c.id));
           return (
             <div key={ins.id} className="card-deep p-4 flex flex-col">
-              <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <IdChip id={ins.id} />
-                <span className="text-xs px-1.5 rounded" style={{background:"#1A1A1A", color:"#FFFFFF"}}>#{ins.track==="A"?"롱폼":ins.track==="D"?"바이럴":"숏폼·배너"}</span>
-                {(() => {
-                  const srcH = ins.validated_from_hypothesis_id ? HYPOTHESES.find(h => h.id === ins.validated_from_hypothesis_id) : null;
-                  return srcH?.category ? (
-                    <span className="text-xs px-1.5 rounded cursor-help"
-                      title={CATEGORY_DESCRIPTIONS[srcH.category] || srcH.category}
-                      style={{background:"#FFF5C9", color:"#7A5F00", border:"1px solid #FFCB05"}}>
-                      #{srcH.category}
-                    </span>
-                  ) : null;
-                })()}
-                {(() => {
-                  const srcH = ins.validated_from_hypothesis_id ? HYPOTHESES.find(h => h.id === ins.validated_from_hypothesis_id) : null;
-                  if (!srcH) return null;
-                  return computeTags(srcH).map(t => (
-                    <span key={t} className="text-xs px-1.5 rounded cursor-help"
-                      title={TAG_DESCRIPTIONS[t]}
-                      style={{background:"#1A1A1A", color:"#FFCB05", border:"1px solid #1A1A1A"}}>#{t}</span>
-                  ));
-                })()}
-              </div>
-              <h3 className="font-display text-lg leading-tight mb-1.5" style={{color:"#1A1A1A"}}>{ins.headline}</h3>
-              <p className="text-xs mb-3" style={{color:"#1A1A1A"}}>{ins.one_line}</p>
+              {/* card header: ID + category + strategy tags */}
+              {(() => {
+                const srcH = ins.validated_from_hypothesis_id ? HYPOTHESES.find(h => h.id === ins.validated_from_hypothesis_id) : null;
+                const stratTags = srcH ? computeTags(srcH) : [];
+                return (
+                  <div className="flex items-center gap-1.5 mb-2.5 flex-wrap">
+                    <IdChip id={ins.id} />
+                    {srcH?.category && (
+                      <span className="text-xs px-1.5 py-0.5 rounded cursor-help"
+                        title={CATEGORY_DESCRIPTIONS[srcH.category] || srcH.category}
+                        style={{background:"#FFF5C9", color:"#7A5F00", border:"1px solid #FFE066"}}>
+                        #{srcH.category}
+                      </span>
+                    )}
+                    {stratTags.map(t => (
+                      <span key={t} className="font-mono cursor-help"
+                        title={TAG_DESCRIPTIONS[t]}
+                        style={{fontSize:"10px", padding:"2px 6px", borderRadius:"3px", background:"#FFF0B0", color:"#7A5A00", border:"1px solid #E8C840"}}>
+                        #{t}
+                      </span>
+                    ))}
+                    <span className="ml-auto text-xs" style={{color:"#9B9690"}}>{ins.validated_by_content_ids.length}건</span>
+                  </div>
+                );
+              })()}
+              <h3 className="text-sm font-semibold leading-snug mb-1" style={{color:"#1A1A1A", letterSpacing:"-0.01em"}}>{ins.headline}</h3>
+              <p className="text-xs mb-3 leading-relaxed" style={{color:"#6B6B6B"}}>{ins.one_line}</p>
 
               <div className="grid grid-cols-2 gap-2 mb-3">
                 {linkedContents.slice(0,4).map(c => {
@@ -2730,7 +2857,7 @@ function ViewSuccessFormula({ track, jumpTo }) {
                 })}
               </div>
 
-              <details className="mb-2" open={openChecks[ins.id]}>
+              <details className="mb-2">
                 <summary className="text-xs font-semibold flex items-center gap-1" style={{color:"#1A1A1A"}}>
                   <span>▸ 재현 체크리스트 ({ins.reproduction_checklist.length})</span>
                 </summary>
@@ -3289,6 +3416,15 @@ function App() {
   const [selectedI, setSelectedI] = useState(null);
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState(null);
+  const [mmFStatus, setMmFStatus] = useState(new Set());
+  const [mmFCategory, setMmFCategory] = useState(new Set());
+  const [mmFSource, setMmFSource] = useState(new Set());
+
+  function mmToggle(setF, set, val) {
+    const next = new Set(set);
+    if (next.has(val)) next.delete(val); else next.add(val);
+    setF(next);
+  }
 
   function jumpTo(v, id, contentId) {
     setView(v);
@@ -3314,27 +3450,31 @@ function App() {
     setSearchResults(hits);
   }
 
+  const activeView = track === "E" ? "E" : view;
+
   return (
     <div className="min-h-screen">
-      {/* Header */}
-      <header className="sticky top-0 z-30 backdrop-blur" style={{background:"rgba(250,247,241,0.85)", borderBottom:"1px solid #EBE7E0"}}>
-        <div className="max-w-[1400px] mx-auto px-5 py-3 flex items-center gap-4">
-          <div className="flex-1">
-            <div className="flex items-baseline gap-2">
-              <h1 className="font-display text-xl tracking-tight" style={{color:"#1A1A1A"}}>{META.title}</h1>
-              <span className="text-xs font-mono px-1.5 py-0.5 rounded" style={{background:"#FAF8F4", color:"#6B6B6B"}}>{META.version}</span>
-            </div>
-            <div className="text-xs mt-0.5" style={{color:"#6B6B6B"}}>밀키토너 — 가설·검증·인사이트 가계도</div>
+
+      {/* ── TopBar ── */}
+      <div className="sp-topbar">
+        <div className="max-w-[1440px] mx-auto px-5 w-full flex items-center gap-4">
+          <div className="flex items-baseline gap-2">
+            <span style={{color:"#3A3733", fontWeight:700, fontSize:"15px", letterSpacing:"-0.02em"}}>{META.title}</span>
+            <span style={{color:"#C0BCB4", fontSize:"11px", fontFamily:"monospace"}}>{META.version}</span>
           </div>
+          <div style={{flex:1}} />
+          {/* Search */}
           <div className="relative">
-            <input
-              type="text"
-              value={query}
-              onChange={(e)=>onGlobalSearch(e.target.value)}
-              placeholder="🔍 가설 · 콘텐츠 · 인사이트 검색"
-              className="text-sm px-3 py-1.5 rounded-md w-72 focus:outline-none"
-              style={{background:"#FFFFFF", border:"1px solid #EBE7E0", color:"#1A1A1A"}}
-            />
+            <div style={{position:"relative", display:"inline-flex", alignItems:"center"}}>
+              <span style={{position:"absolute", left:"10px", color:"#ABA89F", fontSize:"13px", pointerEvents:"none"}}>🔍</span>
+              <input
+                type="text" value={query}
+                onChange={(e)=>onGlobalSearch(e.target.value)}
+                placeholder="가설 · 콘텐츠 · 인사이트 검색"
+                className="sp-search"
+                style={{paddingLeft:"32px"}}
+              />
+            </div>
             {searchResults && (
               <div className="absolute top-full right-0 mt-1 w-96 card-deep p-2 max-h-96 overflow-y-auto z-40">
                 {["H","C","I"].map(k => searchResults[k].length>0 && (
@@ -3348,8 +3488,7 @@ function App() {
                         else if (k==="I") { setTrack(item.track); jumpTo("V3", item.id); }
                         else { setTrack(item.track); jumpTo("V4", item.hypothesis_ids?.[0]); }
                         setQuery(""); setSearchResults(null);
-                      }} className="w-full text-left p-2 rounded hover:bg-cream-deep flex items-start gap-2"
-                        style={{background:undefined}}>
+                      }} className="w-full text-left p-2 rounded flex items-start gap-2" style={{background:"transparent"}}>
                         <IdChip id={item.id} />
                         <div className="text-xs flex-1" style={{color:"#1A1A1A"}}>{item.title || item.headline}</div>
                       </button>
@@ -3362,74 +3501,134 @@ function App() {
               </div>
             )}
           </div>
-          <div className="text-right">
-            <div className="text-xs" style={{color:"#6B6B6B"}}>마지막 업데이트</div>
-            <div className="text-xs font-mono" style={{color:"#1A1A1A"}}>{META.lastUpdate}</div>
-          </div>
+          <span style={{color:"#ABA89F", fontSize:"12px"}}>업데이트 {META.lastUpdate}</span>
         </div>
+        <div className="sp-topbar-accent" />
+      </div>
 
-        {/* Resources row */}
-        <div className="max-w-[1400px] mx-auto px-5 pb-2 flex items-center flex-wrap gap-1.5">
-          <span className="text-xs mr-1" style={{color:"#6B6B6B"}}>리소스:</span>
-          {RESOURCES.map((r,i)=>(
-            <a key={i} href={r.url} target="_blank" rel="noopener noreferrer"
-              className="text-xs px-2 py-0.5 rounded-full hover:opacity-80"
-              style={{background:"#FAF8F4", color:"#1A1A1A", border:"1px solid #EBE7E0"}}>
-              {r.label} <span style={{fontSize:"9px", opacity:0.6}}>↗</span>
-            </a>
-          ))}
-        </div>
-
-        {/* Track switcher */}
-        <div className="max-w-[1400px] mx-auto px-5 pb-2.5 flex items-center gap-2">
-          {Object.values(TRACKS).map(t => (
-            <button key={t.id} onClick={()=>{
-                setTrack(t.id);
-                if (t.id==="E") setView("V_SINGLE");
-                else if (view==="V_SINGLE") setView("V1");
-              }}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-1.5 ${track===t.id?"track-active":"track-inactive"}`}>
-              <span>{t.icon}</span>
-              <span>{t.label}</span>
-              {t.desc && <span className="text-xs opacity-75 hidden md:inline">— {t.desc}</span>}
+      {/* ── Tab Nav ── */}
+      <div className="sp-tabnav sticky top-0 z-20">
+        <div className="max-w-[1440px] mx-auto px-5 flex items-stretch" style={{height:"42px"}}>
+          {[
+            {k:"V1", label:"Overview"},
+            {k:"V2", label:"Mind Map"},
+            {k:"V3", label:"성공공식"},
+            {k:"V4", label:"자세히 보기"},
+            {k:"E",  label:"운영 트래커"},
+          ].map(t => (
+            <button key={t.k}
+              onClick={()=>{ if(t.k==="E"){ setTrack("E"); setView("V1"); } else { if(track==="E") setTrack("A"); setView(t.k); } }}
+              className={`sp-tab ${activeView===t.k ? "sp-tab--active" : ""}`}>
+              {t.label}
             </button>
           ))}
+          <div style={{flex:1}} />
+          {/* Resources — visually separated */}
+          <div className="flex items-center" style={{borderLeft:"1px solid #EBE7E0", paddingLeft:"12px", gap:"6px"}}>
+            {RESOURCES.map((r,i)=>{
+              const colors = {
+                notion: {bg:"#F3F0FF", border:"#C9BEF5", color:"#5B45B0"},
+                sheet:  {bg:"#EDFAF2", border:"#A8DFC0", color:"#217A4B"},
+                drive:  {bg:"#EEF4FF", border:"#AECAF5", color:"#2B5BB8"},
+              };
+              const c = colors[r.type] || {bg:"#FAF8F4", border:"#EBE7E0", color:"#6B6B6B"};
+              return (
+                <a key={i} href={r.url} target="_blank" rel="noopener noreferrer"
+                  style={{fontSize:"11px", padding:"3px 8px", borderRadius:"4px",
+                    background:c.bg, color:c.color, border:`1px solid ${c.border}`,
+                    textDecoration:"none", whiteSpace:"nowrap", fontWeight:500}}>
+                  {r.label} <span style={{opacity:0.5, fontSize:"9px"}}>↗</span>
+                </a>
+              );
+            })}
+          </div>
         </div>
+      </div>
 
-        {/* View tabs */}
-        {track !== "E" && (
-          <div className="max-w-[1400px] mx-auto px-5 pb-2.5 flex items-center gap-1.5">
-            {[
-              {k:"V1", label:"Overview"},
-              {k:"V2", label:"Mind Map"},
-              {k:"V3", label:"성공공식"},
-              {k:"V4", label:"자세히 보기"},
-            ].map(t => (
-              <button key={t.k} onClick={()=>setView(t.k)}
-                className={`px-2.5 py-1 rounded text-xs font-medium ${view===t.k?"tab-active":"tab-inactive"}`}>
-                {t.label}
-              </button>
-            ))}
+      {/* ── Mind Map 필터 바 ── */}
+      {view === "V2" && track !== "E" && (() => {
+        const mmHyps = HYPOTHESES.filter(h=>h.track===track);
+        const mmAllCats = Array.from(new Set(mmHyps.map(h=>h.category)));
+        const lbStyle = {fontSize:"11px", color:"#ABA89F", fontWeight:600, whiteSpace:"nowrap", letterSpacing:"0.04em"};
+        return (
+          <div style={{background:"#FFFFFF", borderBottom:"1px solid #E8EAED", padding:"7px 0"}}>
+            <div className="max-w-[1440px] mx-auto px-5" style={{display:"flex", flexDirection:"column", gap:"5px"}}>
+              {/* Row 1: 상태 + 출처 */}
+              <div style={{display:"flex", alignItems:"center", gap:"6px", flexWrap:"wrap"}}>
+                <span style={lbStyle}>상태</span>
+                <div style={{display:"flex", gap:"4px"}}>
+                  {["validated","in_progress","needs_more_data","abandoned"].map(s=>(
+                    <button key={s} onClick={()=>mmToggle(setMmFStatus, mmFStatus, s)}
+                      className={mmFStatus.has(s)?"filter-active":"filter-inactive"}
+                      style={{fontSize:"11px", padding:"3px 10px", borderRadius:"20px", border:"1px solid #E8EAED", cursor:"pointer", fontFamily:"inherit"}}>
+                      {statusLabel(s)}
+                    </button>
+                  ))}
+                </div>
+                <div style={{width:"1px", height:"14px", background:"#E8EAED", flexShrink:0, margin:"0 2px"}} />
+                <span style={lbStyle}>출처</span>
+                <div style={{display:"flex", gap:"4px"}}>
+                  {["internal_evolved","competitor_followup","trend_test"].map(s=>(
+                    <button key={s} onClick={()=>mmToggle(setMmFSource, mmFSource, s)}
+                      className={mmFSource.has(s)?"filter-active":"filter-inactive"}
+                      style={{fontSize:"11px", padding:"3px 10px", borderRadius:"20px", border:"1px solid #E8EAED", cursor:"pointer", fontFamily:"inherit"}}>
+                      {SOURCE_TYPE_LABEL[s]}
+                    </button>
+                  ))}
+                </div>
+                <div style={{marginLeft:"auto", fontSize:"10px", color:"#C0BCB4"}}>
+                  클릭 · 미리보기 &nbsp;·&nbsp; 마우스 올림 · 툴팁
+                </div>
+              </div>
+              {/* Row 2: 주제 */}
+              <div style={{display:"flex", alignItems:"center", gap:"4px", flexWrap:"wrap"}}>
+                <span style={lbStyle}>주제</span>
+                {mmAllCats.map(c=>(
+                  <button key={c} onClick={()=>mmToggle(setMmFCategory, mmFCategory, c)}
+                    className={mmFCategory.has(c)?"filter-active":"filter-inactive"}
+                    style={{fontSize:"11px", padding:"3px 10px", borderRadius:"20px", border:"1px solid #E8EAED", cursor:"pointer", fontFamily:"inherit"}}>
+                    #{c}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
-        )}
-      </header>
+        );
+      })()}
 
-      <main className="max-w-[1400px] mx-auto px-5 py-6">
-        {track==="E" ? (
+      {/* ── Body ── */}
+      {track === "E" ? (
+        <div className="max-w-[1440px] mx-auto px-5 py-5">
           <ViewTracker />
-        ) : view==="V1" ? (
-          <ViewOverview track={track} jumpTo={jumpTo} />
-        ) : view==="V2" ? (
-          <ViewMindMap track={track} jumpTo={jumpTo} />
-        ) : view==="V3" ? (
-          <div id="insight-anchor">
-            <ViewSuccessFormula track={track} jumpTo={jumpTo} />
-          </div>
-        ) : view==="V4" ? (
-          <ViewDrilldown track={track} selectedId={selectedH} setSelectedId={setSelectedH} query={query} jumpTo={jumpTo} />
-        ) : null}
-      </main>
+        </div>
+      ) : (
+        <div className="max-w-[1440px] mx-auto px-5 py-5 flex gap-5">
 
+          {/* Sidebar */}
+          <aside style={{width:"152px", flexShrink:0}}>
+            <div style={{background:"#FFFFFF", border:"1px solid #E8EAED", borderRadius:"8px", padding:"14px 10px", position:"sticky", top:"58px"}}>
+              <div className="sp-sidebar-label">트랙</div>
+              {Object.values(TRACKS).filter(t=>t.id!=="E").map(t=>(
+                <button key={t.id} onClick={()=>setTrack(t.id)}
+                  className={`sp-track-btn ${track===t.id ? "sp-track-btn--active" : ""}`}>
+                  <span style={{marginRight:"5px"}}>{t.icon}</span>{t.label}
+                </button>
+              ))}
+
+            </div>
+          </aside>
+
+          {/* Main content */}
+          <main style={{flex:1, minWidth:0}}>
+            {view==="V1" ? <ViewOverview track={track} jumpTo={jumpTo} />
+            : view==="V2" ? <ViewMindMap track={track} jumpTo={jumpTo} fStatus={mmFStatus} fCategory={mmFCategory} fSource={mmFSource} />
+            : view==="V3" ? <div id="insight-anchor"><ViewSuccessFormula track={track} jumpTo={jumpTo} /></div>
+            : view==="V4" ? <ViewDrilldown track={track} selectedId={selectedH} setSelectedId={setSelectedH} query={query} jumpTo={jumpTo} />
+            : null}
+          </main>
+
+        </div>
+      )}
 
     </div>
   );
