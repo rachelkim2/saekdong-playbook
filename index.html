@@ -76,6 +76,15 @@
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #EBE7E0; border-radius: 4px; }
   ::-webkit-scrollbar-thumb:hover { background: #6B6B6B; }
+  .mm-tooltip {
+    position: fixed; z-index: 9999; pointer-events: none;
+    background: #1A1A1A; color: #FFFFFF; padding: 8px 10px;
+    border-radius: 6px; font-size: 12px; line-height: 1.5;
+    max-width: 320px; box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    white-space: pre-wrap; font-family: Pretendard, system-ui, sans-serif;
+    transition: opacity 80ms ease;
+  }
+  .mm-tooltip b { color: #FFCB05; font-weight: 600; }
   .tree-link { fill: none; stroke: #EBE7E0; stroke-width: 1.5; }
   .tree-link-abandoned { stroke-dasharray: 3, 3; opacity: 0.5; }
   .placeholder-thumb {
@@ -116,7 +125,7 @@ const { useState, useEffect, useRef, useMemo } = React;
 const META = {
   title: "색동서울 콘텐츠 플레이북",
   version: "v1.4",
-  lastUpdate: "2026-05-15",
+  lastUpdate: "2026-05-21",
   brandRoot: "밀키토너",
   brandUSP: "코직애씨드 터메릭 나이아신아마이드 5% 밀키토너",
 };
@@ -2402,7 +2411,23 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
     nodes.each(function(d){
       const sel = d3.select(this);
       if (d.data.isRoot) {
-        sel.append("title").text(d.data.name);
+        sel
+          .on("mouseenter", function(){
+            const tip = document.getElementById("mindmap-tooltip");
+            if (!tip) return;
+            tip.innerHTML = `<b>${d.data.name}</b>`;
+            tip.style.display = "block";
+          })
+          .on("mousemove", function(ev){
+            const tip = document.getElementById("mindmap-tooltip");
+            if (!tip) return;
+            tip.style.left = (ev.clientX + 14) + "px";
+            tip.style.top = (ev.clientY + 14) + "px";
+          })
+          .on("mouseleave", function(){
+            const tip = document.getElementById("mindmap-tooltip");
+            if (tip) tip.style.display = "none";
+          });
         sel.append("rect").attr("x",-90).attr("y",-14).attr("width",180).attr("height",28).attr("rx",14)
           .attr("fill","#1A1A1A").attr("stroke","#1A1A1A");
         sel.append("text").attr("text-anchor","middle").attr("dy",4).attr("fill","#FFFFFF")
@@ -2410,7 +2435,23 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
           .text(d.data.name);
       } else if (d.data.isCat) {
         const catDesc = (typeof CATEGORY_DESCRIPTIONS !== "undefined" && CATEGORY_DESCRIPTIONS[d.data.name]) || d.data.name;
-        sel.append("title").text(`#${d.data.name}\n\n${catDesc}`);
+        sel
+          .on("mouseenter", function(){
+            const tip = document.getElementById("mindmap-tooltip");
+            if (!tip) return;
+            tip.innerHTML = `<b>#${d.data.name}</b><br/>${catDesc}`;
+            tip.style.display = "block";
+          })
+          .on("mousemove", function(ev){
+            const tip = document.getElementById("mindmap-tooltip");
+            if (!tip) return;
+            tip.style.left = (ev.clientX + 14) + "px";
+            tip.style.top = (ev.clientY + 14) + "px";
+          })
+          .on("mouseleave", function(){
+            const tip = document.getElementById("mindmap-tooltip");
+            if (tip) tip.style.display = "none";
+          });
         sel.append("rect").attr("x",-50).attr("y",-12).attr("width",100).attr("height",24).attr("rx",4)
           .attr("fill","#FFF5C9").attr("stroke","#FFCB05");
         sel.append("text").attr("text-anchor","middle").attr("dy",4).attr("fill","#7A5F00")
@@ -2431,7 +2472,25 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
         // 타이틀 — 다음 노드와의 간격(280px) 안에 들어가도록 24자 제한
         const MAX_CHARS = 22;
         const title = h.title.length > MAX_CHARS ? h.title.slice(0, MAX_CHARS-1)+"…" : h.title;
-        sel.append("title").text(`[${h.id}] ${h.title}\n\n${h.full_text}`);
+        const tagsForNode = (typeof computeTags === "function") ? computeTags(h) : [];
+        sel
+          .on("mouseenter", function(){
+            const tip = document.getElementById("mindmap-tooltip");
+            if (!tip) return;
+            const tagLine = tagsForNode.length ? `<br/><span style="color:#FFCB05">${tagsForNode.map(t=>"#"+t).join(" ")}</span>` : "";
+            tip.innerHTML = `<b>[${h.id}]</b> ${h.title}${tagLine}<br/><br/>${h.full_text}`;
+            tip.style.display = "block";
+          })
+          .on("mousemove", function(ev){
+            const tip = document.getElementById("mindmap-tooltip");
+            if (!tip) return;
+            tip.style.left = (ev.clientX + 14) + "px";
+            tip.style.top = (ev.clientY + 14) + "px";
+          })
+          .on("mouseleave", function(){
+            const tip = document.getElementById("mindmap-tooltip");
+            if (tip) tip.style.display = "none";
+          });
         // 배경 흰색 박스 (오버랩 방지용)
         const textEl = sel.append("text").attr("x",36).attr("dy",3.5).attr("fill","#1A1A1A")
           .style("font-size","11px").style("font-family","Pretendard")
@@ -2495,8 +2554,17 @@ function ViewOverview({ track, jumpTo }) {
           <div className="space-y-3">
             {top3.map(ins => (
               <div key={ins.id} className="border-l-2 pl-3 cursor-pointer hover:opacity-80" style={{borderColor:"#1A1A1A"}} onClick={()=>jumpTo("V3", ins.id)}>
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <IdChip id={ins.id} />
+                  {(() => {
+                    const srcH = ins.validated_from_hypothesis_id ? HYPOTHESES.find(h => h.id === ins.validated_from_hypothesis_id) : null;
+                    if (!srcH) return null;
+                    return computeTags(srcH).map(t => (
+                      <span key={t} className="text-[10px] px-1 rounded"
+                        title={TAG_DESCRIPTIONS[t]}
+                        style={{background:"#1A1A1A", color:"#FFCB05"}}>#{t}</span>
+                    ));
+                  })()}
                   <span className="text-xs ink-soft" style={{color:"#6B6B6B"}}>{ins.validated_by_content_ids.length}건 검증</span>
                 </div>
                 <div className="font-medium text-sm leading-snug" style={{color:"#1A1A1A"}}>{ins.headline}</div>
@@ -2591,12 +2659,14 @@ function ViewMindMap({ track, jumpTo }) {
             ))}
           </div>
         </div>
-        <div className="text-xs leading-relaxed p-3 rounded card" style={{color:"#6B6B6B"}}>
-          노드 클릭 → 자세히 보기로 이동. 노드 위 hover → 가설 풀텍스트 툴팁.
-          폐기 가설은 취소선 + 점선 라인.
+        <div className="text-[12px] leading-relaxed p-3 rounded card space-y-1" style={{color:"#1A1A1A"}}>
+          <div><b style={{color:"#1A1A1A"}}>클릭</b> · 자세히 보기로 이동</div>
+          <div><b style={{color:"#1A1A1A"}}>마우스 올림</b> · 가설 풀텍스트 툴팁</div>
+          <div style={{color:"#6B6B6B"}}>폐기 가설은 취소선 · 점선</div>
         </div>
       </aside>
-      <div className="card-deep p-3 overflow-x-auto">
+      <div className="card-deep p-3 overflow-x-auto relative">
+        <div id="mindmap-tooltip" className="mm-tooltip" style={{display:"none"}}></div>
         <MindMap track={track} hypotheses={hyps} onNodeClick={(id)=>jumpTo("V4", id)} filters={{status:fStatus, category:fCategory, source:fSource}} />
       </div>
     </div>
@@ -2629,6 +2699,15 @@ function ViewSuccessFormula({ track, jumpTo }) {
                       #{srcH.category}
                     </span>
                   ) : null;
+                })()}
+                {(() => {
+                  const srcH = ins.validated_from_hypothesis_id ? HYPOTHESES.find(h => h.id === ins.validated_from_hypothesis_id) : null;
+                  if (!srcH) return null;
+                  return computeTags(srcH).map(t => (
+                    <span key={t} className="text-xs px-1.5 rounded cursor-help"
+                      title={TAG_DESCRIPTIONS[t]}
+                      style={{background:"#1A1A1A", color:"#FFCB05", border:"1px solid #1A1A1A"}}>#{t}</span>
+                  ));
                 })()}
               </div>
               <h3 className="font-display text-lg leading-tight mb-1.5" style={{color:"#1A1A1A"}}>{ins.headline}</h3>
@@ -2817,10 +2896,17 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
           <>
             <div className="card-deep p-5">
               <div className="flex items-start justify-between gap-3 mb-2">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <IdChip id={sel.id} />
                   <Pill status={sel.status} />
-                  <span className="text-xs px-1.5 rounded" style={{background:"#FFF5C9", color:"#1A1A1A"}}>#{sel.category}</span>
+                  <span className="text-xs px-1.5 rounded cursor-help"
+                    title={CATEGORY_DESCRIPTIONS[sel.category] || sel.category}
+                    style={{background:"#FFF5C9", color:"#1A1A1A"}}>#{sel.category}</span>
+                  {computeTags(sel).map(t => (
+                    <span key={t} className="text-xs px-1.5 rounded cursor-help"
+                      title={TAG_DESCRIPTIONS[t]}
+                      style={{background:"#1A1A1A", color:"#FFCB05", border:"1px solid #1A1A1A"}}>#{t}</span>
+                  ))}
                   <span className="text-xs" style={{color:"#6B6B6B"}}>{SOURCE_TYPE_LABEL[sel.source_type]}</span>
                 </div>
                 <div className="text-xs font-mono" style={{color:"#6B6B6B"}}>{sel.created_date} → {sel.updated_date}</div>
@@ -3344,10 +3430,7 @@ function App() {
         ) : null}
       </main>
 
-      <footer className="max-w-[1400px] mx-auto px-5 pb-8 pt-4 text-center text-xs" style={{color:"#6B6B6B"}}>
-        색동서울 콘텐츠 플레이북 v1.0 · 출처: 노션 위클리 체크인 시리즈 / 콘텐츠 리뷰 / 우지 전달 (2025.11~2026.05) ·
-        다음 콘텐츠 기획 시작 전 5분 안에 「비슷한 가설 시도됐는지 / 어디서 파생됐는지 / 현재 어디까지 왔는지 / 다음 재료」 찾기
-      </footer>
+
     </div>
   );
 }
