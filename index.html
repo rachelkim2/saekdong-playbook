@@ -2733,6 +2733,7 @@ function matchContentId(sojaemyeong) {
 // Meta API date_preset 맵핑
 // date_preset은 Meta API 공식 값 그대로
 const META_PRESETS = {
+  "all": "maximum",
   "1w":  "last_7d",
   "1m":  "last_30d",
   "3m":  "last_90d",
@@ -3019,22 +3020,22 @@ function MindMap({ track, hypotheses, onNodeClick, selectedId, filters }) {
 
 // ----------------- Views -----------------
 function ViewOverview({ track, jumpTo }) {
-  // key: null = 전체(정적), "1w"/"1m"/"3m" = Meta API 실시간
+  // key: "all" = 전체(Meta API maximum), "1w"/"1m"/"3m" = Meta API 실시간
   const PERIODS = [
-    { label:"전체",  key:null, desc:"전체 기간 누적 기준",          preset:null },
-    { label:"1주일", key:"1w", desc:"최근 7일 ROAS 기준",           preset:"last_7d" },
-    { label:"1개월", key:"1m", desc:"최근 30일 ROAS 기준",          preset:"last_30d" },
-    { label:"3개월", key:"3m", desc:"최근 90일 ROAS 기준",          preset:"last_90d" },
+    { label:"전체",  key:"all", desc:"전체 누적 기준 (Meta API)",   preset:"maximum" },
+    { label:"1주일", key:"1w",  desc:"최근 7일 ROAS 기준",          preset:"last_7d" },
+    { label:"1개월", key:"1m",  desc:"최근 30일 ROAS 기준",         preset:"last_30d" },
+    { label:"3개월", key:"3m",  desc:"최근 90일 ROAS 기준",         preset:"last_90d" },
   ];
-  const [period, setPeriod] = React.useState(null); // null | "1w" | "1m" | "3m"
+  const [period, setPeriod] = React.useState("all"); // "all" | "1w" | "1m" | "3m"
   const [metaData, setMetaData] = React.useState(null); // { contentId: {roas, ctr, spend} }
   const [metaLoading, setMetaLoading] = React.useState(false);
   const [metaError, setMetaError] = React.useState(null);
   const [winnerView, setWinnerView] = React.useState("winner"); // "winner" | "drop"
 
-  // Track D(바이럴) 진입 시 자동으로 3개월 선택 (PA는 정적 데이터 없음)
+  // Track D(바이럴) 진입 시 자동으로 3개월 선택 (PA는 전체 maximum보다 3m이 실용적)
   React.useEffect(() => {
-    if (track === "D" && !period) setPeriod("3m");
+    if (track === "D" && period === "all") setPeriod("3m");
   }, [track]);
 
   const hyps = HYPOTHESES.filter(h=>h.track===track);
@@ -3045,11 +3046,10 @@ function ViewOverview({ track, jumpTo }) {
     abandoned: hyps.filter(h=>h.status==="abandoned").length,
   };
 
-  // 기간 선택 시 Meta API 호출
+  // 기간 선택 시 Meta API 호출 (전체=maximum 포함)
   React.useEffect(()=>{
-    if (!period) { setMetaData(null); setMetaError(null); return; }
     const p = PERIODS.find(p=>p.key===period);
-    if (!p?.preset) return;
+    if (!p?.preset) { setMetaData(null); setMetaError(null); return; }
     setMetaLoading(true);
     setMetaError(null);
     fetchMetaWinners(p.preset).then(result=>{
@@ -3061,7 +3061,7 @@ function ViewOverview({ track, jumpTo }) {
 
   const allContents = CONTENTS.filter(c=>c.track===track);
 
-  // 위너 콘텐츠: 기간 선택 시 Meta API 실시간 ROAS, 전체 선택 시 정적 데이터
+  // 위너 콘텐츠: Meta API 실시간 ROAS (전체=maximum, 1주/1개월/3개월), 실패 시 정적 데이터 폴백
   const winners = React.useMemo(()=>{
     if (period && metaData) {
       // Meta API 기반: 소재명(sojaemyeong) 단위로 각각 판단
