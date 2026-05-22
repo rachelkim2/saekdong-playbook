@@ -2397,6 +2397,46 @@ function getDriveId(url) {
   return null;
 }
 
+// 위너카드·테이블용 소형 썸네일 — 클릭 시 Drive 열기
+function ThumbMini({ driveUrl, thumbnailUrl, w=64, h=48 }) {
+  const driveId = getDriveId(driveUrl);
+  const [err, setErr] = React.useState(false);
+  const src = thumbnailUrl || (driveId ? `https://lh3.googleusercontent.com/d/${driveId}=w200` : null);
+
+  const wrapStyle = {
+    width: w, height: h, borderRadius: "5px", flexShrink: 0,
+    overflow: "hidden", position: "relative",
+    background: "#F0EDE8", border: "1px solid #EBE7E0",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    cursor: driveUrl ? "pointer" : "default",
+  };
+
+  const handleClick = (e) => {
+    e.stopPropagation();
+    if (driveUrl) window.open(driveUrl, "_blank", "noopener noreferrer");
+  };
+
+  if (!src || err) {
+    return (
+      <div style={wrapStyle} onClick={handleClick}>
+        <div style={{width:24, height:24, borderRadius:"50%", background:"rgba(0,0,0,0.18)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, color:"#6B6B6B", paddingLeft:2}}>▶</div>
+      </div>
+    );
+  }
+  return (
+    <div style={wrapStyle} onClick={handleClick} title="Drive에서 열기">
+      <img src={src} alt="" onError={()=>setErr(true)}
+        style={{width:"100%", height:"100%", objectFit:"cover"}} />
+      <div style={{position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center",
+        background:"rgba(0,0,0,0)", transition:"background 0.15s"}}
+        onMouseEnter={e=>e.currentTarget.style.background="rgba(0,0,0,0.25)"}
+        onMouseLeave={e=>e.currentTarget.style.background="rgba(0,0,0,0)"}>
+        <div style={{width:20, height:20, borderRadius:"50%", background:"rgba(0,0,0,0.55)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:9, color:"white", paddingLeft:2}}>▶</div>
+      </div>
+    </div>
+  );
+}
+
 function Thumb({ title, type, thumbnailUrl, driveUrl }) {
   const icon = type==="banner" ? "🖼️" : type==="shortform" ? "📱" : type==="viral_pa" ? "🌀" : "🎬";
   const driveId = getDriveId(driveUrl);
