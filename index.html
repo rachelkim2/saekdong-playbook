@@ -3188,19 +3188,23 @@ function ViewOverview({ track, jumpTo }) {
                   <ThumbMini driveUrl={c.drive_url} thumbnailUrl={c.thumbnail_url} w={64} h={48} />
                   <div style={{flex:1, minWidth:0}}>
                     <div style={{fontSize:"11px", color:"#2B2825", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{c.title}</div>
-                    <div style={{display:"flex", gap:"8px", marginTop:"3px", flexWrap:"wrap", alignItems:"center"}}>
-                      {c.id ? <IdChip id={c.id} /> : <span style={{fontSize:"10px", color:"#C0BCB4", fontFamily:"'JetBrains Mono', ui-monospace, monospace"}}>미등록</span>}
+                    {/* 1행: ID + ROAS */}
+                    <div style={{display:"flex", gap:"6px", marginTop:"3px", alignItems:"center"}}>
+                      {c.id && <IdChip id={c.id} />}
                       <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#4F7A4C", fontWeight:600}}>
                         ROAS {(c.bestRoas*100).toFixed(0)}%
                       </span>
-                      {c.bestCtr != null && c.bestCtr > 0 && (
-                        <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#9B9690"}}>
-                          CTR {(c.bestCtr*100).toFixed(1)}%
-                        </span>
-                      )}
+                    </div>
+                    {/* 2행: 지출 + CTR */}
+                    <div style={{display:"flex", gap:"8px", marginTop:"2px", alignItems:"center"}}>
                       {c.bestSpend != null && (
                         <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#9B9690"}}>
                           {fmtKRW(c.bestSpend)}
+                        </span>
+                      )}
+                      {c.bestCtr != null && c.bestCtr > 0 && (
+                        <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#9B9690"}}>
+                          CTR {(c.bestCtr*100).toFixed(1)}%
                         </span>
                       )}
                     </div>
@@ -3234,9 +3238,9 @@ function ViewOverview({ track, jumpTo }) {
                   <ThumbMini driveUrl={c.drive_url} thumbnailUrl={c.thumbnail_url} w={64} h={48} />
                   <div style={{flex:1, minWidth:0}}>
                     <div style={{fontSize:"11px", color:"#4B3840", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{c.title}</div>
-                    <div style={{display:"flex", gap:"8px", marginTop:"3px", flexWrap:"wrap", alignItems:"center"}}>
-                      {c.id ? <IdChip id={c.id} /> : <span style={{fontSize:"10px", color:"#C0BCB4", fontFamily:"'JetBrains Mono', ui-monospace, monospace"}}>미등록</span>}
-                      {/* Track D(PA): ROAS 값 표시 / 그 외: ROAS 0 고정 */}
+                    {/* 1행: ID + ROAS */}
+                    <div style={{display:"flex", gap:"6px", marginTop:"3px", alignItems:"center"}}>
+                      {c.id && <IdChip id={c.id} />}
                       <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace",
                         color: c.adType==="PA" ? (c.dropRoas > 0 ? "#B58B1F" : "#8A6573") : "#8A6573",
                         fontWeight:600}}>
@@ -3244,6 +3248,9 @@ function ViewOverview({ track, jumpTo }) {
                           ? `ROAS ${(c.dropRoas*100).toFixed(0)}%`
                           : "ROAS 0"}
                       </span>
+                    </div>
+                    {/* 2행: 지출 + CTR */}
+                    <div style={{display:"flex", gap:"8px", marginTop:"2px", alignItems:"center"}}>
                       <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#9B9690"}}>
                         {fmtKRW(c.dropSpend)} 소진
                       </span>
