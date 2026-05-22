@@ -3030,10 +3030,23 @@ function ViewOverview({ track, jumpTo }) {
           (v.metrics?.roas === 0 || v.metrics?.roas === null || v.metrics?.roas === undefined)
         );
         if (badVars.length === 0) continue;
+        // 여러 베리가 모두 드롭인 경우 "미국에선1/2/3" 형태로 합산 표기
+        const badVarNames = badVars.map(v => resolveVarTitle(c.title, v.name)).filter(Boolean);
+        let dropDisplayTitle;
+        if (badVarNames.length === 0) {
+          dropDisplayTitle = stripTitle(c.title);
+        } else if (badVarNames.length === 1) {
+          dropDisplayTitle = badVarNames[0];
+        } else {
+          const nums = badVarNames.map(n => n.match(/\d+$/)?.[0]).filter(Boolean);
+          const base = (badVarNames[0]||"").replace(/\d+$/, "") || stripTitle(c.title);
+          dropDisplayTitle = (nums.length === badVarNames.length)
+            ? base + nums.join("/")
+            : stripTitle(c.title);
+        }
+        const totalDropSpend = badVars.reduce((s,v) => s + (v.metrics?.spend||0), 0);
         const worstVar = badVars.sort((a,b)=>b.metrics.spend-a.metrics.spend)[0];
-        const resolved = resolveVarTitle(c.title, worstVar.name);
-        const dropDisplayTitle = resolved || stripTitle(c.title);
-        result.push({...c, title: dropDisplayTitle, dropSpend:worstVar.metrics.spend, dropCtr:worstVar.metrics?.ctr, dropVarName:worstVar.name, dataSource:"static"});
+        result.push({...c, title: dropDisplayTitle, dropSpend:totalDropSpend, dropCtr:worstVar.metrics?.ctr, dropVarName:worstVar.name, dataSource:"static"});
       }
       return result.sort((a,b)=>b.dropSpend-a.dropSpend);
     }
