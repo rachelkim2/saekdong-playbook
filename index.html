@@ -2483,15 +2483,23 @@ const WINNER_ROAS = 1.5;
 const WINNER_SPEND_MIN = 100000; // 위너 인정 최소 지출 ₩10만 (노이즈 제거)
 
 // 소재명에서 콘텐츠명 부분 추출 (index 6, " - 사본" 및 비율 suffix 제거)
+// PA 광고 감지: parts[1] === "PA" → isPa:true 반환
 function extractSojaemyeong(adName) {
   if (!adName) return null;
   const parts = adName.split("_");
   if (parts.length < 7) return null;
-  return parts[6]
+  const name = parts[6]
     .replace(/\s*-\s*사본\s*/g, "")
-    .replace(/\s+[0-9]+대[0-9]+.*$/g, "")  // "9대16_M" 등 비율 suffix 제거
-    .replace(/_[A-Z]$/g, "")               // "_M" 등 단일 알파벳 suffix 제거
+    .replace(/\s+[0-9]+대[0-9]+.*$/g, "")
+    .replace(/_[A-Z]$/g, "")
     .trim();
+  return name || null;
+}
+
+// PA 광고 여부: parts[1] === "PA"
+function isPA(adName) {
+  if (!adName) return false;
+  return adName.split("_")[1] === "PA";
 }
 
 // 정규화 함수: 공백, /숫자, 끝 단일숫자 제거
@@ -2557,8 +2565,9 @@ async function fetchMetaWinners(preset) {
       if (spend <= 0) continue;
       const sojaemyeong = extractSojaemyeong(ad.ad_name);
       if (!sojaemyeong) continue;
+      const pa = isPA(ad.ad_name);
       const cid = matchContentId(sojaemyeong) || ("_raw_" + sojaemyeong);
-      if (!map[cid]) map[cid] = { totalSpend:0, weightedRoas:0, maxCtr:0, sojaemyeong: sojaemyeong };
+      if (!map[cid]) map[cid] = { totalSpend:0, weightedRoas:0, maxCtr:0, sojaemyeong, adType: pa ? "PA" : "일반" };
       map[cid].weightedRoas += roas * spend;
       map[cid].totalSpend += spend;
       if (ctr > map[cid].maxCtr) map[cid].maxCtr = ctr;
@@ -2571,6 +2580,7 @@ async function fetchMetaWinners(preset) {
         ctr: v.maxCtr,
         spend: v.totalSpend,
         sojaemyeong: v.sojaemyeong,
+        adType: v.adType || "일반",
         isRaw: key.startsWith("_raw_"),
       };
     }
@@ -2835,7 +2845,7 @@ function ViewOverview({ track, jumpTo }) {
         list.push({
           id: null, title: m.sojaemyeong, track: allContents[0]?.track,
           bestRoas: m.roas, bestCtr: m.ctr, bestSpend: m.spend,
-          dataSource: "meta", isRaw: true,
+          dataSource: "meta", isRaw: true, adType: m.adType,
           hypothesis_ids: [], status: "unknown",
         });
       }
@@ -2874,7 +2884,7 @@ function ViewOverview({ track, jumpTo }) {
         list.push({
           id: null, title: m.sojaemyeong, track: allContents[0]?.track,
           dropSpend: m.spend, dropCtr: m.ctr,
-          dataSource: "meta", isRaw: true, status: "unknown",
+          dataSource: "meta", isRaw: true, adType: m.adType, status: "unknown",
           hypothesis_ids: [],
         });
       }
@@ -3052,7 +3062,8 @@ function ViewOverview({ track, jumpTo }) {
                     </div>
                   </div>
                   {c.status==="on" && <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#E1EFDA", color:"#4F7A4C", flexShrink:0}}>ON</span>}
-                  {c.isRaw && <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#F4F5F7", color:"#9B9690", flexShrink:0}}>소재</span>}
+                  {c.isRaw && c.adType==="PA" && <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#EDE0F0", color:"#7A4F8A", flexShrink:0}}>PA</span>}
+                  {c.isRaw && c.adType!=="PA" && <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#F4F5F7", color:"#9B9690", flexShrink:0}}>소재</span>}
                 </div>
               ))}
             </div>
@@ -3092,7 +3103,10 @@ function ViewOverview({ track, jumpTo }) {
                       <div style={{fontSize:"10px", color:"#B0ACA6", marginTop:"2px"}}>베리: {c.dropVarName}</div>
                     )}
                   </div>
-                  <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#EAE0E5", color:"#8A6573", flexShrink:0}}>OFF</span>
+                  {c.adType==="PA"
+                    ? <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#EDE0F0", color:"#7A4F8A", flexShrink:0}}>PA</span>
+                    : <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#EAE0E5", color:"#8A6573", flexShrink:0}}>OFF</span>
+                  }
                 </div>
               ))}
             </div>
