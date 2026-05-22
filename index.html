@@ -2938,6 +2938,11 @@ function ViewOverview({ track, jumpTo }) {
   const [metaError, setMetaError] = React.useState(null);
   const [winnerView, setWinnerView] = React.useState("winner"); // "winner" | "drop"
 
+  // Track D(바이럴) 진입 시 자동으로 3개월 선택 (PA는 정적 데이터 없음)
+  React.useEffect(() => {
+    if (track === "D" && !period) setPeriod("3m");
+  }, [track]);
+
   const hyps = HYPOTHESES.filter(h=>h.track===track);
   const counts = {
     validated: hyps.filter(h=>h.status==="validated").length,
