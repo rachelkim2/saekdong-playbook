@@ -1947,9 +1947,16 @@ const CONTENTS = [
     thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1V2mbx7TMAz2vTYLJS8nLUJu_y1V6dNzU/view",
     notion_url:"https://www.notion.so/34a34579dc018029bb16c0836e3dc6d9" },
   { id:"C040", track:"A", type:"longform_video", title:"댓글삭제 (담당자 댓글 형태)",
-    variations:[{name:"본편", metrics:{spend:531597, roas:1.60, ctr:0.0162, cvr:0.0684, cpc:1733}}],
+    variations:[
+      {name:"댓글삭제1", metrics:{spend:531597, roas:1.60, ctr:0.0162, cvr:0.0684, cpc:1733},
+       drive_url:"https://drive.google.com/file/d/1VuoTIVP7_LcuYvBKgmAV1CGSK2cDdAuf/view"},
+      {name:"댓글삭제2", metrics:{},
+       drive_url:"https://drive.google.com/file/d/1Bch_fPOo9vXKSsqyl0W0g6sUT-AnLfo6/view"},
+      {name:"댓글삭제3", metrics:{},
+       drive_url:"https://drive.google.com/file/d/1LvZipE1jxm4pUmVT70xReLyMPF127sJA/view"},
+    ],
     live_date:"2026-03-11", status:"off", hypothesis_ids:["H060"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1sxJh_jiBuRV7iGcKNKqTmlnKjC5-Pjy0/view",
+    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1VuoTIVP7_LcuYvBKgmAV1CGSK2cDdAuf/view",
     notion_url:"https://www.notion.so/32534579dc0180c9ba91ff52207f4dba" },
   { id:"C041", track:"A", type:"longform_video", title:"식품샤갈2 (고객 댓글 형태)",
     variations:[{name:"본편", metrics:{spend:85639, roas:2.21, ctr:0.0229, cvr:0.0851, cpc:1822, cpm:28479}}],
@@ -3598,7 +3605,13 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
                       <tbody>
                         {c.variations.map((v,i)=>(
                           <tr key={i} style={{borderTop:"1px solid #F7F4F0"}}>
-                            <td style={{padding:"5px 8px", color:"#4B4845"}}>{v.name}</td>
+                            <td style={{padding:"5px 8px", color:"#4B4845"}}>
+                              {v.drive_url && (
+                                <a href={v.drive_url} target="_blank" rel="noopener noreferrer"
+                                   style={{color:"#4F7A4C", marginRight:"4px", textDecoration:"none", fontSize:"10px"}}>▶</a>
+                              )}
+                              {v.name}
+                            </td>
                             <td className="font-mono" style={{padding:"5px 8px", fontWeight:600,
                               color:(v.metrics?.roas||0)>=1.5?"#4F7A4C":(v.metrics?.roas||0)<1&&v.metrics?.roas?"#8A6573":"#2B2825"}}>
                               {fmtRoas(v.metrics?.roas)}
@@ -4000,7 +4013,13 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                                 <div className="text-xs mt-0.5" style={{color:"#6B6B6B"}}>{c.live_date}</div>
                               </div>
                             </td>}
-                            <td className="py-2 pr-2">{vLabel}</td>
+                            <td className="py-2 pr-2">
+                              {v.drive_url && (
+                                <a href={v.drive_url} target="_blank" rel="noopener noreferrer"
+                                   style={{color:"#4F7A4C", marginRight:"4px", textDecoration:"none", fontSize:"10px"}}>▶</a>
+                              )}
+                              {vLabel}
+                            </td>
                             <td className="py-2 pr-2 font-mono">{fmtKRW(v.metrics?.spend)}</td>
                             <td className="py-2 pr-2 font-mono font-semibold" style={{color:(v.metrics?.roas||0)>=1.5?"#4F7A4C":(v.metrics?.roas||0)<1?"#8A6573":"#1A1A1A"}}>{fmtRoas(v.metrics?.roas)}</td>
                             <td className="py-2 pr-2 font-mono">{fmtPct(v.metrics?.ctr)}</td>
