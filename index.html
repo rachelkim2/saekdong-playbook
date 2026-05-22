@@ -3027,7 +3027,8 @@ function ViewOverview({ track, jumpTo }) {
       for (const c of allContents) {
         const badVars = (c.variations||[]).filter(v =>
           (v.metrics?.spend || 0) >= DROP_SPEND_MIN &&
-          (v.metrics?.roas === 0 || v.metrics?.roas === null || v.metrics?.roas === undefined)
+          (v.metrics?.roas === 0 || v.metrics?.roas === null || v.metrics?.roas === undefined) &&
+          (c.status === "off" || /OFF/i.test(v.name))
         );
         if (badVars.length === 0) continue;
         // 여러 베리가 모두 드롭인 경우 "미국에선1/2/3" 형태로 합산 표기
