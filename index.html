@@ -2487,7 +2487,7 @@ function getDriveId(url) {
 function ThumbMini({ driveUrl, thumbnailUrl, w=64, h=48 }) {
   const driveId = getDriveId(driveUrl);
   const [err, setErr] = React.useState(false);
-  const src = thumbnailUrl || (driveId ? `https://lh3.googleusercontent.com/d/${driveId}=w200` : null);
+  const src = thumbnailUrl || (driveId ? `https://drive.google.com/thumbnail?id=${driveId}&sz=w200` : null);
 
   const wrapStyle = {
     width: w, height: h, borderRadius: "5px", flexShrink: 0,
@@ -2529,7 +2529,7 @@ function Thumb({ title, type, thumbnailUrl, driveUrl }) {
   const [playing, setPlaying] = useState(false);
 
   // drive_url 있고 thumbnail_url 없으면 드라이브에서 자동 썸네일 가져오기
-  const effectiveThumb = thumbnailUrl || (driveId ? `https://lh3.googleusercontent.com/d/${driveId}=w500` : null);
+  const effectiveThumb = thumbnailUrl || (driveId ? `https://drive.google.com/thumbnail?id=${driveId}&sz=w500` : null);
 
   // 카드 안 iframe 재생 모드
   if (playing && driveId) {
