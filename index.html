@@ -3088,7 +3088,7 @@ function ViewOverview({ track, jumpTo }) {
                 <div key={c.id} onClick={()=>jumpTo("V4",c.hypothesis_ids?.[0])}
                   style={{display:"flex", alignItems:"center", gap:"10px", padding:"8px 10px", borderRadius:"6px", background:"#FAFAFA", border:"1px solid #F0EDE8", cursor:"pointer"}}
                   className="hover:opacity-80">
-                  <div style={{width:"36px", height:"36px", borderRadius:"4px", background:"#E1EFDA", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"14px", flexShrink:0}}>▶</div>
+                  <ThumbMini driveUrl={c.drive_url} thumbnailUrl={c.thumbnail_url} w={64} h={48} />
                   <div style={{flex:1, minWidth:0}}>
                     <div style={{fontSize:"11px", color:"#2B2825", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{c.title}</div>
                     <div style={{display:"flex", gap:"8px", marginTop:"3px", flexWrap:"wrap", alignItems:"center"}}>
@@ -3129,7 +3129,7 @@ function ViewOverview({ track, jumpTo }) {
                 <div key={c.id} onClick={()=>jumpTo("V4",c.hypothesis_ids?.[0])}
                   style={{display:"flex", alignItems:"center", gap:"10px", padding:"8px 10px", borderRadius:"6px", background:"#FDF8F8", border:"1px solid #EDE0E4", cursor:"pointer"}}
                   className="hover:opacity-80">
-                  <div style={{width:"36px", height:"36px", borderRadius:"4px", background:"#EAE0E5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"14px", flexShrink:0}}>✕</div>
+                  <ThumbMini driveUrl={c.drive_url} thumbnailUrl={c.thumbnail_url} w={64} h={48} />
                   <div style={{flex:1, minWidth:0}}>
                     <div style={{fontSize:"11px", color:"#4B3840", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{c.title}</div>
                     <div style={{display:"flex", gap:"8px", marginTop:"3px", flexWrap:"wrap", alignItems:"center"}}>
@@ -3693,21 +3693,19 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                         if (!c) return null;
                         return c.variations.map((v,i) => (
                           <tr key={cid+i} className="hover:bg-cream-deep" style={{color:"#1A1A1A"}}>
-                            {i===0 && <td rowSpan={c.variations.length} className="py-2 pr-2 align-top">
-                              <IdChip id={c.id} />
-                              <div className="text-[12px] mt-1">
-                                {c.notion_url ? (
-                                  <a href={c.notion_url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-flex items-center gap-1" style={{color:"#1A1A1A"}}>
-                                    {c.title}<span style={{fontSize:"9px", opacity:0.6}}>↗</span>
-                                  </a>
-                                ) : c.title}
+                            {i===0 && <td rowSpan={c.variations.length} className="py-2 pr-3 align-top" style={{minWidth:"160px"}}>
+                              <ThumbMini driveUrl={c.drive_url} thumbnailUrl={c.thumbnail_url} w={140} h={105} />
+                              <div style={{marginTop:"6px"}}>
+                                <IdChip id={c.id} />
+                                <div className="text-[12px] mt-1">
+                                  {c.notion_url ? (
+                                    <a href={c.notion_url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-flex items-center gap-1" style={{color:"#1A1A1A"}}>
+                                      {c.title}<span style={{fontSize:"9px", opacity:0.6}}>↗</span>
+                                    </a>
+                                  ) : c.title}
+                                </div>
+                                <div className="text-xs mt-0.5" style={{color:"#6B6B6B"}}>{c.live_date}</div>
                               </div>
-                              {c.drive_url && (
-                                <a href={c.drive_url} target="_blank" rel="noopener noreferrer" className="text-xs inline-flex items-center gap-1 mt-0.5 hover:underline" style={{color:"#4F7A4C"}}>
-                                  📎 Drive 열기
-                                </a>
-                              )}
-                              <div className="text-xs mt-0.5" style={{color:"#6B6B6B"}}>{c.live_date}</div>
                             </td>}
                             <td className="py-2 pr-2">{v.name}</td>
                             <td className="py-2 pr-2 font-mono">{fmtKRW(v.metrics?.spend)}</td>
