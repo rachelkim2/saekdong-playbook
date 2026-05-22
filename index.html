@@ -2912,17 +2912,33 @@ function ViewOverview({ track, jumpTo }) {
       return list.sort((a,b)=>b.bestRoas-a.bestRoas).slice(0,20);
     } else {
       // 전체(정적): 베리에이션 중 최고 ROAS >= WINNER_ROAS
-      // 괄호 내용 제거 헬퍼: "페인포인트1 (영상언어 무성)" → "페인포인트1"
-      const stripParens = s => (s||"").replace(/\s*\([^)]*\)/g, "").replace(/\s*\[[^\]]*\]/g, "").trim();
+      // ─ 정적 소재명 변환 헬퍼 ────────────────────────────────
+      // 괄호 + " 1/2/3" 패턴 제거: "아이슬로 1/2/3 (설명)" → "아이슬로"
+      const stripTitle = s => (s||"")
+        .replace(/\s*\([^)]*\)/g, "")
+        .replace(/\s*\[[^\]]*\]/g, "")
+        .replace(/\s+\d+(?:\/\d+)+/g, "")
+        .trim();
+      // 변수명 → 정확한 소재명 변환
+      //  "아이슬로1"   → "아이슬로1"     (그대로)
+      //  "베리2"       → 콘텐츠base+"2"  (= "이건모델교체2")
+      //  "본편..."     → null            (단일 소재, 표시 안 함)
+      function resolveVarTitle(contentTitle, varName) {
+        const cleanVar = (varName||"").replace(/\s*\([^)]*\)/g,"").replace(/\s*\[[^\]]*\]/g,"").trim();
+        if (!cleanVar || cleanVar === "본편") return null;       // 본편 → 콘텐츠 타이틀만
+        const beriMatch = cleanVar.match(/^베리(\d+)$/);
+        if (beriMatch) {
+          // "베리2" → 콘텐츠 기저명 + 숫자 (Meta 소재명 재구성)
+          return stripTitle(contentTitle) + beriMatch[1];       // "이건모델교체2"
+        }
+        return cleanVar;                                        // "아이슬로1" 그대로
+      }
       return allContents
         .map(c=>{
           const bestVar = (c.variations||[]).filter(v=>v.metrics?.roas).sort((a,b)=>b.metrics.roas-a.metrics.roas)[0];
           if (!bestVar || bestVar.metrics.roas < WINNER_ROAS) return null;
-          const cleanTitle = stripParens(c.title);
-          const cleanVar = stripParens(bestVar.name);
-          // 베리에이션이 "본편"이면 숨김, 그 외엔 "소재명 · 베리N" 형태
-          const varLabel = cleanVar && cleanVar !== "본편" ? cleanVar : null;
-          const displayTitle = varLabel ? `${cleanTitle} · ${varLabel}` : cleanTitle;
+          const resolved = resolveVarTitle(c.title, bestVar.name);
+          const displayTitle = resolved || stripTitle(c.title);
           return {...c, title: displayTitle, bestRoas:bestVar.metrics.roas, bestVar, bestCtr:bestVar.metrics?.ctr, dataSource:"static"};
         })
         .filter(Boolean)
@@ -2973,7 +2989,16 @@ function ViewOverview({ track, jumpTo }) {
       return list.sort((a,b)=>b.dropSpend-a.dropSpend);
     } else {
       // 정적: 베리에이션 중 spend >= 5만 & roas === 0 인 것
-      const stripParens = s => (s||"").replace(/\s*\([^)]*\)/g, "").replace(/\s*\[[^\]]*\]/g, "").trim();
+      const stripTitle = s => (s||"")
+        .replace(/\s*\([^)]*\)/g,"").replace(/\s*\[[^\]]*\]/g,"")
+        .replace(/\s+\d+(?:\/\d+)+/g,"").trim();
+      function resolveVarTitle(contentTitle, varName) {
+        const cleanVar = (varName||"").replace(/\s*\([^)]*\)/g,"").replace(/\s*\[[^\]]*\]/g,"").trim();
+        if (!cleanVar || cleanVar === "본편") return null;
+        const beriMatch = cleanVar.match(/^베리(\d+)$/);
+        if (beriMatch) return stripTitle(contentTitle) + beriMatch[1];
+        return cleanVar;
+      }
       const result = [];
       for (const c of allContents) {
         const badVars = (c.variations||[]).filter(v =>
@@ -2982,10 +3007,8 @@ function ViewOverview({ track, jumpTo }) {
         );
         if (badVars.length === 0) continue;
         const worstVar = badVars.sort((a,b)=>b.metrics.spend-a.metrics.spend)[0];
-        const cleanTitle = stripParens(c.title);
-        const cleanVar = stripParens(worstVar.name);
-        const dropVarLabel = cleanVar && cleanVar !== "본편" ? cleanVar : null;
-        const dropDisplayTitle = dropVarLabel ? `${cleanTitle} · ${dropVarLabel}` : cleanTitle;
+        const resolved = resolveVarTitle(c.title, worstVar.name);
+        const dropDisplayTitle = resolved || stripTitle(c.title);
         result.push({...c, title: dropDisplayTitle, dropSpend:worstVar.metrics.spend, dropCtr:worstVar.metrics?.ctr, dropVarName:worstVar.name, dataSource:"static"});
       }
       return result.sort((a,b)=>b.dropSpend-a.dropSpend);
