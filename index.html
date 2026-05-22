@@ -4098,6 +4098,17 @@ function ViewTracker() {
   const [filterStatus, setFilterStatus] = useState("");
   const [query, setQuery] = useState("");
   const [expandedRow, setExpandedRow] = useState(null);
+  const [metaData, setMetaData] = React.useState(null);
+  const [metaLoading, setMetaLoading] = React.useState(false);
+
+  // Meta API maximum 자동 로딩 (캐시 공유 — Overview에서 이미 로딩했으면 즉시 반환)
+  React.useEffect(() => {
+    setMetaLoading(true);
+    fetchMetaWinners("maximum").then(result => {
+      setMetaLoading(false);
+      if (result) setMetaData(result);
+    });
+  }, []);
 
   const owners = Array.from(new Set(TRACKER.map(r=>r.o))).sort();
   const angles = Array.from(new Set(TRACKER.map(r=>r.a))).sort();
@@ -4154,6 +4165,9 @@ function ViewTracker() {
           <p className="text-xs" style={{color:"#1A1A1A"}}>
             출처: <a href="https://docs.google.com/spreadsheets/d/1uOX7BEYSkfMgD3ESPbWBq5Lv8wLmlN3b9FQNawKQ-BE/edit" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{color:"#1A1A1A"}}>[색동] 2026 콘텐츠 트래커_v2 ↗</a>
             <span className="ml-2 font-mono" style={{color:"#6B6B6B"}}>총 {TRACKER.length}건 · 필터 후 {filtered.length}건</span>
+            {metaLoading && <span className="ml-2 font-mono" style={{color:"#B58B1F"}}>· Meta API 로딩 중…</span>}
+            {!metaLoading && metaData && <span className="ml-2 font-mono" style={{color:"#4F7A4C"}}>· LIVE 실데이터 반영됨</span>}
+            {!metaLoading && !metaData && <span className="ml-2 font-mono" style={{color:"#8A6573"}}>· API 연결 실패 (스태틱)</span>}
           </p>
         </div>
       </div>
@@ -4212,14 +4226,29 @@ function ViewTracker() {
           <tbody className="divide-y" style={{borderColor:"#F3EFE8"}}>
             {filtered.map((r, idx) => {
               const expanded = expandedRow === idx;
-              const m = r.m || {};
+              // Meta API live 데이터 우선 사용 (sojaemyeong = r.n 매칭)
+              const liveM = metaData?.[r.n];
+              const m = liveM ? {
+                spend: liveM.spend,
+                roas:  liveM.roas,
+                ctr:   liveM.ctr,
+                // API에 없는 필드는 스태틱 유지
+                aov: r.m?.aov,
+                cpm: r.m?.cpm,
+                cpc: r.m?.cpc,
+                cvr: r.m?.cvr,
+              } : (r.m || {});
+              const isLive = !!liveM;
               const p = purchases(m);
               const cpaVal = cpa(m, p);
               return (
                 <React.Fragment key={idx}>
                   <tr className="hover:bg-cream-deep cursor-pointer" onClick={()=>setExpandedRow(expanded?null:idx)} style={{color:"#1A1A1A"}}>
                     <td className="p-2"><span className="font-mono text-xs px-1.5 py-0.5 rounded" style={{background:"#FAF8F4", color:"#1A1A1A"}}>{r.o}</span></td>
-                    <td className="p-2 font-medium">{r.n}</td>
+                    <td className="p-2 font-medium">
+                      {r.n}
+                      {isLive && <span style={{marginLeft:"5px", fontSize:"9px", background:"#E1EFDA", color:"#4F7A4C", borderRadius:"3px", padding:"1px 4px", fontWeight:600, verticalAlign:"middle"}}>LIVE</span>}
+                    </td>
                     <td className="p-2"><span className="text-xs px-1.5 py-0.5 rounded" style={{background:"#FFF5C9", color:"#1A1A1A"}}>#{r.a}</span></td>
                     <td className="p-2">{formatIcon(r.f)} {r.f}</td>
                     <td className="p-2">
