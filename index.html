@@ -2474,6 +2474,77 @@ function fmtKRW(n) {
   return "₩"+fmt(n);
 }
 
+// ============================================================
+// Meta API — 읽기전용 (인사이트 조회만)
+// ============================================================
+const META_TOKEN = "EAF9LKUE2lMkBRv4D0GAaNeoeV9YBnuFCSBuCSKc7oN8KSPjxJGtCznVEezvqPPchNSrMEuZAmhGan05rwcHoKZCiDF2LgydRQ6Ws8IIZAQqQvWZAtbcUPlraDJO5xijTTCqCw7ZBOV5JbAn6LTbY8QixpDYqEub6FFqSFzHvpAVwVkRXAwDroZA904of7oejG4PwZDZD";
+const META_ACCOUNT = "act_1409601676868887";
+const WINNER_ROAS = 1.5;
+
+// 소재명에서 콘텐츠명 부분 추출 (index 6, " - 사본" 제거)
+function extractSojaemyeong(adName) {
+  if (!adName) return null;
+  const parts = adName.split("_");
+  if (parts.length < 7) return null;
+  return parts[6].replace(/\s*-\s*사본\s*/g, "").trim();
+}
+
+// 소재명 → CONTENTS ID 매핑
+function matchContentId(sojaemyeong) {
+  if (!sojaemyeong) return null;
+  const lower = sojaemyeong.toLowerCase().trim();
+  // 정확히 포함하는 콘텐츠 찾기 (제목에 소재명 포함 or 소재명에 제목 포함)
+  const c = CONTENTS.find(c => {
+    const t = c.title.toLowerCase();
+    return t.includes(lower) || lower.includes(t.slice(0, 8));
+  });
+  return c ? c.id : null;
+}
+
+// Meta API date_preset 맵핑
+const META_PRESETS = { 1:"last_30d", 3:"last_90d", 6:"last_180d" };
+
+// Meta 광고 insights 조회 → { contentId: { roas, ctr, spend } } 집계
+async function fetchMetaWinners(months) {
+  const preset = META_PRESETS[months];
+  if (!preset) return null;
+  const url = `https://graph.facebook.com/v19.0/${META_ACCOUNT}/insights?fields=ad_name,spend,purchase_roas,ctr&level=ad&date_preset=${preset}&limit=1000&access_token=${META_TOKEN}`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const json = await res.json();
+    const ads = json.data || [];
+
+    // content별 spend-weighted ROAS 집계
+    const map = {}; // contentId -> { totalSpend, weightedRoas, maxCtr }
+    for (const ad of ads) {
+      const roas = parseFloat((ad.purchase_roas||[{value:0}])[0]?.value || 0);
+      const spend = parseFloat(ad.spend || 0);
+      const ctr = parseFloat(ad.ctr || 0);
+      const sojaemyeong = extractSojaemyeong(ad.ad_name);
+      const cid = matchContentId(sojaemyeong);
+      if (!cid) continue;
+      if (!map[cid]) map[cid] = { totalSpend:0, weightedRoas:0, maxCtr:0 };
+      map[cid].weightedRoas += roas * spend;
+      map[cid].totalSpend += spend;
+      if (ctr > map[cid].maxCtr) map[cid].maxCtr = ctr;
+    }
+    // weighted average ROAS 계산
+    const result = {};
+    for (const [cid, v] of Object.entries(map)) {
+      result[cid] = {
+        roas: v.totalSpend > 0 ? v.weightedRoas / v.totalSpend : 0,
+        ctr: v.maxCtr,
+        spend: v.totalSpend,
+      };
+    }
+    return result;
+  } catch(e) {
+    console.error("Meta API error:", e);
+    return null;
+  }
+}
+
 // ----------------- Mind Map (d3.tree) -----------------
 function MindMap({ track, hypotheses, onNodeClick, filters }) {
   const ref = useRef();
@@ -2673,6 +2744,17 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
 
 // ----------------- Views -----------------
 function ViewOverview({ track, jumpTo }) {
+  const PERIODS = [
+    { label:"전체", months:null },
+    { label:"1개월", months:1 },
+    { label:"3개월", months:3 },
+    { label:"6개월", months:6 },
+  ];
+  const [period, setPeriod] = React.useState(null);
+  const [metaData, setMetaData] = React.useState(null); // { contentId: {roas, ctr, spend} }
+  const [metaLoading, setMetaLoading] = React.useState(false);
+  const [metaError, setMetaError] = React.useState(null);
+
   const hyps = HYPOTHESES.filter(h=>h.track===track);
   const counts = {
     validated: hyps.filter(h=>h.status==="validated").length,
@@ -2680,14 +2762,65 @@ function ViewOverview({ track, jumpTo }) {
     needs_more_data: hyps.filter(h=>h.status==="needs_more_data").length,
     abandoned: hyps.filter(h=>h.status==="abandoned").length,
   };
-  const top3 = INSIGHTS.filter(i=>i.track===track).slice(0,3);
-  const sourceTypes = ["internal_evolved","competitor_followup","trend_test"];
-  const sourceCounts = sourceTypes.map(s => ({ s, n: hyps.filter(h=>h.source_type===s).length }));
-  const maxN = Math.max(...sourceCounts.map(x=>x.n), 1);
+
+  // 기간 선택 시 Meta API 호출
+  React.useEffect(()=>{
+    if (!period) { setMetaData(null); setMetaError(null); return; }
+    setMetaLoading(true);
+    setMetaError(null);
+    fetchMetaWinners(period).then(result=>{
+      setMetaLoading(false);
+      if (result) { setMetaData(result); }
+      else { setMetaError("Meta API 조회 실패 — 정적 데이터로 표시"); }
+    });
+  }, [period]);
+
+  const allContents = CONTENTS.filter(c=>c.track===track);
+
+  // 위너 콘텐츠: 기간 선택 시 Meta API 실시간 ROAS, 전체 선택 시 정적 데이터
+  const winners = React.useMemo(()=>{
+    if (period && metaData) {
+      // Meta API 기반: 해당 기간 ROAS >= WINNER_ROAS인 콘텐츠
+      return allContents
+        .map(c=>{
+          const m = metaData[c.id];
+          if (!m || m.roas < WINNER_ROAS) return null;
+          return {...c, bestRoas:m.roas, bestCtr:m.ctr, bestSpend:m.spend, dataSource:"meta"};
+        })
+        .filter(Boolean)
+        .sort((a,b)=>b.bestRoas-a.bestRoas)
+        .slice(0,12);
+    } else {
+      // 전체(정적): 베리에이션 중 최고 ROAS >= WINNER_ROAS
+      return allContents
+        .map(c=>{
+          const bestVar = (c.variations||[]).filter(v=>v.metrics?.roas).sort((a,b)=>b.metrics.roas-a.metrics.roas)[0];
+          return bestVar && bestVar.metrics.roas >= WINNER_ROAS
+            ? {...c, bestRoas:bestVar.metrics.roas, bestVar, bestCtr:bestVar.metrics?.ctr, dataSource:"static"}
+            : null;
+        })
+        .filter(Boolean)
+        .sort((a,b)=>b.bestRoas-a.bestRoas)
+        .slice(0,12);
+    }
+  }, [period, metaData, allContents]);
+
+  // 인사이트
+  const insights = INSIGHTS.filter(i=>i.track===track);
+
+  // 검증중 가설 Top 5
+  const inProgressTop5 = hyps
+    .filter(h=>h.status==="in_progress")
+    .sort((a,b)=>b.updated_date.localeCompare(a.updated_date))
+    .slice(0,5);
+
   const recent = [...hyps].sort((a,b)=>b.updated_date.localeCompare(a.updated_date)).slice(0,7);
 
+  const monoLabel = {fontSize:"10px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", letterSpacing:"0.07em", color:"#9B9690"};
+
   return (
-    <div className="anim-fade space-y-6">
+    <div className="anim-fade space-y-5">
+      {/* 상태 카운트 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           {k:"validated", label:"검증됨"},
@@ -2705,43 +2838,136 @@ function ViewOverview({ track, jumpTo }) {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div className="card-deep p-5">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-mono tracking-widest uppercase" style={{color:"#9B9690"}}>검증된 인사이트 Top 3</span>
-            <button onClick={()=>jumpTo("V3")} className="text-xs" style={{color:"#9B9690"}}>전체보기 →</button>
+      {/* 기간 선택 */}
+      <div style={{display:"flex", alignItems:"center", gap:"6px"}}>
+        <span style={monoLabel}>기간</span>
+        {PERIODS.map(p=>(
+          <button key={p.label} onClick={()=>setPeriod(p.months)}
+            style={{fontSize:"11px", padding:"3px 12px", borderRadius:"20px", cursor:"pointer", fontFamily:"inherit", border:"1px solid", transition:"all 0.15s",
+              background: period===p.months?"#1A1A1A":"#FFFFFF",
+              color: period===p.months?"#FFFFFF":"#6B6B6B",
+              borderColor: period===p.months?"#1A1A1A":"#E8EAED"}}>
+            {p.label}
+          </button>
+        ))}
+        {metaLoading && (
+          <span style={{fontSize:"10px", color:"#9B9690", fontFamily:"'JetBrains Mono', ui-monospace, monospace", marginLeft:"4px"}}>
+            Meta API 조회중…
+          </span>
+        )}
+        {metaError && (
+          <span style={{fontSize:"10px", color:"#B58B1F", fontFamily:"'JetBrains Mono', ui-monospace, monospace", marginLeft:"4px"}}>
+            ⚠ {metaError}
+          </span>
+        )}
+        {period && metaData && !metaLoading && (
+          <span style={{fontSize:"10px", color:"#4F7A4C", fontFamily:"'JetBrains Mono', ui-monospace, monospace", marginLeft:"4px"}}>
+            ✓ Meta 실시간
+          </span>
+        )}
+      </div>
+
+      {/* 위너 콘텐츠 */}
+      <div className="card-deep p-5">
+        <div style={{display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"14px"}}>
+          <div style={{display:"flex", alignItems:"center", gap:"8px"}}>
+            <span style={monoLabel}>위너 콘텐츠 (ROAS ≥ {WINNER_ROAS})</span>
+            {period && metaData && <span style={{fontSize:"9px", padding:"1px 6px", borderRadius:"3px", background:"#E1EFDA", color:"#4F7A4C", fontFamily:"'JetBrains Mono', ui-monospace, monospace"}}>Meta 실시간</span>}
+            {(!period || !metaData) && <span style={{fontSize:"9px", padding:"1px 6px", borderRadius:"3px", background:"#F0EDE8", color:"#9B9690", fontFamily:"'JetBrains Mono', ui-monospace, monospace"}}>정적 데이터</span>}
           </div>
-          <div className="space-y-0">
-            {top3.map(ins => (
-              <div key={ins.id} className="cursor-pointer hover:opacity-70 py-3" style={{borderBottom:"1px solid #F0EDE8"}} onClick={()=>jumpTo("V3", ins.id)}>
-                <div className="text-sm leading-relaxed mb-1.5" style={{color:"#2B2825", fontWeight:450}}>{ins.headline}</div>
-                <div className="flex items-center gap-2">
+          <span style={{fontSize:"11px", color:"#C0BCB4"}}>{winners.length}건</span>
+        </div>
+        {metaLoading ? (
+          <div style={{padding:"24px 0", textAlign:"center"}}>
+            <span style={{fontSize:"12px", color:"#9B9690"}}>Meta API에서 {period}개월 성과 불러오는 중…</span>
+          </div>
+        ) : winners.length > 0 ? (
+          <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(280px,1fr))", gap:"8px"}}>
+            {winners.map(c=>(
+              <div key={c.id} onClick={()=>jumpTo("V4",c.hypothesis_ids?.[0])}
+                style={{display:"flex", alignItems:"center", gap:"10px", padding:"8px 10px", borderRadius:"6px", background:"#FAFAFA", border:"1px solid #F0EDE8", cursor:"pointer"}}
+                className="hover:opacity-80">
+                <div style={{width:"36px", height:"36px", borderRadius:"4px", background:"#F0EDE8", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"14px", flexShrink:0}}>▶</div>
+                <div style={{flex:1, minWidth:0}}>
+                  <div style={{fontSize:"11px", color:"#2B2825", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{c.title}</div>
+                  <div style={{display:"flex", gap:"8px", marginTop:"3px", flexWrap:"wrap"}}>
+                    <IdChip id={c.id} />
+                    <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#4F7A4C", fontWeight:600}}>
+                      ROAS {(c.bestRoas*100).toFixed(0)}%
+                    </span>
+                    {c.bestCtr != null && c.bestCtr > 0 && (
+                      <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#9B9690"}}>
+                        CTR {(c.bestCtr*100).toFixed(1)}%
+                      </span>
+                    )}
+                    {c.bestSpend != null && (
+                      <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#9B9690"}}>
+                        {fmtKRW(c.bestSpend)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                {c.status==="on" && <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#E1EFDA", color:"#4F7A4C", flexShrink:0}}>ON</span>}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <span style={{fontSize:"12px", color:"#C0BCB4"}}>
+            {period && metaData ? `최근 ${period}개월 ROAS ${WINNER_ROAS} 이상 콘텐츠 없음` : `ROAS ${WINNER_ROAS} 이상 콘텐츠 없음`}
+          </span>
+        )}
+      </div>
+
+      {/* 인사이트 + 검증중 가설 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* 인사이트 */}
+        <div className="card-deep p-5">
+          <div style={{display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"14px"}}>
+            <span style={monoLabel}>검증된 인사이트</span>
+            <button onClick={()=>jumpTo("V3")} style={{fontSize:"11px", color:"#9B9690", background:"none", border:"none", cursor:"pointer"}}>전체보기 →</button>
+          </div>
+          <div>
+            {insights.slice(0,5).map((ins,i)=>(
+              <div key={ins.id} onClick={()=>jumpTo("V3",ins.id)}
+                className="cursor-pointer hover:opacity-70 py-2.5"
+                style={{borderBottom: i<insights.slice(0,5).length-1?"1px solid #F0EDE8":"none"}}>
+                <div style={{fontSize:"12px", lineHeight:1.5, color:"#2B2825", marginBottom:"4px"}}>{ins.headline}</div>
+                <div style={{display:"flex", gap:"6px", alignItems:"center"}}>
                   <IdChip id={ins.id} />
-                  <span className="text-xs" style={{color:"#B0ACA6"}}>{ins.validated_by_content_ids.length}건 검증</span>
+                  <span style={{fontSize:"10px", color:"#B0ACA6"}}>{ins.validated_by_content_ids.length}건 검증</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
+        {/* 검증중 가설 Top 5 */}
         <div className="card-deep p-5">
-          <span className="text-xs font-mono tracking-widest uppercase block mb-4" style={{color:"#9B9690"}}>가설 출처 분포</span>
-          <div className="space-y-2">
-            {sourceCounts.map(({s,n})=>(
-              <div key={s}>
-                <div className="flex items-center justify-between text-xs mb-1">
-                  <span style={{color:"#1A1A1A"}}>{SOURCE_TYPE_LABEL[s]}</span>
-                  <span className="font-mono" style={{color:"#6B6B6B"}}>{n}건</span>
-                </div>
-                <div className="h-2 rounded-full overflow-hidden" style={{background:"#FAF8F4"}}>
-                  <div style={{width:`${(n/maxN)*100}%`, background:"#C0BCB4", height:"100%"}}></div>
+          <div style={{display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"14px"}}>
+            <span style={monoLabel}>검증중인 가설 Top 5</span>
+            <button onClick={()=>jumpTo("V2")} style={{fontSize:"11px", color:"#9B9690", background:"none", border:"none", cursor:"pointer"}}>마인드맵 →</button>
+          </div>
+          <div>
+            {inProgressTop5.map((h,i)=>(
+              <div key={h.id} onClick={()=>jumpTo("V4",h.id)}
+                className="cursor-pointer hover:opacity-70 py-2.5"
+                style={{borderBottom: i<inProgressTop5.length-1?"1px solid #F0EDE8":"none"}}>
+                <div style={{fontSize:"12px", lineHeight:1.5, color:"#2B2825", marginBottom:"4px"}}>{h.title}</div>
+                <div style={{display:"flex", gap:"6px", alignItems:"center"}}>
+                  <IdChip id={h.id} />
+                  <span style={{fontSize:"10px", color:"#B0ACA6"}}>#{h.category}</span>
+                  {computeTags(h).map(t=>(
+                    <span key={t} style={{fontSize:"10px", background:"#FFF8E0", color:"#B58B1F", borderRadius:"3px", padding:"0 5px", fontWeight:600}}>#{t}</span>
+                  ))}
                 </div>
               </div>
             ))}
+            {inProgressTop5.length===0 && <span style={{fontSize:"12px", color:"#C0BCB4"}}>진행중인 가설 없음</span>}
           </div>
         </div>
       </div>
 
+      {/* 최근 업데이트 */}
       <div className="card-deep p-5">
         <span className="text-xs font-mono tracking-widest uppercase block mb-4" style={{color:"#9B9690"}}>최근 업데이트</span>
         <div className="divide-y" style={{borderColor:"#F3EFE8"}}>
@@ -2774,14 +3000,18 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
   }
 
   return (
-    <div className="anim-fade">
-      <div className="card-deep p-3 overflow-x-auto relative">
-        <div id="mindmap-tooltip" className="mm-tooltip" style={{display:"none"}}></div>
-        <MindMap track={track} hypotheses={hyps} onNodeClick={handleNodeClick} filters={{status:fStatus||new Set(), category:fCategory||new Set(), source:fSource||new Set()}} />
+    <div className="anim-fade" style={{display:"flex", gap:"12px", alignItems:"flex-start"}}>
+      {/* 마인드맵 */}
+      <div style={{flex:1, minWidth:0}}>
+        <div className="card-deep p-3 overflow-x-auto relative">
+          <div id="mindmap-tooltip" className="mm-tooltip" style={{display:"none"}}></div>
+          <MindMap track={track} hypotheses={hyps} onNodeClick={handleNodeClick} filters={{status:fStatus||new Set(), category:fCategory||new Set(), source:fSource||new Set()}} />
+        </div>
       </div>
 
+      {/* 우측 디테일 패널 */}
       {sel && (
-        <div className="card-deep mt-3 p-5" style={{borderLeft:"3px solid #FFCB05"}}>
+        <div className="card-deep p-5" style={{width:"360px", flexShrink:0, borderTop:"3px solid #FFCB05", maxHeight:"80vh", overflowY:"auto", position:"sticky", top:"80px"}}>
           {/* header */}
           <div style={{display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:"12px"}}>
             <div style={{display:"flex", alignItems:"center", gap:"6px", flexWrap:"wrap"}}>
@@ -2798,69 +3028,55 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
           {/* hypothesis text */}
           <div style={{fontSize:"13px", lineHeight:1.65, color:"#2B2825", marginBottom:"20px"}}>{sel.full_text || sel.title}</div>
 
-          {/* connected contents — same table as 자세히보기 */}
+          {/* connected contents */}
           <div style={{marginBottom:"20px"}}>
             <div className="font-mono" style={{fontSize:"10px", letterSpacing:"0.06em", color:"#9B9690", marginBottom:"10px"}}>
               연결된 콘텐츠 {relContents.length}건
             </div>
             {relContents.length > 0 ? (
-              <div style={{overflowX:"auto"}}>
-                <table style={{width:"100%", fontSize:"12px", borderCollapse:"collapse"}}>
-                  <thead>
-                    <tr style={{color:"#9B9690", textAlign:"left"}}>
-                      <th style={{paddingBottom:"8px", paddingRight:"12px", fontWeight:600}}>콘텐츠</th>
-                      <th style={{paddingBottom:"8px", paddingRight:"12px", fontWeight:600}}>베리</th>
-                      <th style={{paddingBottom:"8px", paddingRight:"12px", fontWeight:600}}>지출</th>
-                      <th style={{paddingBottom:"8px", paddingRight:"12px", fontWeight:600}}>ROAS</th>
-                      <th style={{paddingBottom:"8px", paddingRight:"12px", fontWeight:600}}>CTR</th>
-                      <th style={{paddingBottom:"8px", paddingRight:"12px", fontWeight:600}}>CVR</th>
-                      <th style={{paddingBottom:"8px", paddingRight:"12px", fontWeight:600}}>CPC</th>
-                      <th style={{paddingBottom:"8px", fontWeight:600}}>상태</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {relContents.map(c =>
-                      c.variations.map((v, i) => (
-                        <tr key={c.id+i} style={{borderTop:"1px solid #F0EDE8", color:"#2B2825"}}>
-                          {i === 0 && (
-                            <td rowSpan={c.variations.length} style={{padding:"8px 12px 8px 0", verticalAlign:"top"}}>
-                              <IdChip id={c.id} />
-                              <div style={{marginTop:"4px", fontSize:"11px"}}>
-                                {c.notion_url
-                                  ? <a href={c.notion_url} target="_blank" rel="noopener noreferrer" style={{color:"#2B2825", textDecoration:"none"}}>{c.title} <span style={{opacity:0.5, fontSize:"9px"}}>↗</span></a>
-                                  : c.title}
-                              </div>
-                              {c.drive_url && (
-                                <a href={c.drive_url} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex", alignItems:"center", gap:"3px", fontSize:"11px", color:"#4F7A4C", marginTop:"2px", textDecoration:"none"}}>
-                                  📎 Drive 열기
-                                </a>
-                              )}
-                              <div style={{fontSize:"11px", color:"#9B9690", marginTop:"2px"}}>{c.live_date}</div>
-                            </td>
-                          )}
-                          <td style={{padding:"8px 12px 8px 0"}}>{v.name}</td>
-                          <td className="font-mono" style={{padding:"8px 12px 8px 0"}}>{fmtKRW(v.metrics?.spend)}</td>
-                          <td className="font-mono" style={{padding:"8px 12px 8px 0", fontWeight:600,
-                            color:(v.metrics?.roas||0)>=1.5?"#4F7A4C":(v.metrics?.roas||0)<1&&v.metrics?.roas?"#8A6573":"#2B2825"}}>
-                            {fmtRoas(v.metrics?.roas)}
-                          </td>
-                          <td className="font-mono" style={{padding:"8px 12px 8px 0"}}>{fmtPct(v.metrics?.ctr)}</td>
-                          <td className="font-mono" style={{padding:"8px 12px 8px 0"}}>{fmtPct(v.metrics?.cvr)}</td>
-                          <td className="font-mono" style={{padding:"8px 12px 8px 0"}}>{fmtKRW(v.metrics?.cpc)}</td>
-                          {i === 0 && (
-                            <td rowSpan={c.variations.length} style={{padding:"8px 0", verticalAlign:"top"}}>
-                              <span style={{fontSize:"11px", padding:"2px 7px", borderRadius:"3px",
-                                background:c.status==="on"?"#E1EFDA":"#EAE0E5",
-                                color:c.status==="on"?"#4F7A4C":"#6F4F5C"}}>
-                                {c.status.toUpperCase()}
-                              </span>
-                            </td>
-                          )}
+              <div style={{display:"flex", flexDirection:"column", gap:"10px"}}>
+                {relContents.map(c=>(
+                  <div key={c.id} style={{border:"1px solid #F0EDE8", borderRadius:"6px", overflow:"hidden"}}>
+                    {/* 콘텐츠 헤더 */}
+                    <div style={{background:"#FAFAFA", padding:"8px 10px", display:"flex", alignItems:"center", justifyContent:"space-between", gap:"8px"}}>
+                      <div style={{display:"flex", alignItems:"center", gap:"6px", minWidth:0}}>
+                        <IdChip id={c.id} />
+                        <span style={{fontSize:"11px", color:"#2B2825", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{c.title}</span>
+                      </div>
+                      <div style={{display:"flex", gap:"6px", flexShrink:0, alignItems:"center"}}>
+                        {c.drive_url && <a href={c.drive_url} target="_blank" rel="noopener noreferrer" style={{fontSize:"10px", color:"#4F7A4C", textDecoration:"none"}}>▶</a>}
+                        {c.notion_url && <a href={c.notion_url} target="_blank" rel="noopener noreferrer" style={{fontSize:"10px", color:"#6B6B6B", textDecoration:"none"}}>↗</a>}
+                        <span style={{fontSize:"10px", padding:"1px 6px", borderRadius:"3px",
+                          background:c.status==="on"?"#E1EFDA":"#EAE0E5",
+                          color:c.status==="on"?"#4F7A4C":"#6F4F5C"}}>{c.status.toUpperCase()}</span>
+                      </div>
+                    </div>
+                    {/* 베리에이션 테이블 — 4컬럼만 */}
+                    <table style={{width:"100%", fontSize:"11px", borderCollapse:"collapse"}}>
+                      <thead>
+                        <tr style={{color:"#B0ACA6", textAlign:"left", borderTop:"1px solid #F0EDE8"}}>
+                          <th style={{padding:"5px 8px", fontWeight:500}}>베리</th>
+                          <th style={{padding:"5px 8px", fontWeight:500}}>ROAS</th>
+                          <th style={{padding:"5px 8px", fontWeight:500}}>CTR</th>
+                          <th style={{padding:"5px 8px", fontWeight:500}}>지출</th>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                      </thead>
+                      <tbody>
+                        {c.variations.map((v,i)=>(
+                          <tr key={i} style={{borderTop:"1px solid #F7F4F0"}}>
+                            <td style={{padding:"5px 8px", color:"#4B4845"}}>{v.name}</td>
+                            <td className="font-mono" style={{padding:"5px 8px", fontWeight:600,
+                              color:(v.metrics?.roas||0)>=1.5?"#4F7A4C":(v.metrics?.roas||0)<1&&v.metrics?.roas?"#8A6573":"#2B2825"}}>
+                              {fmtRoas(v.metrics?.roas)}
+                            </td>
+                            <td className="font-mono" style={{padding:"5px 8px", color:"#6B6B6B"}}>{fmtPct(v.metrics?.ctr)}</td>
+                            <td className="font-mono" style={{padding:"5px 8px", color:"#6B6B6B"}}>{fmtKRW(v.metrics?.spend)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ))}
               </div>
             ) : (
               <span style={{fontSize:"12px", color:"#C0BCB4"}}>아직 연결된 콘텐츠 없음</span>
@@ -2900,6 +3116,7 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
     </div>
   );
 }
+
 
 function ViewSuccessFormula({ track, jumpTo }) {
   const validated = INSIGHTS.filter(i=>i.track===track);
@@ -3568,7 +3785,7 @@ function App() {
         <div className="max-w-[1440px] mx-auto px-5 w-full flex items-center gap-4">
           <div className="flex items-baseline gap-2">
             <span style={{color:"#3A3733", fontWeight:700, fontSize:"15px", letterSpacing:"-0.02em"}}>{META.title}</span>
-            <span style={{color:"#C0BCB4", fontSize:"11px", fontFamily:"monospace"}}>{META.version}</span>
+            <span style={{color:"#C0BCB4", fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace"}}>{META.version}</span>
           </div>
           <div style={{flex:1}} />
           {/* Search */}
@@ -3661,7 +3878,7 @@ function App() {
         return (
           <div style={{background:"#FFFFFF", borderBottom:"1px solid #E8EAED", padding:"7px 0"}}>
             <div className="max-w-[1440px] mx-auto px-5" style={{display:"flex", flexDirection:"column", gap:"5px"}}>
-              {/* Row 1: 상태 + 출처 */}
+              {/* Row 1: 상태 */}
               <div style={{display:"flex", alignItems:"center", gap:"6px", flexWrap:"wrap"}}>
                 <span style={lbStyle}>상태</span>
                 <div style={{display:"flex", gap:"4px"}}>
@@ -3670,17 +3887,6 @@ function App() {
                       className={mmFStatus.has(s)?"filter-active":"filter-inactive"}
                       style={{fontSize:"11px", padding:"3px 10px", borderRadius:"20px", border:"1px solid #E8EAED", cursor:"pointer", fontFamily:"inherit"}}>
                       {statusLabel(s)}
-                    </button>
-                  ))}
-                </div>
-                <div style={{width:"1px", height:"14px", background:"#E8EAED", flexShrink:0, margin:"0 2px"}} />
-                <span style={lbStyle}>출처</span>
-                <div style={{display:"flex", gap:"4px"}}>
-                  {["internal_evolved","competitor_followup","trend_test"].map(s=>(
-                    <button key={s} onClick={()=>mmToggle(setMmFSource, mmFSource, s)}
-                      className={mmFSource.has(s)?"filter-active":"filter-inactive"}
-                      style={{fontSize:"11px", padding:"3px 10px", borderRadius:"20px", border:"1px solid #E8EAED", cursor:"pointer", fontFamily:"inherit"}}>
-                      {SOURCE_TYPE_LABEL[s]}
                     </button>
                   ))}
                 </div>
