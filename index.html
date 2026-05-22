@@ -3778,7 +3778,20 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                       {sel.content_ids.map(cid => {
                         const c = CONTENTS.find(x=>x.id===cid);
                         if (!c) return null;
-                        return c.variations.map((v,i) => (
+                        // 변수명 → Meta 소재명 변환 (위너/드랍 카드와 동일 로직)
+                        const stripT = s => (s||"").replace(/\s*\([^)]*\)/g,"").replace(/\s*\[[^\]]*\]/g,"").replace(/\s+\d+(?:\/\d+)+/g,"").trim();
+                        const contentBase = stripT(c.title);
+                        function resolveVName(raw) {
+                          const clean = (raw||"").replace(/\s*\([^)]*\)/g,"").replace(/\s*\[[^\]]*\]/g,"").replace(/\s+(OFF|ON)$/i,"").trim();
+                          if (!clean || clean === "본편") return { label: clean || "본편", isOff: /OFF/i.test(raw) };
+                          const m = clean.match(/^(.+?)(\d+)$/);
+                          if (!m) return { label: clean, isOff: /OFF/i.test(raw) };
+                          const label = m[1] === contentBase ? clean : contentBase + m[2];
+                          return { label, isOff: /OFF/i.test(raw) };
+                        }
+                        return c.variations.map((v,i) => {
+                          const { label: vLabel, isOff: vOff } = resolveVName(v.name);
+                          return (
                           <tr key={cid+i} className="hover:bg-cream-deep" style={{color:"#1A1A1A"}}>
                             {i===0 && <td rowSpan={c.variations.length} className="py-2 pr-3 align-top" style={{minWidth:"160px"}}>
                               <ThumbMini driveUrl={c.drive_url} thumbnailUrl={c.thumbnail_url} w={140} h={105} />
@@ -3794,17 +3807,22 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                                 <div className="text-xs mt-0.5" style={{color:"#6B6B6B"}}>{c.live_date}</div>
                               </div>
                             </td>}
-                            <td className="py-2 pr-2">{v.name}</td>
+                            <td className="py-2 pr-2">{vLabel}</td>
                             <td className="py-2 pr-2 font-mono">{fmtKRW(v.metrics?.spend)}</td>
                             <td className="py-2 pr-2 font-mono font-semibold" style={{color:(v.metrics?.roas||0)>=1.5?"#4F7A4C":(v.metrics?.roas||0)<1?"#8A6573":"#1A1A1A"}}>{fmtRoas(v.metrics?.roas)}</td>
                             <td className="py-2 pr-2 font-mono">{fmtPct(v.metrics?.ctr)}</td>
                             <td className="py-2 pr-2 font-mono">{fmtPct(v.metrics?.cvr)}</td>
                             <td className="py-2 pr-2 font-mono">{fmtKRW(v.metrics?.cpc)}</td>
-                            {i===0 && <td rowSpan={c.variations.length} className="py-2 align-top">
-                              <span className="text-xs px-1.5 py-0.5 rounded" style={{background:c.status==="on"?"#E1EFDA":"#EAE0E5", color:c.status==="on"?"#4F7A4C":"#6F4F5C"}}>{c.status.toUpperCase()}</span>
-                            </td>}
+                            <td className="py-2">
+                              {/* 변수별 OFF 여부 우선, 없으면 콘텐츠 상태 */}
+                              <span className="text-xs px-1.5 py-0.5 rounded"
+                                style={{background: vOff||c.status!=="on" ? "#EAE0E5":"#E1EFDA",
+                                        color:       vOff||c.status!=="on" ? "#6F4F5C":"#4F7A4C"}}>
+                                {vOff ? "OFF" : c.status.toUpperCase()}
+                              </span>
+                            </td>
                           </tr>
-                        ));
+                        )});
                       })}
                     </tbody>
                   </table>
