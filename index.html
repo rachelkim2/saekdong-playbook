@@ -2480,25 +2480,53 @@ function fmtKRW(n) {
 const META_TOKEN = "EAF9LKUE2lMkBRv4D0GAaNeoeV9YBnuFCSBuCSKc7oN8KSPjxJGtCznVEezvqPPchNSrMEuZAmhGan05rwcHoKZCiDF2LgydRQ6Ws8IIZAQqQvWZAtbcUPlraDJO5xijTTCqCw7ZBOV5JbAn6LTbY8QixpDYqEub6FFqSFzHvpAVwVkRXAwDroZA904of7oejG4PwZDZD";
 const META_ACCOUNT = "act_1409601676868887";
 const WINNER_ROAS = 1.5;
+const WINNER_SPEND_MIN = 100000; // 위너 인정 최소 지출 ₩10만 (노이즈 제거)
 
-// 소재명에서 콘텐츠명 부분 추출 (index 6, " - 사본" 제거)
+// 소재명에서 콘텐츠명 부분 추출 (index 6, " - 사본" 및 비율 suffix 제거)
 function extractSojaemyeong(adName) {
   if (!adName) return null;
   const parts = adName.split("_");
   if (parts.length < 7) return null;
-  return parts[6].replace(/\s*-\s*사본\s*/g, "").trim();
+  return parts[6]
+    .replace(/\s*-\s*사본\s*/g, "")
+    .replace(/\s+[0-9]+대[0-9]+.*$/g, "")  // "9대16_M" 등 비율 suffix 제거
+    .replace(/_[A-Z]$/g, "")               // "_M" 등 단일 알파벳 suffix 제거
+    .trim();
 }
 
-// 소재명 → CONTENTS ID 매핑
+// 정규화 함수: 공백, /숫자, 끝 단일숫자 제거
+function normTitle(s) {
+  return (s || "").toLowerCase()
+    .replace(/\s+/g, "")         // 공백 제거
+    .replace(/\/[0-9]+/g, "")   // /1 /2 /3 제거
+    .replace(/[()（）]/g, "")    // 괄호 제거
+    .replace(/[0-9]+$/g, "");   // 끝 숫자(베리 번호) 제거
+}
+
+// 소재명 → CONTENTS ID 매핑 (정규화 기반 매칭)
 function matchContentId(sojaemyeong) {
   if (!sojaemyeong) return null;
-  const lower = sojaemyeong.toLowerCase().trim();
-  // 정확히 포함하는 콘텐츠 찾기 (제목에 소재명 포함 or 소재명에 제목 포함)
-  const c = CONTENTS.find(c => {
-    const t = c.title.toLowerCase();
-    return t.includes(lower) || lower.includes(t.slice(0, 8));
+  const q = normTitle(sojaemyeong);
+  if (!q || q.length < 2) return null;
+
+  // 1순위: 정규화 후 정확히 일치
+  let c = CONTENTS.find(c => normTitle(c.title) === q);
+  if (c) return c.id;
+
+  // 2순위: 콘텐츠 정규화 제목이 q로 시작 (앞 4자 이상)
+  if (q.length >= 4) {
+    c = CONTENTS.find(c => normTitle(c.title).startsWith(q));
+    if (c) return c.id;
+  }
+
+  // 3순위: q가 콘텐츠 정규화 제목으로 시작 (제목 4자 이상)
+  c = CONTENTS.find(c => {
+    const t = normTitle(c.title);
+    return t.length >= 4 && q.startsWith(t);
   });
-  return c ? c.id : null;
+  if (c) return c.id;
+
+  return null;
 }
 
 // Meta API date_preset 맵핑
@@ -2520,26 +2548,30 @@ async function fetchMetaWinners(preset) {
     const ads = json.data || [];
 
     // content별 spend-weighted ROAS 집계
-    const map = {}; // contentId -> { totalSpend, weightedRoas, maxCtr }
+    // key: contentId (매칭됨) 또는 "_raw_소재명" (미매칭)
+    const map = {};
     for (const ad of ads) {
       const roas = parseFloat((ad.purchase_roas||[{value:0}])[0]?.value || 0);
       const spend = parseFloat(ad.spend || 0);
       const ctr = parseFloat(ad.ctr || 0);
+      if (spend <= 0) continue;
       const sojaemyeong = extractSojaemyeong(ad.ad_name);
-      const cid = matchContentId(sojaemyeong);
-      if (!cid) continue;
-      if (!map[cid]) map[cid] = { totalSpend:0, weightedRoas:0, maxCtr:0 };
+      if (!sojaemyeong) continue;
+      const cid = matchContentId(sojaemyeong) || ("_raw_" + sojaemyeong);
+      if (!map[cid]) map[cid] = { totalSpend:0, weightedRoas:0, maxCtr:0, sojaemyeong: sojaemyeong };
       map[cid].weightedRoas += roas * spend;
       map[cid].totalSpend += spend;
       if (ctr > map[cid].maxCtr) map[cid].maxCtr = ctr;
     }
     // weighted average ROAS 계산
     const result = {};
-    for (const [cid, v] of Object.entries(map)) {
-      result[cid] = {
+    for (const [key, v] of Object.entries(map)) {
+      result[key] = {
         roas: v.totalSpend > 0 ? v.weightedRoas / v.totalSpend : 0,
         ctr: v.maxCtr,
         spend: v.totalSpend,
+        sojaemyeong: v.sojaemyeong,
+        isRaw: key.startsWith("_raw_"),
       };
     }
     return result;
@@ -2789,15 +2821,25 @@ function ViewOverview({ track, jumpTo }) {
   const winners = React.useMemo(()=>{
     if (period && metaData) {
       // Meta API 기반: 해당 기간 ROAS >= WINNER_ROAS인 콘텐츠
-      return allContents
-        .map(c=>{
-          const m = metaData[c.id];
-          if (!m || m.roas < WINNER_ROAS) return null;
-          return {...c, bestRoas:m.roas, bestCtr:m.ctr, bestSpend:m.spend, dataSource:"meta"};
-        })
-        .filter(Boolean)
-        .sort((a,b)=>b.bestRoas-a.bestRoas)
-        .slice(0,12);
+      const list = [];
+      // 1. CONTENTS에 매칭된 항목
+      for (const c of allContents) {
+        const m = metaData[c.id];
+        if (!m || m.roas < WINNER_ROAS || m.spend < WINNER_SPEND_MIN) continue;
+        list.push({...c, bestRoas:m.roas, bestCtr:m.ctr, bestSpend:m.spend, dataSource:"meta"});
+      }
+      // 2. 미매칭(_raw_) 항목 — 소재명만 있는 것
+      for (const [key, m] of Object.entries(metaData)) {
+        if (!key.startsWith("_raw_")) continue;
+        if (m.roas < WINNER_ROAS || m.spend < WINNER_SPEND_MIN) continue;
+        list.push({
+          id: null, title: m.sojaemyeong, track: allContents[0]?.track,
+          bestRoas: m.roas, bestCtr: m.ctr, bestSpend: m.spend,
+          dataSource: "meta", isRaw: true,
+          hypothesis_ids: [], status: "unknown",
+        });
+      }
+      return list.sort((a,b)=>b.bestRoas-a.bestRoas).slice(0,16);
     } else {
       // 전체(정적): 베리에이션 중 최고 ROAS >= WINNER_ROAS
       return allContents
@@ -2818,16 +2860,25 @@ function ViewOverview({ track, jumpTo }) {
   const drops = React.useMemo(()=>{
     if (period && metaData) {
       // Meta API 기반
-      return allContents
-        .map(c=>{
-          const m = metaData[c.id];
-          if (!m) return null;
-          if (m.spend < DROP_SPEND_MIN) return null;
-          if (m.roas > 0) return null; // 전환 있으면 제외
-          return {...c, dropSpend:m.spend, dropCtr:m.ctr, dataSource:"meta"};
-        })
-        .filter(Boolean)
-        .sort((a,b)=>b.dropSpend-a.dropSpend);
+      const list = [];
+      // 1. CONTENTS 매칭 항목
+      for (const c of allContents) {
+        const m = metaData[c.id];
+        if (!m || m.spend < DROP_SPEND_MIN || m.roas > 0) continue;
+        list.push({...c, dropSpend:m.spend, dropCtr:m.ctr, dataSource:"meta"});
+      }
+      // 2. 미매칭 raw 항목
+      for (const [key, m] of Object.entries(metaData)) {
+        if (!key.startsWith("_raw_")) continue;
+        if (m.spend < DROP_SPEND_MIN || m.roas > 0) continue;
+        list.push({
+          id: null, title: m.sojaemyeong, track: allContents[0]?.track,
+          dropSpend: m.spend, dropCtr: m.ctr,
+          dataSource: "meta", isRaw: true, status: "unknown",
+          hypothesis_ids: [],
+        });
+      }
+      return list.sort((a,b)=>b.dropSpend-a.dropSpend);
     } else {
       // 정적: 베리에이션 중 spend >= 5만 & roas === 0 인 것
       const result = [];
@@ -2983,8 +3034,8 @@ function ViewOverview({ track, jumpTo }) {
                   <div style={{width:"36px", height:"36px", borderRadius:"4px", background:"#E1EFDA", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"14px", flexShrink:0}}>▶</div>
                   <div style={{flex:1, minWidth:0}}>
                     <div style={{fontSize:"11px", color:"#2B2825", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{c.title}</div>
-                    <div style={{display:"flex", gap:"8px", marginTop:"3px", flexWrap:"wrap"}}>
-                      <IdChip id={c.id} />
+                    <div style={{display:"flex", gap:"8px", marginTop:"3px", flexWrap:"wrap", alignItems:"center"}}>
+                      {c.id ? <IdChip id={c.id} /> : <span style={{fontSize:"10px", color:"#C0BCB4", fontFamily:"'JetBrains Mono', ui-monospace, monospace"}}>미등록</span>}
                       <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#4F7A4C", fontWeight:600}}>
                         ROAS {(c.bestRoas*100).toFixed(0)}%
                       </span>
@@ -3001,6 +3052,7 @@ function ViewOverview({ track, jumpTo }) {
                     </div>
                   </div>
                   {c.status==="on" && <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#E1EFDA", color:"#4F7A4C", flexShrink:0}}>ON</span>}
+                  {c.isRaw && <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#F4F5F7", color:"#9B9690", flexShrink:0}}>소재</span>}
                 </div>
               ))}
             </div>
@@ -3023,7 +3075,7 @@ function ViewOverview({ track, jumpTo }) {
                   <div style={{flex:1, minWidth:0}}>
                     <div style={{fontSize:"11px", color:"#4B3840", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{c.title}</div>
                     <div style={{display:"flex", gap:"8px", marginTop:"3px", flexWrap:"wrap", alignItems:"center"}}>
-                      <IdChip id={c.id} />
+                      {c.id ? <IdChip id={c.id} /> : <span style={{fontSize:"10px", color:"#C0BCB4", fontFamily:"'JetBrains Mono', ui-monospace, monospace"}}>미등록</span>}
                       <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#8A6573", fontWeight:600}}>
                         ROAS 0
                       </span>
