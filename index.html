@@ -2755,7 +2755,7 @@ async function fetchMetaWinners(preset) {
 }
 
 // ----------------- Mind Map (d3.tree) -----------------
-function MindMap({ track, hypotheses, onNodeClick, filters }) {
+function MindMap({ track, hypotheses, onNodeClick, selectedId, filters }) {
   const ref = useRef();
   useEffect(()=>{
     if (!ref.current) return;
@@ -2834,7 +2834,12 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
       .attr("class","node")
       .attr("transform", d => `translate(${d.y},${d.x})`)
       .style("cursor", d => d.data.h ? "pointer" : "default")
-      .on("click", (e,d) => { if (d.data.h) onNodeClick(d.data.h.id); });
+      .on("click", function(e, d) {
+        if (!d.data.h) return;
+        onNodeClick(d.data.h.id);
+        // 클릭 노드를 화면 중앙으로 스크롤 (가로 + 세로)
+        this.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+      });
 
     nodes.each(function(d){
       const sel = d3.select(this);
@@ -2889,10 +2894,19 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
         const h = d.data.h;
         const color = {validated:"#4F7A4C", in_progress:"#B58B1F", needs_more_data:"#6A7FA0", abandoned:"#8A6573"}[h.status];
         const bg = {validated:"#E1EFDA", in_progress:"#FAEFCC", needs_more_data:"#E1E7F0", abandoned:"#EAE0E5"}[h.status];
-        // ID 배지
+        const isSelected = h.id === selectedId;
+        // 선택 노드: 외부 노란 링
+        if (isSelected) {
+          sel.append("rect").attr("x",-37).attr("y",-16).attr("width",74).attr("height",32).attr("rx",16)
+            .attr("fill","none").attr("stroke","#FFCB05").attr("stroke-width",3).attr("opacity",1);
+        }
+        // ID 배지 — 선택 시 반전색
         sel.append("rect").attr("x",-30).attr("y",-10).attr("width",60).attr("height",20).attr("rx",10)
-          .attr("fill",bg).attr("stroke",color).attr("stroke-width",1.2);
-        sel.append("text").attr("text-anchor","middle").attr("dy",3.5).attr("fill",color)
+          .attr("fill", isSelected ? color : bg)
+          .attr("stroke", isSelected ? color : color)
+          .attr("stroke-width", isSelected ? 0 : 1.2);
+        sel.append("text").attr("text-anchor","middle").attr("dy",3.5)
+          .attr("fill", isSelected ? "#FFFFFF" : color)
           .style("font-size","10.5px").style("font-weight","600").style("font-family","JetBrains Mono")
           .style("text-decoration", h.status==="abandoned" ? "line-through" : "none")
           .text(h.id);
@@ -2946,7 +2960,7 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
         }
       }
     });
-  }, [hypotheses, filters, track, onNodeClick]);
+  }, [hypotheses, filters, track, onNodeClick, selectedId]);
 
   return <svg ref={ref} style={{width:"100%", height:"auto"}} />;
 }
@@ -3463,12 +3477,16 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
   const [selectedId, setSelectedId] = React.useState(null);
 
   const sel = selectedId ? HYPOTHESES.find(h=>h.id===selectedId) : null;
-  const relContents = sel ? CONTENTS.filter(c=>sel.content_ids.includes(c.id)) : [];
+  // 양방향 콘텐츠 연결: hypothesis.content_ids OR content.hypothesis_ids
+  const relContents = sel ? CONTENTS.filter(c =>
+    (sel.content_ids||[]).includes(c.id) ||
+    (c.hypothesis_ids||[]).includes(sel.id)
+  ) : [];
   const evals = sel ? Object.entries(sel.evaluations||{}) : [];
 
-  function handleNodeClick(id) {
+  const handleNodeClick = React.useCallback((id) => {
     setSelectedId(prev => prev === id ? null : id);
-  }
+  }, []);
 
   return (
     <div className="anim-fade" style={{display:"flex", gap:"12px", alignItems:"flex-start"}}>
@@ -3476,7 +3494,7 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
       <div style={{flex:1, minWidth:0}}>
         <div className="card-deep p-3 overflow-x-auto relative">
           <div id="mindmap-tooltip" className="mm-tooltip" style={{display:"none"}}></div>
-          <MindMap track={track} hypotheses={hyps} onNodeClick={handleNodeClick} filters={{status:fStatus||new Set(), category:fCategory||new Set(), source:fSource||new Set()}} />
+          <MindMap track={track} hypotheses={hyps} onNodeClick={handleNodeClick} selectedId={selectedId} filters={{status:fStatus||new Set(), category:fCategory||new Set(), source:fSource||new Set()}} />
         </div>
       </div>
 
@@ -3884,8 +3902,12 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
               </div>
             </div>
 
-            {/* 시도한 콘텐츠 */}
-            {sel.content_ids.length>0 && (
+            {/* 시도한 콘텐츠 — 양방향 조회 (content_ids + hypothesis_ids) */}
+            {(()=>{ const linkedContents = CONTENTS.filter(c =>
+                (sel.content_ids||[]).includes(c.id) ||
+                (c.hypothesis_ids||[]).includes(sel.id)
+              );
+              return linkedContents.length>0 && (
               <div className="card-deep p-5">
                 <h3 className="font-display text-lg mb-3" style={{color:"#1A1A1A"}}>시도한 콘텐츠</h3>
                 <div className="overflow-x-auto">
@@ -3903,9 +3925,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                       </tr>
                     </thead>
                     <tbody className="divide-y" style={{borderColor:"#F3EFE8"}}>
-                      {sel.content_ids.map(cid => {
-                        const c = CONTENTS.find(x=>x.id===cid);
-                        if (!c) return null;
+                      {linkedContents.map((c) => {
                         // 변수명 → Meta 소재명 변환 (위너/드랍 카드와 동일 로직)
                         const stripT = s => (s||"").replace(/\s*\([^)]*\)/g,"").replace(/\s*\[[^\]]*\]/g,"").replace(/\s+\d+(?:\/\d+)+/g,"").trim();
                         const contentBase = stripT(c.title);
@@ -3956,7 +3976,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                   </table>
                 </div>
               </div>
-            )}
+            );})()}
 
             {/* 연상평가 */}
             <div className="card-deep p-5">
