@@ -98,6 +98,24 @@
   }
   .tab-active { background: #1A1A1A; color: #FFFFFF; }
   .tab-inactive { background: #FFFFFF; color: #1A1A1A; border: 1px solid #EBE7E0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .meta-spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid #E8EAED;
+    border-top-color: #1A1A1A;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+  .meta-spinner-lg {
+    width: 28px; height: 28px;
+    border: 3px solid #E8EAED;
+    border-top-color: #1A1A1A;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
   .track-active { background: #FFCB05; color: #1A1A1A; border: 1px solid #FFCB05; font-weight: 600; }
   .track-inactive { background: #FFFFFF; color: #1A1A1A; border: 1px solid #EBE7E0; }
   .speech-bubble { background: #FAF8F4; padding: 8px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; }
@@ -3062,9 +3080,7 @@ function ViewOverview({ track, jumpTo }) {
             </button>
           ))}
           {metaLoading && (
-            <span style={{fontSize:"10px", color:"#9B9690", fontFamily:"'JetBrains Mono', ui-monospace, monospace", marginLeft:"4px"}}>
-              Meta API 조회중…
-            </span>
+            <span className="meta-spinner" style={{marginLeft:"6px"}} />
           )}
           {metaError && (
             <span style={{fontSize:"10px", color:"#B58B1F", fontFamily:"'JetBrains Mono', ui-monospace, monospace", marginLeft:"4px"}}>
@@ -3139,10 +3155,8 @@ function ViewOverview({ track, jumpTo }) {
 
         {/* 콘텐츠 영역 */}
         {metaLoading ? (
-          <div style={{padding:"24px 0", textAlign:"center"}}>
-            <span style={{fontSize:"12px", color:"#9B9690"}}>
-              Meta API에서 {PERIODS.find(p=>p.key===period)?.desc} 성과 불러오는 중…
-            </span>
+          <div style={{padding:"32px 0", display:"flex", flexDirection:"column", alignItems:"center", gap:"12px"}}>
+            <div className="meta-spinner-lg" />
           </div>
         ) : winnerView==="winner" ? (
           winners.length > 0 ? (
