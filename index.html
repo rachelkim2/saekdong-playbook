@@ -3027,8 +3027,8 @@ function ViewOverview({ track, jumpTo }) {
       for (const c of allContents) {
         const badVars = (c.variations||[]).filter(v =>
           (v.metrics?.spend || 0) >= DROP_SPEND_MIN &&
-          (v.metrics?.roas === 0 || v.metrics?.roas === null || v.metrics?.roas === undefined) &&
-          (c.status === "off" || /OFF/i.test(v.name))
+          (c.status === "off" || /OFF/i.test(v.name)) &&
+          (!v.metrics?.roas || v.metrics.roas < WINNER_ROAS)
         );
         if (badVars.length === 0) continue;
         // 여러 베리가 모두 드롭인 경우 "미국에선1/2/3" 형태로 합산 표기
@@ -3168,7 +3168,7 @@ function ViewOverview({ track, jumpTo }) {
           )}
           {winnerView==="drop" && (
             <span style={{...monoLabel, color:"#8A6573"}}>
-              {PERIODS.find(p=>p.key===period)?.desc || "전체 기간 누적 기준"} — ₩5만↑ 소진 & 전환 0건
+              {PERIODS.find(p=>p.key===period)?.desc || "전체 기간 누적 기준"} — OFF 소재 · ₩5만↑ 소진 & ROAS 1.5 미달
             </span>
           )}
         </div>
@@ -3269,7 +3269,7 @@ function ViewOverview({ track, jumpTo }) {
                   ? track==="D"
                     ? `${PERIODS.find(p=>p.key===period)?.desc} PA 소재 없음`
                     : `${PERIODS.find(p=>p.key===period)?.desc} 드랍 소재 없음`
-                  : "드랍 소재 없음 (₩5만 이상 & 전환 0건)"}
+                  : "드랍 소재 없음 (OFF · ₩5만↑ 소진 & ROAS 1.5 미달)"}
             </span>
           )
         )}
