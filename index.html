@@ -2915,9 +2915,11 @@ function ViewOverview({ track, jumpTo }) {
       return allContents
         .map(c=>{
           const bestVar = (c.variations||[]).filter(v=>v.metrics?.roas).sort((a,b)=>b.metrics.roas-a.metrics.roas)[0];
-          return bestVar && bestVar.metrics.roas >= WINNER_ROAS
-            ? {...c, bestRoas:bestVar.metrics.roas, bestVar, bestCtr:bestVar.metrics?.ctr, dataSource:"static"}
-            : null;
+          if (!bestVar || bestVar.metrics.roas < WINNER_ROAS) return null;
+          // 베리에이션 이름으로 타이틀 구체화 (예: "이건모델교체 1/2/3 · 베리2")
+          const varLabel = bestVar.name && bestVar.name !== "본편" ? bestVar.name : null;
+          const displayTitle = varLabel ? `${c.title} · ${varLabel}` : c.title;
+          return {...c, title: displayTitle, bestRoas:bestVar.metrics.roas, bestVar, bestCtr:bestVar.metrics?.ctr, dataSource:"static"};
         })
         .filter(Boolean)
         .sort((a,b)=>b.bestRoas-a.bestRoas)
@@ -2975,7 +2977,10 @@ function ViewOverview({ track, jumpTo }) {
         );
         if (badVars.length === 0) continue;
         const worstVar = badVars.sort((a,b)=>b.metrics.spend-a.metrics.spend)[0];
-        result.push({...c, dropSpend:worstVar.metrics.spend, dropCtr:worstVar.metrics?.ctr, dropVarName:worstVar.name, dataSource:"static"});
+        // 베리에이션 이름으로 타이틀 구체화
+        const dropVarLabel = worstVar.name && worstVar.name !== "본편" ? worstVar.name : null;
+        const dropDisplayTitle = dropVarLabel ? `${c.title} · ${dropVarLabel}` : c.title;
+        result.push({...c, title: dropDisplayTitle, dropSpend:worstVar.metrics.spend, dropCtr:worstVar.metrics?.ctr, dropVarName:worstVar.name, dataSource:"static"});
       }
       return result.sort((a,b)=>b.dropSpend-a.dropSpend);
     }
@@ -3185,9 +3190,6 @@ function ViewOverview({ track, jumpTo }) {
                         </span>
                       )}
                     </div>
-                    {c.dropVarName && (
-                      <div style={{fontSize:"10px", color:"#B0ACA6", marginTop:"2px"}}>베리: {c.dropVarName}</div>
-                    )}
                   </div>
                   {c.adType==="PA"
                     ? <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#EDE0F0", color:"#7A4F8A", flexShrink:0}}>PA</span>
@@ -3513,10 +3515,10 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
   const [filterCategory, setFilterCategory] = useState("");
   const [filterTag, setFilterTag] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
-  const [filterSource, setFilterSource] = useState("");
+
 
   const effectiveQuery = (localQuery || query || "").trim();
-  const hasSearch = !!(effectiveQuery || filterCategory || filterTag || filterStatus || filterSource);
+  const hasSearch = !!(effectiveQuery || filterCategory || filterTag || filterStatus);
 
   // 검색·필터 활성 시 전체 가설 풀에서 매칭, 아니면 현재 트랙만
   const basePool = hasSearch ? HYPOTHESES : HYPOTHESES.filter(h=>h.track===track);
@@ -3529,7 +3531,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
   // 키워드 매칭: 가설 직접 필드 OR 가설에 연결된 CONTENTS.title OR 연결된 INSIGHTS.headline
   function matchesKeyword(h, q) {
     const tagsBlob = computeTags(h).join(" ").toLowerCase();
-    const direct = (h.id + " " + (h.title||"") + " " + (h.full_text||"") + " " + (h.category||"") + " " + (h.status||"") + " " + (SOURCE_TYPE_LABEL[h.source_type]||"") + " " + tagsBlob).toLowerCase();
+    const direct = (h.id + " " + (h.title||"") + " " + (h.full_text||"") + " " + (h.category||"") + " " + (h.status||"") + " " + tagsBlob).toLowerCase();
     if (direct.includes(q)) return true;
     // 가설에 직접 묶인 콘텐츠 (content_ids) + 콘텐츠에 가설로 등록된 것 (hypothesis_ids)
     const linkedC = CONTENTS.filter(c =>
@@ -3550,7 +3552,6 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
     if (filterCategory && h.category !== filterCategory) return false;
     if (filterTag && !computeTags(h).includes(filterTag)) return false;
     if (filterStatus && h.status !== filterStatus) return false;
-    if (filterSource && h.source_type !== filterSource) return false;
     if (effectiveQuery) {
       if (!matchesKeyword(h, effectiveQuery.toLowerCase())) return false;
     }
@@ -3599,12 +3600,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
           <option value="">상태 전체</option>
           {statusList.map(s=><option key={s} value={s}>{statusLabelMap[s]}</option>)}
         </select>
-        <select value={filterSource} onChange={(e)=>setFilterSource(e.target.value)} className="px-2 py-1.5 rounded-md focus:outline-none"
-          style={{background:"#FFFFFF", border:"1px solid #EBE7E0"}}>
-          <option value="">출처 전체</option>
-          {sourceList.map(s=><option key={s} value={s}>{SOURCE_TYPE_LABEL[s]}</option>)}
-        </select>
-        <button onClick={()=>{setLocalQuery("");setFilterCategory("");setFilterTag("");setFilterStatus("");setFilterSource("");}}
+        <button onClick={()=>{setLocalQuery("");setFilterCategory("");setFilterTag("");setFilterStatus("");}}
           className="px-2 py-1.5 rounded-md hover:opacity-80"
           style={{background:"#FFF5C9", color:"#1A1A1A", border:"1px solid #1A1A1A"}}>초기화</button>
         <span className="ml-auto font-mono" style={{color:"#6B6B6B"}}>{hasSearch ? `전체 ${HYPOTHESES.length}건 중 ${filtered.length}건 매칭` : `현재 트랙 ${filtered.length}건`}</span>
@@ -3651,7 +3647,6 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                       title={TAG_DESCRIPTIONS[t]}
                       style={{background:"#1A1A1A", color:"#FFCB05", border:"1px solid #1A1A1A"}}>#{t}</span>
                   ))}
-                  <span className="text-xs" style={{color:"#6B6B6B"}}>{SOURCE_TYPE_LABEL[sel.source_type]}</span>
                 </div>
                 <div className="text-xs font-mono" style={{color:"#6B6B6B"}}>{sel.created_date} → {sel.updated_date}</div>
               </div>
@@ -3809,29 +3804,6 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
               </div>
             )}
 
-            {/* 출처 */}
-            <div className="card-deep p-5">
-              <h3 className="font-display text-lg mb-2" style={{color:"#1A1A1A"}}>출처 노션 페이지</h3>
-              <ul className="space-y-1">
-                {sel.source_pages.map((p,i)=>{
-                  const url = lookupSourceUrl(p.name);
-                  return (
-                    <li key={i} className="text-sm flex items-center gap-2" style={{color:"#1A1A1A"}}>
-                      <span style={{color:"#1A1A1A"}}>•</span>
-                      {url ? (
-                        <a href={url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-flex items-center gap-1" style={{color:"#1A1A1A"}}>
-                          {p.name}
-                          <span style={{fontSize:"10px", opacity:0.7}}>↗</span>
-                        </a>
-                      ) : (
-                        <span>{p.name}</span>
-                      )}
-                      <span className="text-xs font-mono" style={{color:"#6B6B6B"}}>{p.date}</span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
           </>
         )}
       </div>
