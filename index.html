@@ -2754,6 +2754,7 @@ function ViewOverview({ track, jumpTo }) {
   const [metaData, setMetaData] = React.useState(null); // { contentId: {roas, ctr, spend} }
   const [metaLoading, setMetaLoading] = React.useState(false);
   const [metaError, setMetaError] = React.useState(null);
+  const [winnerView, setWinnerView] = React.useState("winner"); // "winner" | "drop"
 
   const hyps = HYPOTHESES.filter(h=>h.track===track);
   const counts = {
@@ -2802,6 +2803,37 @@ function ViewOverview({ track, jumpTo }) {
         .filter(Boolean)
         .sort((a,b)=>b.bestRoas-a.bestRoas)
         .slice(0,12);
+    }
+  }, [period, metaData, allContents]);
+
+  // 드랍 소재: 5만원 이상 소진 & 전환 0 (ROAS = 0)
+  const DROP_SPEND_MIN = 50000;
+  const drops = React.useMemo(()=>{
+    if (period && metaData) {
+      // Meta API 기반
+      return allContents
+        .map(c=>{
+          const m = metaData[c.id];
+          if (!m) return null;
+          if (m.spend < DROP_SPEND_MIN) return null;
+          if (m.roas > 0) return null; // 전환 있으면 제외
+          return {...c, dropSpend:m.spend, dropCtr:m.ctr, dataSource:"meta"};
+        })
+        .filter(Boolean)
+        .sort((a,b)=>b.dropSpend-a.dropSpend);
+    } else {
+      // 정적: 베리에이션 중 spend >= 5만 & roas === 0 인 것
+      const result = [];
+      for (const c of allContents) {
+        const badVars = (c.variations||[]).filter(v =>
+          (v.metrics?.spend || 0) >= DROP_SPEND_MIN &&
+          (v.metrics?.roas === 0 || v.metrics?.roas === null || v.metrics?.roas === undefined)
+        );
+        if (badVars.length === 0) continue;
+        const worstVar = badVars.sort((a,b)=>b.metrics.spend-a.metrics.spend)[0];
+        result.push({...c, dropSpend:worstVar.metrics.spend, dropCtr:worstVar.metrics?.ctr, dropVarName:worstVar.name, dataSource:"static"});
+      }
+      return result.sort((a,b)=>b.dropSpend-a.dropSpend);
     }
   }, [period, metaData, allContents]);
 
@@ -2867,54 +2899,134 @@ function ViewOverview({ track, jumpTo }) {
         )}
       </div>
 
-      {/* 위너 콘텐츠 */}
+      {/* 위너 / 드랍 카드 */}
       <div className="card-deep p-5">
+        {/* 카드 헤더 */}
         <div style={{display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"14px"}}>
-          <div style={{display:"flex", alignItems:"center", gap:"8px"}}>
-            <span style={monoLabel}>위너 콘텐츠 (ROAS ≥ {WINNER_ROAS})</span>
-            {period && metaData && <span style={{fontSize:"9px", padding:"1px 6px", borderRadius:"3px", background:"#E1EFDA", color:"#4F7A4C", fontFamily:"'JetBrains Mono', ui-monospace, monospace"}}>Meta 실시간</span>}
-            {(!period || !metaData) && <span style={{fontSize:"9px", padding:"1px 6px", borderRadius:"3px", background:"#F0EDE8", color:"#9B9690", fontFamily:"'JetBrains Mono', ui-monospace, monospace"}}>정적 데이터</span>}
+          {/* 위너 / 드랍 토글 */}
+          <div style={{display:"flex", alignItems:"center", gap:"2px", background:"#F4F5F7", borderRadius:"8px", padding:"2px"}}>
+            <button onClick={()=>setWinnerView("winner")}
+              style={{fontSize:"11px", fontWeight:600, padding:"4px 14px", borderRadius:"6px", border:"none", cursor:"pointer", transition:"all 0.15s",
+                background: winnerView==="winner"?"#FFFFFF":"transparent",
+                color: winnerView==="winner"?"#1A1A1A":"#9B9690",
+                boxShadow: winnerView==="winner"?"0 1px 3px rgba(0,0,0,0.08)":"none"}}>
+              🏆 위너
+            </button>
+            <button onClick={()=>setWinnerView("drop")}
+              style={{fontSize:"11px", fontWeight:600, padding:"4px 14px", borderRadius:"6px", border:"none", cursor:"pointer", transition:"all 0.15s",
+                background: winnerView==="drop"?"#FFFFFF":"transparent",
+                color: winnerView==="drop"?"#8A6573":"#9B9690",
+                boxShadow: winnerView==="drop"?"0 1px 3px rgba(0,0,0,0.08)":"none"}}>
+              💸 드랍
+            </button>
           </div>
-          <span style={{fontSize:"11px", color:"#C0BCB4"}}>{winners.length}건</span>
+          <div style={{display:"flex", alignItems:"center", gap:"8px"}}>
+            {winnerView==="winner" && (
+              <>
+                {period && metaData && <span style={{fontSize:"9px", padding:"1px 6px", borderRadius:"3px", background:"#E1EFDA", color:"#4F7A4C", fontFamily:"'JetBrains Mono', ui-monospace, monospace"}}>Meta 실시간</span>}
+                {(!period || !metaData) && <span style={{fontSize:"9px", padding:"1px 6px", borderRadius:"3px", background:"#F0EDE8", color:"#9B9690", fontFamily:"'JetBrains Mono', ui-monospace, monospace"}}>정적 데이터</span>}
+                <span style={{fontSize:"11px", color:"#C0BCB4"}}>{winners.length}건</span>
+              </>
+            )}
+            {winnerView==="drop" && (
+              <>
+                {period && metaData && <span style={{fontSize:"9px", padding:"1px 6px", borderRadius:"3px", background:"#EAE0E5", color:"#8A6573", fontFamily:"'JetBrains Mono', ui-monospace, monospace"}}>Meta 실시간</span>}
+                {(!period || !metaData) && <span style={{fontSize:"9px", padding:"1px 6px", borderRadius:"3px", background:"#F0EDE8", color:"#9B9690", fontFamily:"'JetBrains Mono', ui-monospace, monospace"}}>정적 데이터</span>}
+                <span style={{fontSize:"11px", color:"#C0BCB4"}}>{drops.length}건</span>
+              </>
+            )}
+          </div>
         </div>
+
+        {/* 위너 기준 / 드랍 기준 레이블 */}
+        <div style={{marginBottom:"12px"}}>
+          {winnerView==="winner" && (
+            <span style={{...monoLabel, color:"#4F7A4C"}}>ROAS ≥ {WINNER_ROAS} 기준</span>
+          )}
+          {winnerView==="drop" && (
+            <span style={{...monoLabel, color:"#8A6573"}}>₩5만 이상 소진 & 전환 0건 OFF 소재</span>
+          )}
+        </div>
+
+        {/* 콘텐츠 영역 */}
         {metaLoading ? (
           <div style={{padding:"24px 0", textAlign:"center"}}>
             <span style={{fontSize:"12px", color:"#9B9690"}}>Meta API에서 {period}개월 성과 불러오는 중…</span>
           </div>
-        ) : winners.length > 0 ? (
-          <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(280px,1fr))", gap:"8px"}}>
-            {winners.map(c=>(
-              <div key={c.id} onClick={()=>jumpTo("V4",c.hypothesis_ids?.[0])}
-                style={{display:"flex", alignItems:"center", gap:"10px", padding:"8px 10px", borderRadius:"6px", background:"#FAFAFA", border:"1px solid #F0EDE8", cursor:"pointer"}}
-                className="hover:opacity-80">
-                <div style={{width:"36px", height:"36px", borderRadius:"4px", background:"#F0EDE8", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"14px", flexShrink:0}}>▶</div>
-                <div style={{flex:1, minWidth:0}}>
-                  <div style={{fontSize:"11px", color:"#2B2825", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{c.title}</div>
-                  <div style={{display:"flex", gap:"8px", marginTop:"3px", flexWrap:"wrap"}}>
-                    <IdChip id={c.id} />
-                    <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#4F7A4C", fontWeight:600}}>
-                      ROAS {(c.bestRoas*100).toFixed(0)}%
-                    </span>
-                    {c.bestCtr != null && c.bestCtr > 0 && (
-                      <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#9B9690"}}>
-                        CTR {(c.bestCtr*100).toFixed(1)}%
+        ) : winnerView==="winner" ? (
+          winners.length > 0 ? (
+            <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(280px,1fr))", gap:"8px"}}>
+              {winners.map(c=>(
+                <div key={c.id} onClick={()=>jumpTo("V4",c.hypothesis_ids?.[0])}
+                  style={{display:"flex", alignItems:"center", gap:"10px", padding:"8px 10px", borderRadius:"6px", background:"#FAFAFA", border:"1px solid #F0EDE8", cursor:"pointer"}}
+                  className="hover:opacity-80">
+                  <div style={{width:"36px", height:"36px", borderRadius:"4px", background:"#E1EFDA", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"14px", flexShrink:0}}>▶</div>
+                  <div style={{flex:1, minWidth:0}}>
+                    <div style={{fontSize:"11px", color:"#2B2825", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{c.title}</div>
+                    <div style={{display:"flex", gap:"8px", marginTop:"3px", flexWrap:"wrap"}}>
+                      <IdChip id={c.id} />
+                      <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#4F7A4C", fontWeight:600}}>
+                        ROAS {(c.bestRoas*100).toFixed(0)}%
                       </span>
-                    )}
-                    {c.bestSpend != null && (
-                      <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#9B9690"}}>
-                        {fmtKRW(c.bestSpend)}
+                      {c.bestCtr != null && c.bestCtr > 0 && (
+                        <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#9B9690"}}>
+                          CTR {(c.bestCtr*100).toFixed(1)}%
+                        </span>
+                      )}
+                      {c.bestSpend != null && (
+                        <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#9B9690"}}>
+                          {fmtKRW(c.bestSpend)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  {c.status==="on" && <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#E1EFDA", color:"#4F7A4C", flexShrink:0}}>ON</span>}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <span style={{fontSize:"12px", color:"#C0BCB4"}}>
+              {period && metaData ? `최근 ${period}개월 ROAS ${WINNER_ROAS} 이상 콘텐츠 없음` : `ROAS ${WINNER_ROAS} 이상 콘텐츠 없음`}
+            </span>
+          )
+        ) : (
+          /* 드랍 뷰 */
+          drops.length > 0 ? (
+            <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(280px,1fr))", gap:"8px"}}>
+              {drops.map(c=>(
+                <div key={c.id} onClick={()=>jumpTo("V4",c.hypothesis_ids?.[0])}
+                  style={{display:"flex", alignItems:"center", gap:"10px", padding:"8px 10px", borderRadius:"6px", background:"#FDF8F8", border:"1px solid #EDE0E4", cursor:"pointer"}}
+                  className="hover:opacity-80">
+                  <div style={{width:"36px", height:"36px", borderRadius:"4px", background:"#EAE0E5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"14px", flexShrink:0}}>✕</div>
+                  <div style={{flex:1, minWidth:0}}>
+                    <div style={{fontSize:"11px", color:"#4B3840", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{c.title}</div>
+                    <div style={{display:"flex", gap:"8px", marginTop:"3px", flexWrap:"wrap", alignItems:"center"}}>
+                      <IdChip id={c.id} />
+                      <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#8A6573", fontWeight:600}}>
+                        ROAS 0
                       </span>
+                      <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#9B9690"}}>
+                        {fmtKRW(c.dropSpend)} 소진
+                      </span>
+                      {c.dropCtr != null && c.dropCtr > 0 && (
+                        <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#9B9690"}}>
+                          CTR {(c.dropCtr*100).toFixed(1)}%
+                        </span>
+                      )}
+                    </div>
+                    {c.dropVarName && (
+                      <div style={{fontSize:"10px", color:"#B0ACA6", marginTop:"2px"}}>베리: {c.dropVarName}</div>
                     )}
                   </div>
+                  <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#EAE0E5", color:"#8A6573", flexShrink:0}}>OFF</span>
                 </div>
-                {c.status==="on" && <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#E1EFDA", color:"#4F7A4C", flexShrink:0}}>ON</span>}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <span style={{fontSize:"12px", color:"#C0BCB4"}}>
-            {period && metaData ? `최근 ${period}개월 ROAS ${WINNER_ROAS} 이상 콘텐츠 없음` : `ROAS ${WINNER_ROAS} 이상 콘텐츠 없음`}
-          </span>
+              ))}
+            </div>
+          ) : (
+            <span style={{fontSize:"12px", color:"#C0BCB4"}}>
+              {period && metaData ? `최근 ${period}개월 드랍 소재 없음` : "드랍 소재 없음 (₩5만 이상 & 전환 0건)"}
+            </span>
+          )
         )}
       </div>
 
