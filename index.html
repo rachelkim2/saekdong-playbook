@@ -2842,8 +2842,12 @@ function ViewOverview({ track, jumpTo }) {
       for (const [key, m] of Object.entries(metaData)) {
         if (!key.startsWith("_raw_")) continue;
         if (m.roas < WINNER_ROAS || m.spend < WINNER_SPEND_MIN) continue;
+        // PA 광고는 바이럴(D) 트랙에서만 표시
+        if (m.adType === "PA" && track !== "D") continue;
+        // 일반 소재는 바이럴 트랙에서 제외
+        if (m.adType !== "PA" && track === "D") continue;
         list.push({
-          id: null, title: m.sojaemyeong, track: allContents[0]?.track,
+          id: null, title: m.sojaemyeong, track,
           bestRoas: m.roas, bestCtr: m.ctr, bestSpend: m.spend,
           dataSource: "meta", isRaw: true, adType: m.adType,
           hypothesis_ids: [], status: "unknown",
@@ -2881,8 +2885,11 @@ function ViewOverview({ track, jumpTo }) {
       for (const [key, m] of Object.entries(metaData)) {
         if (!key.startsWith("_raw_")) continue;
         if (m.spend < DROP_SPEND_MIN || m.roas > 0) continue;
+        // PA 광고는 바이럴(D) 트랙에서만, 일반 소재는 바이럴 제외
+        if (m.adType === "PA" && track !== "D") continue;
+        if (m.adType !== "PA" && track === "D") continue;
         list.push({
-          id: null, title: m.sojaemyeong, track: allContents[0]?.track,
+          id: null, title: m.sojaemyeong, track,
           dropSpend: m.spend, dropCtr: m.ctr,
           dataSource: "meta", isRaw: true, adType: m.adType, status: "unknown",
           hypothesis_ids: [],
