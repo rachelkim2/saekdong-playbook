@@ -2489,9 +2489,24 @@ const PA_FOLDER_URL = "https://drive.google.com/drive/folders/1pVsTA1fQeq0ASBbUN
 function ThumbMini({ driveUrl, thumbnailUrl, w=64, h=48 }) {
   const driveId = getDriveId(driveUrl);
   const [imgErr, setImgErr] = React.useState(false);
+  const [inView, setInView] = React.useState(false);  // lazy: viewport 진입 후 로딩
+  const wrapRef = React.useRef(null);
+
+  // IntersectionObserver: 뷰포트 200px 전에 진입하면 로딩 시작
+  React.useEffect(() => {
+    if (!wrapRef.current || !driveId) return;
+    const el = wrapRef.current;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.disconnect(); } },
+      { rootMargin: "200px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [driveId]);
+
   const src = thumbnailUrl || (driveId ? `https://drive.google.com/thumbnail?id=${driveId}&sz=w200` : null);
 
-  const wrapStyle = {
+  const wrapBase = {
     width: w, height: h, borderRadius: "5px", flexShrink: 0,
     overflow: "hidden", position: "relative",
     background: "#F0EDE8", border: "1px solid #EBE7E0",
@@ -2512,10 +2527,25 @@ function ThumbMini({ driveUrl, thumbnailUrl, w=64, h=48 }) {
     </div>
   );
 
-  // 1순위: 썸네일 img
-  if (src && !imgErr) {
+  const playIcon = (
+    <div style={{width:24, height:24, borderRadius:"50%", background:"rgba(0,0,0,0.18)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, color:"#6B6B6B", paddingLeft:2}}>▶</div>
+  );
+
+  // ① 뷰포트 미진입 / src 없음 → 플레이스홀더만 렌더 (iframe/img 안 로드)
+  if (!inView || !src) {
     return (
-      <div style={{...wrapStyle, display:"flex", alignItems:"center", justifyContent:"center"}} onClick={handleClick} title={driveUrl ? "Drive에서 열기" : ""}>
+      <div ref={wrapRef} style={{...wrapBase, display:"flex", alignItems:"center", justifyContent:"center"}}
+        onClick={handleClick} title={driveUrl ? "Drive에서 열기" : ""}>
+        {playIcon}
+      </div>
+    );
+  }
+
+  // ② 뷰포트 진입 + img 아직 실패 안 함 → img 시도
+  if (!imgErr) {
+    return (
+      <div ref={wrapRef} style={{...wrapBase, display:"flex", alignItems:"center", justifyContent:"center"}}
+        onClick={handleClick} title={driveUrl ? "Drive에서 열기" : ""}>
         <img src={src} alt="" onError={() => setImgErr(true)}
           style={{width:"100%", height:"100%", objectFit:"cover", display:"block"}} />
         {driveUrl && hoverOverlay}
@@ -2523,15 +2553,16 @@ function ThumbMini({ driveUrl, thumbnailUrl, w=64, h=48 }) {
     );
   }
 
-  // 2순위: img 실패 + 파일 ID 있으면 → Drive preview iframe (축소)
+  // ③ img 실패 + 파일 ID 있음 → iframe fallback (lazy 속성으로 브라우저 추가 최적화)
   if (driveId) {
     const scale = 0.25;
     const iW = Math.round(w / scale);
     const iH = Math.round(h / scale);
     return (
-      <div style={{...wrapStyle, display:"block"}} onClick={handleClick} title="Drive에서 열기">
+      <div ref={wrapRef} style={{...wrapBase, display:"block"}} onClick={handleClick} title="Drive에서 열기">
         <div style={{position:"absolute", inset:0, overflow:"hidden", pointerEvents:"none"}}>
           <iframe
+            loading="lazy"
             src={`https://drive.google.com/file/d/${driveId}/preview`}
             style={{width:iW, height:iH, transform:`scale(${scale})`, transformOrigin:"0 0", border:"none"}}
             allow=""
@@ -2543,10 +2574,11 @@ function ThumbMini({ driveUrl, thumbnailUrl, w=64, h=48 }) {
     );
   }
 
-  // 3순위: placeholder (폴더 URL이거나 URL 없음)
+  // ④ 최종 플레이스홀더
   return (
-    <div style={{...wrapStyle, display:"flex", alignItems:"center", justifyContent:"center"}} onClick={handleClick} title={driveUrl ? "Drive에서 열기" : ""}>
-      <div style={{width:24, height:24, borderRadius:"50%", background:"rgba(0,0,0,0.18)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, color:"#6B6B6B", paddingLeft:2}}>▶</div>
+    <div ref={wrapRef} style={{...wrapBase, display:"flex", alignItems:"center", justifyContent:"center"}}
+      onClick={handleClick} title={driveUrl ? "Drive에서 열기" : ""}>
+      {playIcon}
     </div>
   );
 }
@@ -2703,6 +2735,17 @@ const META_PRESETS = {
 // key = 소재명(sojaemyeong) 단위로 각각 별도 집계 (이건모델교체1, 이건모델교체2 분리)
 async function fetchMetaWinners(preset) {
   if (!preset) return null;
+  // ── sessionStorage 캐시 (10분 TTL) ────────────────────────────
+  const CACHE_TTL = 10 * 60 * 1000;
+  const cacheKey = `milky_meta_v1_${preset}`;
+  try {
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) {
+      const { data, ts } = JSON.parse(cached);
+      if (Date.now() - ts < CACHE_TTL) return data;
+    }
+  } catch(e) {}
+  // ─────────────────────────────────────────────────────────────
   const url = `https://graph.facebook.com/v19.0/${META_ACCOUNT}/insights?fields=ad_name,spend,purchase_roas,ctr&level=ad&date_preset=${preset}&limit=1000&access_token=${META_TOKEN}`;
   try {
     const res = await fetch(url);
@@ -2747,6 +2790,8 @@ async function fetchMetaWinners(preset) {
         matchedCid: v.matchedCid, // CONTENTS ID 매칭 결과
       };
     }
+    // 캐시 저장
+    try { sessionStorage.setItem(cacheKey, JSON.stringify({ data: result, ts: Date.now() })); } catch(e) {}
     return result;
   } catch(e) {
     console.error("Meta API error:", e);
