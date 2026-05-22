@@ -3013,9 +3013,15 @@ function ViewOverview({ track, jumpTo }) {
       function resolveVarTitle(contentTitle, varName) {
         const cleanVar = (varName||"").replace(/\s*\([^)]*\)/g,"").replace(/\s*\[[^\]]*\]/g,"").replace(/\s+(OFF|ON)$/i,"").trim();
         if (!cleanVar || cleanVar === "본편") return null;
-        const beriMatch = cleanVar.match(/^베리(\d+)$/);
-        if (beriMatch) return stripTitle(contentTitle) + beriMatch[1];
-        return cleanVar;
+        const contentBase = stripTitle(contentTitle); // "미국에선", "아이슬로" 등
+        const varNumMatch = cleanVar.match(/^(.+?)(\d+)$/);
+        if (!varNumMatch) return cleanVar; // 숫자 없으면 그대로
+        const varBase = varNumMatch[1]; // "인트로", "베리", "아이슬로" 등
+        const varNum  = varNumMatch[2]; // "1", "2", "3"
+        // 변수 base === 콘텐츠 base → 이미 Meta 소재명 형태 ("아이슬로1" 그대로)
+        if (varBase === contentBase) return cleanVar;
+        // 다르면 콘텐츠 base + 숫자로 재구성 ("인트로2" → "미국에선2")
+        return contentBase + varNum;
       }
       const result = [];
       for (const c of allContents) {
