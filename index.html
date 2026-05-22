@@ -2687,7 +2687,7 @@ async function fetchMetaWinners(preset) {
     for (const ad of ads) {
       const roas = parseFloat((ad.purchase_roas||[{value:0}])[0]?.value || 0);
       const spend = parseFloat(ad.spend || 0);
-      const ctr = parseFloat(ad.ctr || 0);
+      const ctr = parseFloat(ad.ctr || 0) / 100; // Meta API returns CTR as % (e.g. 1.66 = 1.66%), convert to decimal
       if (spend <= 0) continue;
       const sojaemyeong = extractSojaemyeong(ad.ad_name);
       if (!sojaemyeong) continue;
@@ -3331,7 +3331,7 @@ function ViewOverview({ track, jumpTo }) {
                     {/* 2행: 지출 + CTR */}
                     <div style={{display:"flex", gap:"8px", marginTop:"2px", alignItems:"center"}}>
                       <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#9B9690"}}>
-                        {fmtKRW(c.dropSpend)} 소진
+                        {fmtKRW(c.dropSpend)}
                       </span>
                       {c.dropCtr != null && c.dropCtr > 0 && (
                         <span style={{fontSize:"11px", fontFamily:"'JetBrains Mono', ui-monospace, monospace", color:"#9B9690"}}>
