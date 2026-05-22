@@ -3041,7 +3041,7 @@ function ViewOverview({ track, jumpTo }) {
           const nums = badVarNames.map(n => n.match(/\d+$/)?.[0]).filter(Boolean);
           const base = (badVarNames[0]||"").replace(/\d+$/, "") || stripTitle(c.title);
           dropDisplayTitle = (nums.length === badVarNames.length)
-            ? base + nums.join("/")
+            ? base + nums.join("・")
             : stripTitle(c.title);
         }
         const totalDropSpend = badVars.reduce((s,v) => s + (v.metrics?.spend||0), 0);
