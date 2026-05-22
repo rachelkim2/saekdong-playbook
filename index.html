@@ -1974,6 +1974,14 @@ const CONTENTS = [
     hypothesis_ids:["H071"], thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1EQJKZKzjxCAdSpAqXWYjrvJAR0w0qbJP/view",
     notion_url:"https://www.notion.so/35034579dc0180c3afb3cac6338228bf" },
 
+  { id:"C065", track:"A", type:"longform_video", title:"악플반박 1/2/3",
+    variations:[
+      {name:"악플반박1", metrics:{}},
+      {name:"악플반박2", metrics:{}},
+      {name:"악플반박3", metrics:{}}
+    ], live_date:"2026-01-22", status:"on", hypothesis_ids:[],
+    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1StZNShhM49KCdSz0y4-H6iz9tSirQ1LJ/view" },
+
   { id:"C060", track:"A", type:"longform_video", title:"악플디벨 1/2/3",
     variations:[
       {name:"악플디벨1", metrics:{}},
@@ -2143,6 +2151,26 @@ const CONTENTS = [
     live_date:"2026-06-19", status:"filming", hypothesis_ids:[],
     thumbnail_url:null, drive_url:null,
     notion_url:"https://www.notion.so/36634579dc0180afa291e5a00a5a9c55" },
+
+  { id:"C150", track:"B", type:"shortform", title:"흔들흔들",
+    variations:[{name:"흔들흔들", metrics:{}}],
+    live_date:"2026-02-04", status:"on", hypothesis_ids:[],
+    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1_A7DJ68DZK1GqGtb94xraWoARazBeb2c/view" },
+
+  { id:"C151", track:"B", type:"shortform", title:"두쫀쿠",
+    variations:[{name:"두쫀쿠", metrics:{}}],
+    live_date:"2026-02-04", status:"on", hypothesis_ids:[],
+    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1nygwGVRpvxBC1OHDKwTetbRjBZCNHASh/view" },
+
+  { id:"C152", track:"B", type:"banner", title:"안버잘",
+    variations:[{name:"안버잘", metrics:{}}],
+    live_date:"2026-04-07", status:"on", hypothesis_ids:[],
+    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1SKPi5a7qjU0PAShPa3GvpMyvp870drzZ/view" },
+
+  { id:"C153", track:"B", type:"banner", title:"6만원",
+    variations:[{name:"6만원", metrics:{}}],
+    live_date:"2026-01-27", status:"on", hypothesis_ids:[],
+    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/15jGZoBk_qfgynNwiSKzrEfUn9KCiT0Ql/view" },
 ];
 
 const INSIGHTS = [
@@ -2619,8 +2647,8 @@ function matchContentId(sojaemyeong) {
   let c = CONTENTS.find(c => normTitle(c.title) === q);
   if (c) return c.id;
 
-  // 2순위: 콘텐츠 정규화 제목이 q로 시작 (앞 4자 이상)
-  if (q.length >= 4) {
+  // 2순위: 콘텐츠 정규화 제목이 q로 시작 (앞 2자 이상)
+  if (q.length >= 2) {
     c = CONTENTS.find(c => normTitle(c.title).startsWith(q));
     if (c) return c.id;
   }
