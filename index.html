@@ -2585,7 +2585,8 @@ const META_PRESETS = {
   "3m":  "last_90d",
 };
 
-// Meta 광고 insights 조회 → { contentId: { roas, ctr, spend } } 집계
+// Meta 광고 insights 조회 → { 소재명: { roas, ctr, spend, adFormat, matchedCid } } 집계
+// key = 소재명(sojaemyeong) 단위로 각각 별도 집계 (이건모델교체1, 이건모델교체2 분리)
 async function fetchMetaWinners(preset) {
   if (!preset) return null;
   const url = `https://graph.facebook.com/v19.0/${META_ACCOUNT}/insights?fields=ad_name,spend,purchase_roas,ctr&level=ad&date_preset=${preset}&limit=1000&access_token=${META_TOKEN}`;
@@ -2595,8 +2596,7 @@ async function fetchMetaWinners(preset) {
     const json = await res.json();
     const ads = json.data || [];
 
-    // content별 spend-weighted ROAS 집계
-    // key: contentId (매칭됨) 또는 "_raw_소재명" (미매칭)
+    // 소재명별 spend-weighted ROAS 집계
     const map = {};
     for (const ad of ads) {
       const roas = parseFloat((ad.purchase_roas||[{value:0}])[0]?.value || 0);
@@ -2606,11 +2606,19 @@ async function fetchMetaWinners(preset) {
       const sojaemyeong = extractSojaemyeong(ad.ad_name);
       if (!sojaemyeong) continue;
       const pa = isPA(ad.ad_name);
-      const cid = matchContentId(sojaemyeong) || ("_raw_" + sojaemyeong);
-      if (!map[cid]) map[cid] = { totalSpend:0, weightedRoas:0, maxCtr:0, sojaemyeong, adType: pa ? "PA" : "일반" };
-      map[cid].weightedRoas += roas * spend;
-      map[cid].totalSpend += spend;
-      if (ctr > map[cid].maxCtr) map[cid].maxCtr = ctr;
+      const nameParts = ad.ad_name.split("_");
+      // parts[3]: 광고 형식 ("롱폼" / "숏폼" / "배너") — PA 광고는 null
+      const adFormat = pa ? null : (nameParts[3] || null);
+      // CONTENTS 매칭 ID (있으면) — PA는 트래커에 없으므로 null
+      const matchedCid = pa ? null : matchContentId(sojaemyeong);
+
+      const key = sojaemyeong; // 소재명별 집계
+      if (!map[key]) {
+        map[key] = { totalSpend:0, weightedRoas:0, maxCtr:0, sojaemyeong, adType: pa ? "PA" : "일반", adFormat, matchedCid };
+      }
+      map[key].weightedRoas += roas * spend;
+      map[key].totalSpend += spend;
+      if (ctr > map[key].maxCtr) map[key].maxCtr = ctr;
     }
     // weighted average ROAS 계산
     const result = {};
@@ -2620,8 +2628,9 @@ async function fetchMetaWinners(preset) {
         ctr: v.maxCtr,
         spend: v.totalSpend,
         sojaemyeong: v.sojaemyeong,
-        adType: v.adType || "일반",
-        isRaw: key.startsWith("_raw_"),
+        adType: v.adType,
+        adFormat: v.adFormat,     // "롱폼" | "숏폼" | "배너" | null(PA)
+        matchedCid: v.matchedCid, // CONTENTS ID 매칭 결과
       };
     }
     return result;
@@ -2870,30 +2879,37 @@ function ViewOverview({ track, jumpTo }) {
   // 위너 콘텐츠: 기간 선택 시 Meta API 실시간 ROAS, 전체 선택 시 정적 데이터
   const winners = React.useMemo(()=>{
     if (period && metaData) {
-      // Meta API 기반: 해당 기간 ROAS >= WINNER_ROAS인 콘텐츠
+      // Meta API 기반: 소재명(sojaemyeong) 단위로 각각 판단
       const list = [];
-      // 1. CONTENTS에 매칭된 항목
-      for (const c of allContents) {
-        const m = metaData[c.id];
-        if (!m || m.roas < WINNER_ROAS || m.spend < WINNER_SPEND_MIN) continue;
-        list.push({...c, bestRoas:m.roas, bestCtr:m.ctr, bestSpend:m.spend, dataSource:"meta"});
-      }
-      // 2. 미매칭(_raw_) 항목 — 소재명만 있는 것
-      for (const [key, m] of Object.entries(metaData)) {
-        if (!key.startsWith("_raw_")) continue;
+      for (const [sojaemyeong, m] of Object.entries(metaData)) {
         if (m.roas < WINNER_ROAS || m.spend < WINNER_SPEND_MIN) continue;
-        // PA 광고는 바이럴(D) 트랙에서만 표시
-        if (m.adType === "PA" && track !== "D") continue;
-        // 일반 소재는 바이럴 트랙에서 제외
-        if (m.adType !== "PA" && track === "D") continue;
+        // ── 트랙 & 형식 필터링 ──────────────────────────────────
+        if (m.adType === "PA") {
+          if (track !== "D") continue; // PA 광고는 바이럴(D) 트랙에서만
+        } else {
+          if (track === "D") continue;                                          // 일반 소재는 바이럴 제외
+          if (track === "A" && m.adFormat !== "롱폼") continue;                // 롱폼 오버뷰: 롱폼만
+          if (track === "B" && m.adFormat !== "숏폼" && m.adFormat !== "배너") continue; // 숏폼·배너만
+        }
+        // 매칭된 콘텐츠 정보 (썸네일·드라이브 URL)
+        const mc = m.matchedCid ? CONTENTS.find(c => c.id === m.matchedCid) : null;
         list.push({
-          id: null, title: m.sojaemyeong, track,
-          bestRoas: m.roas, bestCtr: m.ctr, bestSpend: m.spend,
-          dataSource: "meta", isRaw: true, adType: m.adType,
-          hypothesis_ids: [], status: "unknown",
+          id: m.matchedCid || null,
+          title: m.sojaemyeong,          // Meta 소재명을 그대로 표시
+          track,
+          bestRoas: m.roas,
+          bestCtr: m.ctr,
+          bestSpend: m.spend,
+          dataSource: "meta",
+          adType: m.adType,
+          adFormat: m.adFormat,
+          drive_url: mc?.drive_url,
+          thumbnail_url: mc?.thumbnail_url,
+          hypothesis_ids: mc?.hypothesis_ids || [],
+          status: mc?.status || "unknown",
         });
       }
-      return list.sort((a,b)=>b.bestRoas-a.bestRoas).slice(0,16);
+      return list.sort((a,b)=>b.bestRoas-a.bestRoas).slice(0,20);
     } else {
       // 전체(정적): 베리에이션 중 최고 ROAS >= WINNER_ROAS
       return allContents
@@ -2913,26 +2929,32 @@ function ViewOverview({ track, jumpTo }) {
   const DROP_SPEND_MIN = 50000;
   const drops = React.useMemo(()=>{
     if (period && metaData) {
-      // Meta API 기반
+      // Meta API 기반: 소재명(sojaemyeong) 단위로 각각 판단
       const list = [];
-      // 1. CONTENTS 매칭 항목
-      for (const c of allContents) {
-        const m = metaData[c.id];
-        if (!m || m.spend < DROP_SPEND_MIN || m.roas > 0) continue;
-        list.push({...c, dropSpend:m.spend, dropCtr:m.ctr, dataSource:"meta"});
-      }
-      // 2. 미매칭 raw 항목
-      for (const [key, m] of Object.entries(metaData)) {
-        if (!key.startsWith("_raw_")) continue;
+      for (const [sojaemyeong, m] of Object.entries(metaData)) {
         if (m.spend < DROP_SPEND_MIN || m.roas > 0) continue;
-        // PA 광고는 바이럴(D) 트랙에서만, 일반 소재는 바이럴 제외
-        if (m.adType === "PA" && track !== "D") continue;
-        if (m.adType !== "PA" && track === "D") continue;
+        // ── 트랙 & 형식 필터링 ──────────────────────────────────
+        if (m.adType === "PA") {
+          if (track !== "D") continue;
+        } else {
+          if (track === "D") continue;
+          if (track === "A" && m.adFormat !== "롱폼") continue;
+          if (track === "B" && m.adFormat !== "숏폼" && m.adFormat !== "배너") continue;
+        }
+        const mc = m.matchedCid ? CONTENTS.find(c => c.id === m.matchedCid) : null;
         list.push({
-          id: null, title: m.sojaemyeong, track,
-          dropSpend: m.spend, dropCtr: m.ctr,
-          dataSource: "meta", isRaw: true, adType: m.adType, status: "unknown",
-          hypothesis_ids: [],
+          id: m.matchedCid || null,
+          title: m.sojaemyeong,
+          track,
+          dropSpend: m.spend,
+          dropCtr: m.ctr,
+          dataSource: "meta",
+          adType: m.adType,
+          adFormat: m.adFormat,
+          drive_url: mc?.drive_url,
+          thumbnail_url: mc?.thumbnail_url,
+          hypothesis_ids: mc?.hypothesis_ids || [],
+          status: mc?.status || "unknown",
         });
       }
       return list.sort((a,b)=>b.dropSpend-a.dropSpend);
@@ -3084,8 +3106,8 @@ function ViewOverview({ track, jumpTo }) {
         ) : winnerView==="winner" ? (
           winners.length > 0 ? (
             <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(280px,1fr))", gap:"8px"}}>
-              {winners.map(c=>(
-                <div key={c.id} onClick={()=>jumpTo("V4",c.hypothesis_ids?.[0])}
+              {winners.map((c,i)=>(
+                <div key={c.title||i} onClick={()=>jumpTo("V4",c.hypothesis_ids?.[0])}
                   style={{display:"flex", alignItems:"center", gap:"10px", padding:"8px 10px", borderRadius:"6px", background:"#FAFAFA", border:"1px solid #F0EDE8", cursor:"pointer"}}
                   className="hover:opacity-80">
                   <ThumbMini driveUrl={c.drive_url} thumbnailUrl={c.thumbnail_url} w={64} h={48} />
@@ -3108,9 +3130,12 @@ function ViewOverview({ track, jumpTo }) {
                       )}
                     </div>
                   </div>
-                  {c.status==="on" && <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#E1EFDA", color:"#4F7A4C", flexShrink:0}}>ON</span>}
-                  {c.isRaw && c.adType==="PA" && <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#EDE0F0", color:"#7A4F8A", flexShrink:0}}>PA</span>}
-                  {c.isRaw && c.adType!=="PA" && <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#F4F5F7", color:"#9B9690", flexShrink:0}}>소재</span>}
+                  {c.adType==="PA"
+                    ? <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#EDE0F0", color:"#7A4F8A", flexShrink:0}}>PA</span>
+                    : !c.id
+                      ? <span style={{fontSize:"9px", padding:"2px 6px", borderRadius:"3px", background:"#F4F5F7", color:"#9B9690", flexShrink:0}}>소재</span>
+                      : null
+                  }
                 </div>
               ))}
             </div>
@@ -3125,8 +3150,8 @@ function ViewOverview({ track, jumpTo }) {
           /* 드랍 뷰 */
           drops.length > 0 ? (
             <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(280px,1fr))", gap:"8px"}}>
-              {drops.map(c=>(
-                <div key={c.id} onClick={()=>jumpTo("V4",c.hypothesis_ids?.[0])}
+              {drops.map((c,i)=>(
+                <div key={c.title||i} onClick={()=>jumpTo("V4",c.hypothesis_ids?.[0])}
                   style={{display:"flex", alignItems:"center", gap:"10px", padding:"8px 10px", borderRadius:"6px", background:"#FDF8F8", border:"1px solid #EDE0E4", cursor:"pointer"}}
                   className="hover:opacity-80">
                   <ThumbMini driveUrl={c.drive_url} thumbnailUrl={c.thumbnail_url} w={64} h={48} />
