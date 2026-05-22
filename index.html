@@ -3144,10 +3144,16 @@ function ViewOverview({ track, jumpTo }) {
           {k:"needs_more_data", label:"추가검증"},
           {k:"abandoned", label:"폐기"},
         ].map(({k,label})=>(
-          <div key={k} className="card-deep p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <span className={`w-2 h-2 rounded-full dot-${k}`}></span>
-              <span className="text-xs font-mono tracking-widest uppercase" style={{color:"#9B9690"}}>{label}</span>
+          <div key={k} className="card-deep p-4 hover:opacity-80"
+            style={{cursor:"pointer", transition:"opacity 0.15s"}}
+            onClick={()=>jumpTo("V2", null, null, k)}
+            title="마인드맵에서 보기">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span className={`w-2 h-2 rounded-full dot-${k}`}></span>
+                <span className="text-xs font-mono tracking-widest uppercase" style={{color:"#9B9690"}}>{label}</span>
+              </div>
+              <span style={{fontSize:"9px", color:"#C0BCB4", fontFamily:"'JetBrains Mono', monospace"}}>→ MAP</span>
             </div>
             <div style={{fontSize:"2rem", fontWeight:300, letterSpacing:"-0.01em", color:"#2B2825", lineHeight:1}}>{counts[k]}</div>
           </div>
@@ -4176,8 +4182,14 @@ function App() {
     setF(next);
   }
 
-  function jumpTo(v, id, contentId) {
+  function jumpTo(v, id, contentId, mmStatus) {
     setView(v);
+    if (v==="V2" && mmStatus) {
+      // 오버뷰 상태 카드 → 마인드맵 상태 필터 자동 설정
+      setMmFStatus(new Set([mmStatus]));
+      setMmFCategory(new Set());
+      setMmFSource(new Set());
+    }
     if (v==="V4" && id) setSelectedH(id);
     if (v==="V3" && id) {
       setSelectedI(id);
