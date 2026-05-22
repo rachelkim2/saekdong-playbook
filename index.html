@@ -2502,11 +2502,15 @@ function matchContentId(sojaemyeong) {
 }
 
 // Meta API date_preset 맵핑
-const META_PRESETS = { 1:"last_30d", 3:"last_90d", 6:"last_180d" };
+// date_preset은 Meta API 공식 값 그대로
+const META_PRESETS = {
+  "1w":  "last_7d",
+  "1m":  "last_30d",
+  "3m":  "last_90d",
+};
 
 // Meta 광고 insights 조회 → { contentId: { roas, ctr, spend } } 집계
-async function fetchMetaWinners(months) {
-  const preset = META_PRESETS[months];
+async function fetchMetaWinners(preset) {
   if (!preset) return null;
   const url = `https://graph.facebook.com/v19.0/${META_ACCOUNT}/insights?fields=ad_name,spend,purchase_roas,ctr&level=ad&date_preset=${preset}&limit=1000&access_token=${META_TOKEN}`;
   try {
@@ -2744,13 +2748,14 @@ function MindMap({ track, hypotheses, onNodeClick, filters }) {
 
 // ----------------- Views -----------------
 function ViewOverview({ track, jumpTo }) {
+  // key: null = 전체(정적), "1w"/"1m"/"3m" = Meta API 실시간
   const PERIODS = [
-    { label:"전체", months:null },
-    { label:"1개월", months:1 },
-    { label:"3개월", months:3 },
-    { label:"6개월", months:6 },
+    { label:"전체",  key:null, desc:"전체 기간 누적 기준",          preset:null },
+    { label:"1주일", key:"1w", desc:"최근 7일 ROAS 기준",           preset:"last_7d" },
+    { label:"1개월", key:"1m", desc:"최근 30일 ROAS 기준",          preset:"last_30d" },
+    { label:"3개월", key:"3m", desc:"최근 90일 ROAS 기준",          preset:"last_90d" },
   ];
-  const [period, setPeriod] = React.useState(null);
+  const [period, setPeriod] = React.useState(null); // null | "1w" | "1m" | "3m"
   const [metaData, setMetaData] = React.useState(null); // { contentId: {roas, ctr, spend} }
   const [metaLoading, setMetaLoading] = React.useState(false);
   const [metaError, setMetaError] = React.useState(null);
@@ -2767,9 +2772,11 @@ function ViewOverview({ track, jumpTo }) {
   // 기간 선택 시 Meta API 호출
   React.useEffect(()=>{
     if (!period) { setMetaData(null); setMetaError(null); return; }
+    const p = PERIODS.find(p=>p.key===period);
+    if (!p?.preset) return;
     setMetaLoading(true);
     setMetaError(null);
-    fetchMetaWinners(period).then(result=>{
+    fetchMetaWinners(p.preset).then(result=>{
       setMetaLoading(false);
       if (result) { setMetaData(result); }
       else { setMetaError("Meta API 조회 실패 — 정적 데이터로 표시"); }
@@ -2871,32 +2878,39 @@ function ViewOverview({ track, jumpTo }) {
       </div>
 
       {/* 기간 선택 */}
-      <div style={{display:"flex", alignItems:"center", gap:"6px"}}>
-        <span style={monoLabel}>기간</span>
-        {PERIODS.map(p=>(
-          <button key={p.label} onClick={()=>setPeriod(p.months)}
-            style={{fontSize:"11px", padding:"3px 12px", borderRadius:"20px", cursor:"pointer", fontFamily:"inherit", border:"1px solid", transition:"all 0.15s",
-              background: period===p.months?"#1A1A1A":"#FFFFFF",
-              color: period===p.months?"#FFFFFF":"#6B6B6B",
-              borderColor: period===p.months?"#1A1A1A":"#E8EAED"}}>
-            {p.label}
-          </button>
-        ))}
-        {metaLoading && (
-          <span style={{fontSize:"10px", color:"#9B9690", fontFamily:"'JetBrains Mono', ui-monospace, monospace", marginLeft:"4px"}}>
-            Meta API 조회중…
-          </span>
-        )}
-        {metaError && (
-          <span style={{fontSize:"10px", color:"#B58B1F", fontFamily:"'JetBrains Mono', ui-monospace, monospace", marginLeft:"4px"}}>
-            ⚠ {metaError}
-          </span>
-        )}
-        {period && metaData && !metaLoading && (
-          <span style={{fontSize:"10px", color:"#4F7A4C", fontFamily:"'JetBrains Mono', ui-monospace, monospace", marginLeft:"4px"}}>
-            ✓ Meta 실시간
-          </span>
-        )}
+      <div>
+        <div style={{display:"flex", alignItems:"center", gap:"6px", marginBottom:"5px"}}>
+          <span style={monoLabel}>기간</span>
+          {PERIODS.map(p=>(
+            <button key={p.label} onClick={()=>setPeriod(p.key)}
+              style={{fontSize:"11px", padding:"3px 12px", borderRadius:"20px", cursor:"pointer", fontFamily:"inherit", border:"1px solid", transition:"all 0.15s",
+                background: period===p.key?"#1A1A1A":"#FFFFFF",
+                color: period===p.key?"#FFFFFF":"#6B6B6B",
+                borderColor: period===p.key?"#1A1A1A":"#E8EAED"}}>
+              {p.label}
+            </button>
+          ))}
+          {metaLoading && (
+            <span style={{fontSize:"10px", color:"#9B9690", fontFamily:"'JetBrains Mono', ui-monospace, monospace", marginLeft:"4px"}}>
+              Meta API 조회중…
+            </span>
+          )}
+          {metaError && (
+            <span style={{fontSize:"10px", color:"#B58B1F", fontFamily:"'JetBrains Mono', ui-monospace, monospace", marginLeft:"4px"}}>
+              ⚠ {metaError}
+            </span>
+          )}
+          {period && metaData && !metaLoading && (
+            <span style={{fontSize:"10px", color:"#4F7A4C", fontFamily:"'JetBrains Mono', ui-monospace, monospace", marginLeft:"4px"}}>
+              ✓ Meta 실시간
+            </span>
+          )}
+        </div>
+        {/* 선택된 기간 기준 설명 */}
+        <div style={{fontSize:"11px", color:"#9B9690", paddingLeft:"2px"}}>
+          {PERIODS.find(p=>p.key===period)?.desc || "전체 기간 누적 기준"}
+          {" "}· ROAS ≥ {WINNER_ROAS} 이상인 소재만 위너로 분류
+        </div>
       </div>
 
       {/* 위너 / 드랍 카드 */}
@@ -2941,17 +2955,23 @@ function ViewOverview({ track, jumpTo }) {
         {/* 위너 기준 / 드랍 기준 레이블 */}
         <div style={{marginBottom:"12px"}}>
           {winnerView==="winner" && (
-            <span style={{...monoLabel, color:"#4F7A4C"}}>ROAS ≥ {WINNER_ROAS} 기준</span>
+            <span style={{...monoLabel, color:"#4F7A4C"}}>
+              {PERIODS.find(p=>p.key===period)?.desc || "전체 기간 누적 기준"} — ROAS ≥ {WINNER_ROAS}
+            </span>
           )}
           {winnerView==="drop" && (
-            <span style={{...monoLabel, color:"#8A6573"}}>₩5만 이상 소진 & 전환 0건 OFF 소재</span>
+            <span style={{...monoLabel, color:"#8A6573"}}>
+              {PERIODS.find(p=>p.key===period)?.desc || "전체 기간 누적 기준"} — ₩5만↑ 소진 & 전환 0건
+            </span>
           )}
         </div>
 
         {/* 콘텐츠 영역 */}
         {metaLoading ? (
           <div style={{padding:"24px 0", textAlign:"center"}}>
-            <span style={{fontSize:"12px", color:"#9B9690"}}>Meta API에서 {period}개월 성과 불러오는 중…</span>
+            <span style={{fontSize:"12px", color:"#9B9690"}}>
+              Meta API에서 {PERIODS.find(p=>p.key===period)?.desc} 성과 불러오는 중…
+            </span>
           </div>
         ) : winnerView==="winner" ? (
           winners.length > 0 ? (
@@ -2986,7 +3006,9 @@ function ViewOverview({ track, jumpTo }) {
             </div>
           ) : (
             <span style={{fontSize:"12px", color:"#C0BCB4"}}>
-              {period && metaData ? `최근 ${period}개월 ROAS ${WINNER_ROAS} 이상 콘텐츠 없음` : `ROAS ${WINNER_ROAS} 이상 콘텐츠 없음`}
+              {period && metaData
+                ? `${PERIODS.find(p=>p.key===period)?.desc} ROAS ${WINNER_ROAS} 이상 콘텐츠 없음`
+                : `ROAS ${WINNER_ROAS} 이상 콘텐츠 없음`}
             </span>
           )
         ) : (
@@ -3024,7 +3046,9 @@ function ViewOverview({ track, jumpTo }) {
             </div>
           ) : (
             <span style={{fontSize:"12px", color:"#C0BCB4"}}>
-              {period && metaData ? `최근 ${period}개월 드랍 소재 없음` : "드랍 소재 없음 (₩5만 이상 & 전환 0건)"}
+              {period && metaData
+                ? `${PERIODS.find(p=>p.key===period)?.desc} 드랍 소재 없음`
+                : "드랍 소재 없음 (₩5만 이상 & 전환 0건)"}
             </span>
           )
         )}
