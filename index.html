@@ -3398,7 +3398,7 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
                     <div style={{background:"#FAFAFA", padding:"8px 10px", display:"flex", alignItems:"center", justifyContent:"space-between", gap:"8px"}}>
                       <div style={{display:"flex", alignItems:"center", gap:"6px", minWidth:0}}>
                         <IdChip id={c.id} />
-                        <span style={{fontSize:"11px", color:"#2B2825", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{c.title}</span>
+                        <span style={{fontSize:"11px", color:"#2B2825", fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{cleanTitle(c.title)}</span>
                       </div>
                       <div style={{display:"flex", gap:"6px", flexShrink:0, alignItems:"center"}}>
                         {c.drive_url && <a href={c.drive_url} target="_blank" rel="noopener noreferrer" style={{fontSize:"10px", color:"#4F7A4C", textDecoration:"none"}}>▶</a>}
@@ -3814,9 +3814,9 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                                 <div className="text-[12px] mt-1">
                                   {c.notion_url ? (
                                     <a href={c.notion_url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-flex items-center gap-1" style={{color:"#1A1A1A"}}>
-                                      {c.title}<span style={{fontSize:"9px", opacity:0.6}}>↗</span>
+                                      {cleanTitle(c.title)}<span style={{fontSize:"9px", opacity:0.6}}>↗</span>
                                     </a>
-                                  ) : c.title}
+                                  ) : cleanTitle(c.title)}
                                 </div>
                                 <div className="text-xs mt-0.5" style={{color:"#6B6B6B"}}>{c.live_date}</div>
                               </div>
@@ -4075,6 +4075,13 @@ function ViewTracker() {
   );
 }
 
+
+// 콘텐츠명 정제 헬퍼 — 괄호/대괄호/숫자열 제거 (전역 공유)
+const cleanTitle = s => (s||"")
+  .replace(/\s*\([^)]*\)/g, "")
+  .replace(/\s*\[[^\]]*\]/g, "")
+  .replace(/\s+\d+(?:\/\d+)+/g, "")
+  .trim();
 
 // ----------------- App Shell -----------------
 function App() {
