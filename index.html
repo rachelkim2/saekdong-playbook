@@ -189,7 +189,7 @@ const { useState, useEffect, useRef, useMemo } = React;
 const META = {
   title: "색동서울 콘텐츠 플레이북",
   version: "v1.4",
-  lastUpdate: "2026-05-21",
+  lastUpdate: "2026-05-26",
   brandRoot: "밀키토너",
   brandUSP: "코직애씨드 터메릭 나이아신아마이드 5% 밀키토너",
 };
@@ -201,7 +201,12 @@ const META = {
 // ============================================================
 const TRACKER = [
   // 출처: [색동] 2026 콘텐츠 트래커_v2 — m:{spend,roas,cpm,ctr,cpc,cvr,aov} 풀 메트릭
-  // 총 146건 · 자동 갱신
+  // 총 147건 · 자동 갱신
+  { o:"RABN", n:"식품래퍼", a:"기미잡티", f:"롱폼", s:"완료", wP:"3주차(12/19)", wO:"3주차(12/19)",
+    hyp:"식품 래퍼 형식으로 기미잡티 소구 — 트렌디한 포맷의 전환율 테스트",
+    m:{ spend:9460735, roas:1.58, ctr:0.0312 },
+    ins:"LIVE 데이터 기준 ROAS 1.58 · Meta API 자동 반영",
+    next:"-" },
   { o:"RABN", n:"배송출발", a:"기미잡티", f:"롱폼", s:"완료", wP:"3주차(2/19)", wO:"1주차(3/3)",
     hyp:"배송 지연 이슈를 타협 없는 품질과 대세감의 근거로 이용하여 구매 설득",
     m:{ spend:8345154, roas:1.34, cpm:61483, ctr:0.0278, cpc:2209, cvr:0.0717, aov:41415 },
@@ -932,6 +937,31 @@ const TRACKER = [
     m:{ spend:null, roas:null, cpm:null, ctr:null, cpc:null, cvr:null, aov:null },
     ins:"-",
     next:"-" },
+  { o:"RABN", n:"역컨셉", a:"베네핏", f:"숏폼", s:"완료", wP:"4주차(5/25)", wO:"4주차(5/26)",
+    hyp:"크림 베네핏 소구: 역컨셉 후킹으로 밀키크림 인지도 확장 테스트",
+    m:{ spend:null, roas:null, cpm:null, ctr:null, cpc:null, cvr:null, aov:null },
+    ins:"-",
+    next:"-" },
+  { o:"RABN", n:"착한소비", a:"베네핏", f:"숏폼", s:"편집", wP:"4주차(5/25)", wO:"4주차(5/29)",
+    hyp:"크림 베네핏 소구: 착한소비 긍정 프레이밍으로 전환 유도",
+    m:{ spend:null, roas:null, cpm:null, ctr:null, cpc:null, cvr:null, aov:null },
+    ins:"-",
+    next:"-" },
+  { o:"RABN", n:"배너테스트1(할인율)", a:"베네핏", f:"배너", s:"기획", wP:"4주차(5/25)", wO:"4주차(5/29)",
+    hyp:"할인율(%) 명시 구성이 CTR/CVR에 영향을 미칠 것",
+    m:{ spend:null, roas:null, cpm:null, ctr:null, cpc:null, cvr:null, aov:null },
+    ins:"-",
+    next:"-" },
+  { o:"RABN", n:"배너테스트2(가격강조)", a:"베네핏", f:"배너", s:"기획", wP:"4주차(5/25)", wO:"4주차(5/29)",
+    hyp:"정가·할인가 비교 가시성을 높이면 CVR이 개선될 것",
+    m:{ spend:null, roas:null, cpm:null, ctr:null, cpc:null, cvr:null, aov:null },
+    ins:"-",
+    next:"-" },
+  { o:"RABN", n:"배너테스트3(1+1소구)", a:"베네핏", f:"배너", s:"기획", wP:"4주차(5/25)", wO:"4주차(5/29)",
+    hyp:"1+1 또는 2+1 번들 가격 소구가 CTR/CVR에 미치는 영향 테스트",
+    m:{ spend:null, roas:null, cpm:null, ctr:null, cpc:null, cvr:null, aov:null },
+    ins:"-",
+    next:"-" },
 ];
 
 const OWNERS = {
@@ -969,6 +999,7 @@ const SOURCE_PAGE_URLS = {
   "색동서울 팀 (메인 hub)": "https://www.notion.so/26534579dc0180d9850ddc9adfefac60",
   "콘텐츠 운영 시트": "https://docs.google.com/spreadsheets/d/1kZnB4oZhYxDrEdW-ycKznP_pMr453lZ2jjw5QbPhOhI/edit",
   "위클리 체크인 (5/21)": "https://www.notion.so/36634579dc01803b835bff7e4ab8e488",
+  "콘텐츠 리뷰 4월 5주차": "https://www.notion.so/34f34579dc0180908c8fde6d7fb116b3",
 };
 
 const OPS_LOG = [
@@ -981,6 +1012,38 @@ const OPS_LOG = [
       "크림 베네핏 긍정소구 4소재 → 1세트에 추가 집행",
       "기미잡티 PA 예산 증액 검토",
       "크리마 리뷰 메세지 결제"
+    ]
+  },
+  { id:"OPS002", date:"2026-05-22", type:"위클리체크인",
+    title:"[Rachel] 5월 3주차 업무 일지 (5/18~5/22)",
+    notion_url:"https://www.notion.so/36434579dc0180b08186d88c36ee9e3a",
+    summary:"롱폼 3건 완료(스킨더스트_들어보셨, 하나둘올록담, 스토리1/2). 숏폼 4건 완료(해결해요, 안써본당신, 바르던데, 없는이유). 인플 가로/세로형 배너 제작 완료. 온보딩 자료 작성 완료. 위클리 미팅 자료 작성 완료.",
+    next_actions:[
+      "밀키토너 숏폼&배너 레퍼 서치 (진행중)",
+      "기미잡티_찐코덕들 롱폼 편집 진행",
+      "밀키크림 베네핏 숏폼 제작 착수 (역컨셉·착한소비)"
+    ]
+  },
+  { id:"OPS003", date:"2026-05-26", type:"위클리체크인",
+    title:"[Rachel] 5월 4주차 업무 일지 (5/25~)",
+    notion_url:"https://www.notion.so/36634579dc018090ad4eca99623f6caa",
+    summary:"롱폼 3건 편집 진행중(찐코덕들 편집중, 단종얘기, 스킨더스트 미정). 숏폼_역컨셉(크림 베네핏) 완료·업로드. 숏폼_착한소비 편집중. 배너 3종(할인율/가격강조/1+1소구) 기획 중. 시즌 레퍼런스 서치·콘텐츠 리뷰 작성 진행중.",
+    next_actions:[
+      "찐코덕들 롱폼 편집 완료",
+      "착한소비 숏폼 완성 및 업로드",
+      "배너 테스트 3종 제작",
+      "콘텐츠 리뷰 작성 완료"
+    ]
+  },
+  { id:"OPS004", date:"2026-04-27", type:"콘텐츠리뷰",
+    title:"콘텐츠 리뷰 4월 5주차",
+    notion_url:"https://www.notion.so/34f34579dc0180908c8fde6d7fb116b3",
+    summary:"숏폼(칭찬해/프롬프트/뚫은) 전반 CTR 낮음 — 소비자는 많은 정보량 거부, 직관적 1~2개 카피 집중 필요. BNA 배너 1/2/3 테스트: BNA3(옅고 밀집된 잡티) ROAS 137 반응. BnAAI 롱폼 ROAS 159%·CVR 5.32% — 과정 BNA + 직관적 후킹 유효. 코직산 비누 CTR 높으나 CVR 낮음 — BNA 앞단 배치로 CVR 개선 가설. 배너 방향성: 기획의도를 명확히 반영한 1~2개 카피, 가시성 우선순위 정해서 제작.",
+    next_actions:[
+      "직관적 기미 워딩 + 눈에 띄는 가격 소구 숏폼/배너 제작 진행",
+      "BNA 배너에 불신제거 카피+임상 조합 테스트",
+      "코직산(성분) 후킹으로 BnAAI 타겟 모수 확장 시도",
+      "성과 있던 BNA 배너 이미지 모아서 비교 분석"
     ]
   },
 ];
@@ -1810,6 +1873,24 @@ const HYPOTHESES = [
     evaluations:{ "레이첼":"카톡AI 후크비율 68% 확인. CVR 검증 추가 필요.","다리아":"—","버니":"—" },
     source_pages:[{name:"위클리 체크인 (5/21)", date:"2026-05-21"}]
   },
+  { id:"H167", track:"B", category:"카피",
+    title:"직관적 기미 워딩(썬크림 뚫고 생긴 기미) + 눈에 띄는 가격 소구 조합이 CVR을 끌어올린다",
+    source_type:"internal_evolved", parent_id:null, children_ids:[],
+    content_ids:[], insight_ids:[], status:"in_progress",
+    created_date:"2026-05-26", updated_date:"2026-05-26",
+    full_text:"칭찬해/프롬프트/뚫은 숏폼 실패 원인 분석: 카피가 직관적이지 않고 정상가·할인가 가시성 부족. '썬크림을 뚫고 생긴 기미'처럼 구체적·직관적 워딩 + 1~2개 집중 카피 + 가격 정보가 한눈에 보이는 소구를 조합하면 CVR 개선을 기대할 수 있다.",
+    evaluations:{ "버니":"소비자는 많은 정보를 지루하게 느낀다. 1~2개 카피에 집중해야.","레이첼":"정상가 9만원이 눈에 띄지 않았던 탓. 가격 가시성 순서 조정 필요.","다리아":"해당 연령층에 맞는 카피 구성이 중요. 우리가 흥미롭다 느낀 카피 ≠ 타겟이 반응하는 카피." },
+    source_pages:[{name:"콘텐츠 리뷰 4월 5주차", date:"2026-04-27"}]
+  },
+  { id:"H168", track:"B", category:"BNA",
+    title:"BNA 배너에서 불신제거 형식 카피 + 임상 조합이 CTR과 구매 전환을 만든다",
+    source_type:"internal_evolved", parent_id:null, children_ids:[],
+    content_ids:[], insight_ids:[], status:"needs_more_data",
+    created_date:"2026-05-26", updated_date:"2026-05-26",
+    full_text:"BNA1/2/3 배너 테스트에서 BNA3(옅고 한곳에 밀집된 잡티 이미지)가 ROAS 137로 반응. 단순 BNA 이미지보다 불신제거 형식 카피(믿어도 되나요? → 임상 수치) + 타겟 연령층이 공감하는 BNA 이미지 조합이 CTR과 CVR에 복합적으로 영향을 준다는 가설. 성과 있던 BNA 배너 이미지 비교 분석 필요.",
+    evaluations:{ "버니":"BNA3이 일상에서 흔히 볼 수 있는 기미 형태 — 타겟 공감도 높음.","다리아":"메시지(카피)와 BNA 이미지가 분명해서 반응한 것. 해당 연령층이 생각하는 기미 형태가 BNA에 반영된 것.","레이첼":"고객 반응 있던 BNA 배너 이미지 모아서 비교 분석이 선행되어야." },
+    source_pages:[{name:"콘텐츠 리뷰 4월 5주차", date:"2026-04-27"}]
+  },
 ];
 
 const CONTENTS = [
@@ -2178,6 +2259,12 @@ const CONTENTS = [
     variations:[{name:"6만원", metrics:{}}],
     live_date:"2026-01-27", status:"on", hypothesis_ids:[],
     thumbnail_url:null, drive_url:"https://drive.google.com/file/d/15jGZoBk_qfgynNwiSKzrEfUn9KCiT0Ql/view" },
+
+  { id:"C154", track:"B", type:"shortform", title:"밀키크림 베네핏 숏폼 (2종: 역컨셉·착한소비)",
+    variations:[{name:"역컨셉", metrics:{}}, {name:"착한소비", metrics:{}}],
+    live_date:"2026-05-26", status:"on", hypothesis_ids:["H161"],
+    thumbnail_url:null, drive_url:null,
+    notion_url:"https://www.notion.so/36634579dc0180eabb5ee9f78783f727" },
 ];
 
 const INSIGHTS = [
