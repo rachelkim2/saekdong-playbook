@@ -1116,7 +1116,8 @@ function computeTags(h) {
     const c = typeof CONTENTS !== "undefined" ? CONTENTS.find(x=>x.id===cid) : null;
     if (c && c.strategy_tags) c.strategy_tags.forEach(t=>{ if(!out.includes(t)) out.push(t); });
   });
-  return out;
+  // 카테고리와 동일한 태그는 중복이므로 제외
+  return out.filter(t => t !== (h.category||""));
 }
 
 
@@ -1857,7 +1858,7 @@ const HYPOTHESES = [
     source_pages:[{name:"노션 다리아 업무일지 5/14 (진짜쉬움)", date:"2026-05-14"}]
   },
 
-  { id:"H164", track:"B", category:"불신제거",
+  { id:"H164", track:"A", category:"불신제거",
     title:"억울해명 — 악플·비판 댓글 직접 언급으로 불신제거 플로우가 구매를 설득한다",
     source_type:"internal_evolved", parent_id:null, children_ids:[],
     content_ids:[], insight_ids:["I018"], status:"validated",
@@ -2543,7 +2544,7 @@ const INSIGHTS = [
     synergy_with:["I013"],
     cross_track_ref:["I003"]
   },
-  { id:"I018", track:"B",
+  { id:"I018", track:"A",
     headline:"악플 직접 언급 불신제거 플로우 — 인트로에서 진짜 댓글 거론하면 CVR 10%",
     one_line:"억울해명2 (인트로2): 소비자가 실제로 쓴 부정 댓글을 인트로에서 직접 인용·반박하는 플로우가 구매설득. ROAS 2.37, CTR 2.39%, CVR 10.0% 달성.",
     validated_by_content_ids:[],
@@ -4452,6 +4453,42 @@ function App() {
   const [mmFStatus, setMmFStatus] = useState(new Set());
   const [mmFCategory, setMmFCategory] = useState(new Set());
   const [mmFSource, setMmFSource] = useState(new Set());
+  const isPoppingRef = React.useRef(false);
+  const lastPushedRef = React.useRef(null);
+
+  // ── 브라우저 뒤로가기 / 앞으로가기 지원 ──
+  React.useEffect(() => {
+    // 첫 마운트: 현재 상태를 replaceState 로 등록
+    const init = { track, view, selectedH, selectedI };
+    window.history.replaceState({ saekdongState: init }, "");
+    lastPushedRef.current = init;
+
+    const onPop = (e) => {
+      const s = e.state && e.state.saekdongState;
+      if (!s) return;
+      isPoppingRef.current = true;
+      setTrack(s.track);
+      setView(s.view);
+      setSelectedH(s.selectedH);
+      setSelectedI(s.selectedI);
+      lastPushedRef.current = s;
+      // 다음 tick 에 플래그 해제
+      setTimeout(() => { isPoppingRef.current = false; }, 0);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  // state 변경 시 pushState — popstate 로 인한 변경은 제외
+  React.useEffect(() => {
+    if (isPoppingRef.current) return;
+    const cur = { track, view, selectedH, selectedI };
+    const prev = lastPushedRef.current;
+    // 동일하면 pushState 안 함
+    if (prev && prev.track===cur.track && prev.view===cur.view && prev.selectedH===cur.selectedH && prev.selectedI===cur.selectedI) return;
+    window.history.pushState({ saekdongState: cur }, "");
+    lastPushedRef.current = cur;
+  }, [track, view, selectedH, selectedI]);
 
   function mmToggle(setF, set, val) {
     const next = new Set(set);
