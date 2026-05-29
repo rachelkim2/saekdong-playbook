@@ -85,6 +85,17 @@
     transition: opacity 80ms ease;
   }
   .mm-tooltip b { color: #FFCB05; font-weight: 600; }
+  /* 점프 진입한 인사이트 강조 — 노란 보더 + 글로우 펄스 (2초간 강조 후 보더만 유지) */
+  .insight-jumped {
+    box-shadow: 0 0 0 3px #FFCB05, 0 8px 24px rgba(255, 203, 5, 0.25);
+    border-color: #FFCB05 !important;
+    animation: insight-pulse 1.6s ease-out 1;
+  }
+  @keyframes insight-pulse {
+    0%   { box-shadow: 0 0 0 0   rgba(255, 203, 5, 0.7), 0 0 0 0 rgba(255, 203, 5, 0); }
+    40%  { box-shadow: 0 0 0 8px rgba(255, 203, 5, 0.45), 0 0 24px 4px rgba(255, 203, 5, 0.4); }
+    100% { box-shadow: 0 0 0 3px #FFCB05, 0 8px 24px rgba(255, 203, 5, 0.25); }
+  }
   .tree-link { fill: none; stroke: #EBE7E0; stroke-width: 1.5; }
   .tree-link-abandoned { stroke-dasharray: 3, 3; opacity: 0.5; }
   .placeholder-thumb {
@@ -1861,7 +1872,7 @@ const HYPOTHESES = [
   { id:"H164", track:"A", category:"불신제거",
     title:"억울해명 — 악플·비판 댓글 직접 언급으로 불신제거 플로우가 구매를 설득한다",
     source_type:"internal_evolved", parent_id:null, children_ids:[],
-    content_ids:[], insight_ids:["I018"], status:"validated",
+    content_ids:["C064"], insight_ids:["I018"], status:"validated",
     created_date:"2026-05-21", updated_date:"2026-05-21",
     full_text:"소비자의 부정적 댓글(불신)을 직접 인용하고 반박하는 플로우를 영상 인트로에 배치하면 신뢰감을 높여 CVR이 상승한다. 억울해명2 (인트로2): 지출 590K, ROAS 2.37, CTR 2.39%, CVR 10.0% 달성.",
     evaluations:{ "레이첼":"인트로2 ROAS 2.37로 검증됨.","버니":"—","다리아":"—" },
@@ -2135,9 +2146,9 @@ const CONTENTS = [
   { id:"C064", track:"A", type:"longform_video", title:"억울해명 1/2/3",
     variations:[
       {name:"억울해명1", metrics:{}},
-      {name:"억울해명2", metrics:{}},
+      {name:"억울해명2", metrics:{spend:590000, roas:2.37, ctr:0.0239, cvr:0.10}},
       {name:"억울해명3", metrics:{}}
-    ], live_date:"2026-05-14", status:"on", hypothesis_ids:[],
+    ], live_date:"2026-05-14", status:"on", hypothesis_ids:["H164"], strategy_tags:["불신제거"],
     thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1ecNozO808ZIJOg_RM5fCBQ-iNZQkhyn7/view" },
 
   // Track B
@@ -2547,7 +2558,7 @@ const INSIGHTS = [
   { id:"I018", track:"A",
     headline:"악플 직접 언급 불신제거 플로우 — 인트로에서 진짜 댓글 거론하면 CVR 10%",
     one_line:"억울해명2 (인트로2): 소비자가 실제로 쓴 부정 댓글을 인트로에서 직접 인용·반박하는 플로우가 구매설득. ROAS 2.37, CTR 2.39%, CVR 10.0% 달성.",
-    validated_by_content_ids:[],
+    validated_by_content_ids:["C064"],
     validated_from_hypothesis_id:"H164",
     reproduction_checklist:[
       "실제 악플·의심 댓글 인트로에 직접 노출",
@@ -3797,7 +3808,7 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
 }
 
 
-function ViewSuccessFormula({ track, jumpTo }) {
+function ViewSuccessFormula({ track, jumpTo, selectedI }) {
   const validated = INSIGHTS.filter(i=>i.track===track);
   const [openChecks, setOpenChecks] = useState({});
   return (
@@ -3809,8 +3820,10 @@ function ViewSuccessFormula({ track, jumpTo }) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {validated.map(ins => {
           const linkedContents = CONTENTS.filter(c => ins.validated_by_content_ids.includes(c.id));
+          const isJumped = selectedI === ins.id;
           return (
-            <div key={ins.id} className="card-deep p-4 flex flex-col">
+            <div key={ins.id} id={`insight-${ins.id}`}
+              className={`card-deep p-4 flex flex-col ${isJumped ? "insight-jumped" : ""}`}>
               {/* card header: ID + category + strategy tags */}
               {(() => {
                 const srcH = ins.validated_from_hypothesis_id ? HYPOTHESES.find(h => h.id === ins.validated_from_hypothesis_id) : null;
@@ -4507,10 +4520,13 @@ function App() {
     if (v==="V4" && id) setSelectedH(id);
     if (v==="V3" && id) {
       setSelectedI(id);
-      setTimeout(()=>{
+      // 카드 마운트 후 스크롤 — 두 번 시도 (paint timing 보정)
+      const tryScroll = (attempt=0) => {
         const el = document.getElementById("insight-"+id);
-        if (el) el.scrollIntoView({behavior:"smooth", block:"center"});
-      }, 100);
+        if (el) { el.scrollIntoView({behavior:"smooth", block:"center"}); }
+        else if (attempt < 5) { setTimeout(()=>tryScroll(attempt+1), 80); }
+      };
+      setTimeout(tryScroll, 80);
     }
   }
 
@@ -4687,7 +4703,7 @@ function App() {
           <main style={{flex:1, minWidth:0}}>
             {view==="V1" ? <ViewOverview track={track} jumpTo={jumpTo} />
             : view==="V2" ? <ViewMindMap track={track} jumpTo={jumpTo} fStatus={mmFStatus} fCategory={mmFCategory} fSource={mmFSource} />
-            : view==="V3" ? <div id="insight-anchor"><ViewSuccessFormula track={track} jumpTo={jumpTo} /></div>
+            : view==="V3" ? <div id="insight-anchor"><ViewSuccessFormula track={track} jumpTo={jumpTo} selectedI={selectedI} /></div>
             : view==="V4" ? <ViewDrilldown track={track} selectedId={selectedH} setSelectedId={setSelectedH} query={query} jumpTo={jumpTo} />
             : null}
           </main>
