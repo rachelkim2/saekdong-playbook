@@ -85,6 +85,17 @@
     transition: opacity 80ms ease;
   }
   .mm-tooltip b { color: #FFCB05; font-weight: 600; }
+  /* 점프 진입한 인사이트 강조 — 노란 보더 + 글로우 펄스 (2초간 강조 후 보더만 유지) */
+  .insight-jumped {
+    box-shadow: 0 0 0 3px #FFCB05, 0 8px 24px rgba(255, 203, 5, 0.25);
+    border-color: #FFCB05 !important;
+    animation: insight-pulse 1.6s ease-out 1;
+  }
+  @keyframes insight-pulse {
+    0%   { box-shadow: 0 0 0 0   rgba(255, 203, 5, 0.7), 0 0 0 0 rgba(255, 203, 5, 0); }
+    40%  { box-shadow: 0 0 0 8px rgba(255, 203, 5, 0.45), 0 0 24px 4px rgba(255, 203, 5, 0.4); }
+    100% { box-shadow: 0 0 0 3px #FFCB05, 0 8px 24px rgba(255, 203, 5, 0.25); }
+  }
   .tree-link { fill: none; stroke: #EBE7E0; stroke-width: 1.5; }
   .tree-link-abandoned { stroke-dasharray: 3, 3; opacity: 0.5; }
   .placeholder-thumb {
@@ -189,7 +200,7 @@ const { useState, useEffect, useRef, useMemo } = React;
 const META = {
   title: "색동서울 콘텐츠 플레이북",
   version: "v1.4",
-  lastUpdate: "2026-05-21",
+  lastUpdate: "2026-06-05",
   brandRoot: "밀키토너",
   brandUSP: "코직애씨드 터메릭 나이아신아마이드 5% 밀키토너",
 };
@@ -201,7 +212,12 @@ const META = {
 // ============================================================
 const TRACKER = [
   // 출처: [색동] 2026 콘텐츠 트래커_v2 — m:{spend,roas,cpm,ctr,cpc,cvr,aov} 풀 메트릭
-  // 총 146건 · 자동 갱신
+  // 총 147건 · 자동 갱신
+  { o:"RABN", n:"식품래퍼", a:"기미잡티", f:"롱폼", s:"완료", wP:"3주차(12/19)", wO:"3주차(12/19)",
+    hyp:"식품 래퍼 형식으로 기미잡티 소구 — 트렌디한 포맷의 전환율 테스트",
+    m:{ spend:9460735, roas:1.58, ctr:0.0312 },
+    ins:"LIVE 데이터 기준 ROAS 1.58 · Meta API 자동 반영",
+    next:"-" },
   { o:"RABN", n:"배송출발", a:"기미잡티", f:"롱폼", s:"완료", wP:"3주차(2/19)", wO:"1주차(3/3)",
     hyp:"배송 지연 이슈를 타협 없는 품질과 대세감의 근거로 이용하여 구매 설득",
     m:{ spend:8345154, roas:1.34, cpm:61483, ctr:0.0278, cpc:2209, cvr:0.0717, aov:41415 },
@@ -932,6 +948,31 @@ const TRACKER = [
     m:{ spend:null, roas:null, cpm:null, ctr:null, cpc:null, cvr:null, aov:null },
     ins:"-",
     next:"-" },
+  { o:"RABN", n:"역컨셉", a:"베네핏", f:"숏폼", s:"완료", wP:"4주차(5/25)", wO:"4주차(5/26)",
+    hyp:"크림 베네핏 소구: 역컨셉 후킹으로 밀키크림 인지도 확장 테스트",
+    m:{ spend:null, roas:null, cpm:null, ctr:null, cpc:null, cvr:null, aov:null },
+    ins:"-",
+    next:"-" },
+  { o:"RABN", n:"착한소비", a:"베네핏", f:"숏폼", s:"편집", wP:"4주차(5/25)", wO:"4주차(5/29)",
+    hyp:"크림 베네핏 소구: 착한소비 긍정 프레이밍으로 전환 유도",
+    m:{ spend:null, roas:null, cpm:null, ctr:null, cpc:null, cvr:null, aov:null },
+    ins:"-",
+    next:"-" },
+  { o:"RABN", n:"배너테스트1(할인율)", a:"베네핏", f:"배너", s:"기획", wP:"4주차(5/25)", wO:"4주차(5/29)",
+    hyp:"할인율(%) 명시 구성이 CTR/CVR에 영향을 미칠 것",
+    m:{ spend:null, roas:null, cpm:null, ctr:null, cpc:null, cvr:null, aov:null },
+    ins:"-",
+    next:"-" },
+  { o:"RABN", n:"배너테스트2(가격강조)", a:"베네핏", f:"배너", s:"기획", wP:"4주차(5/25)", wO:"4주차(5/29)",
+    hyp:"정가·할인가 비교 가시성을 높이면 CVR이 개선될 것",
+    m:{ spend:null, roas:null, cpm:null, ctr:null, cpc:null, cvr:null, aov:null },
+    ins:"-",
+    next:"-" },
+  { o:"RABN", n:"배너테스트3(1+1소구)", a:"베네핏", f:"배너", s:"기획", wP:"4주차(5/25)", wO:"4주차(5/29)",
+    hyp:"1+1 또는 2+1 번들 가격 소구가 CTR/CVR에 미치는 영향 테스트",
+    m:{ spend:null, roas:null, cpm:null, ctr:null, cpc:null, cvr:null, aov:null },
+    ins:"-",
+    next:"-" },
 ];
 
 const OWNERS = {
@@ -969,6 +1010,7 @@ const SOURCE_PAGE_URLS = {
   "색동서울 팀 (메인 hub)": "https://www.notion.so/26534579dc0180d9850ddc9adfefac60",
   "콘텐츠 운영 시트": "https://docs.google.com/spreadsheets/d/1kZnB4oZhYxDrEdW-ycKznP_pMr453lZ2jjw5QbPhOhI/edit",
   "위클리 체크인 (5/21)": "https://www.notion.so/36634579dc01803b835bff7e4ab8e488",
+  "콘텐츠 리뷰 4월 5주차": "https://www.notion.so/34f34579dc0180908c8fde6d7fb116b3",
 };
 
 const OPS_LOG = [
@@ -981,6 +1023,60 @@ const OPS_LOG = [
       "크림 베네핏 긍정소구 4소재 → 1세트에 추가 집행",
       "기미잡티 PA 예산 증액 검토",
       "크리마 리뷰 메세지 결제"
+    ]
+  },
+  { id:"OPS002", date:"2026-05-22", type:"위클리체크인",
+    title:"[Rachel] 5월 3주차 업무 일지 (5/18~5/22)",
+    notion_url:"https://www.notion.so/36434579dc0180b08186d88c36ee9e3a",
+    summary:"롱폼 3건 완료(스킨더스트_들어보셨, 하나둘올록담, 스토리1/2). 숏폼 4건 완료(해결해요, 안써본당신, 바르던데, 없는이유). 인플 가로/세로형 배너 제작 완료. 온보딩 자료 작성 완료. 위클리 미팅 자료 작성 완료.",
+    next_actions:[
+      "밀키토너 숏폼&배너 레퍼 서치 (진행중)",
+      "기미잡티_찐코덕들 롱폼 편집 진행",
+      "밀키크림 베네핏 숏폼 제작 착수 (역컨셉·착한소비)"
+    ]
+  },
+  { id:"OPS003", date:"2026-05-26", type:"위클리체크인",
+    title:"[Rachel] 5월 4주차 업무 일지 (5/25~)",
+    notion_url:"https://www.notion.so/36634579dc018090ad4eca99623f6caa",
+    summary:"롱폼 3건 편집 진행중(찐코덕들 편집중, 단종얘기, 스킨더스트 미정). 숏폼_역컨셉(크림 베네핏) 완료·업로드. 숏폼_착한소비 편집중. 배너 3종(할인율/가격강조/1+1소구) 기획 중. 시즌 레퍼런스 서치·콘텐츠 리뷰 작성 진행중.",
+    next_actions:[
+      "찐코덕들 롱폼 편집 완료",
+      "착한소비 숏폼 완성 및 업로드",
+      "배너 테스트 3종 제작",
+      "콘텐츠 리뷰 작성 완료"
+    ]
+  },
+  { id:"OPS004", date:"2026-04-27", type:"콘텐츠리뷰",
+    title:"콘텐츠 리뷰 4월 5주차",
+    notion_url:"https://www.notion.so/34f34579dc0180908c8fde6d7fb116b3",
+    summary:"숏폼(칭찬해/프롬프트/뚫은) 전반 CTR 낮음 — 소비자는 많은 정보량 거부, 직관적 1~2개 카피 집중 필요. BNA 배너 1/2/3 테스트: BNA3(옅고 밀집된 잡티) ROAS 137 반응. BnAAI 롱폼 ROAS 159%·CVR 5.32% — 과정 BNA + 직관적 후킹 유효. 코직산 비누 CTR 높으나 CVR 낮음 — BNA 앞단 배치로 CVR 개선 가설. 배너 방향성: 기획의도를 명확히 반영한 1~2개 카피, 가시성 우선순위 정해서 제작.",
+    next_actions:[
+      "직관적 기미 워딩 + 눈에 띄는 가격 소구 숏폼/배너 제작 진행",
+      "BNA 배너에 불신제거 카피+임상 조합 테스트",
+      "코직산(성분) 후킹으로 BnAAI 타겟 모수 확장 시도",
+      "성과 있던 BNA 배너 이미지 모아서 비교 분석"
+    ]
+  },
+  { id:"OPS005", date:"2026-05-25", type:"위클리체크인",
+    title:"5월 4주차 위클리 체크인 (Rachel)",
+    notion_url:"https://www.notion.so/36634579dc018090ad4eca99623f6caa",
+    summary:"롱폼 3건: 찐코덕들(완료), 단종얘기(수정중), PA 2차가공 긍정은_2차BNA(완료). 밀키크림 베네핏 숏폼 착한소비 추가 3건·파격혜택 배너·단독특가 배너 완료. 밀키토너 베네핏 숏폼 6월한정·준데이 완료. 멜라토닝크림 BNA 업로드·포토리뷰 50개 작업 진행. 시즌 숏폼 레퍼런스 서치(이득 긍정소구 방향).",
+    next_actions:[
+      "단종얘기 롱폼 수정 완료 후 런칭",
+      "밀키크림 신규 소재 성과 모니터링",
+      "6월한정·준데이 숏폼 성과 확인",
+      "멜라토닝크림 포토리뷰 6/2까지 50개 완료"
+    ]
+  },
+  { id:"OPS006", date:"2026-06-05", type:"위클리체크인",
+    title:"[Rachel] 6월 2주차 업무 일지 (6/8~)",
+    notion_url:"https://app.notion.com/p/37534579dc01801d8130de306350ae5b",
+    summary:"6월 2주차 플랜: 롱폼 3건 편집(라방수정, 요롱레퍼). 배너 8건 제작(코직산크림 베네핏 1~4, 코직산토너 베네핏 1~4). 기미잡티 백색화 소구 오가닉·커머셜 롱폼 6건 촬영 기획 동시 진행중.",
+    next_actions:[
+      "라방수정 롱폼 편집 완료",
+      "요롱레퍼 롱폼 편집 완료",
+      "코직산크림 베네핏 배너 4종 제작",
+      "코직산토너 베네핏 배너 4종 제작"
     ]
   },
 ];
@@ -1042,7 +1138,8 @@ function computeTags(h) {
     const c = typeof CONTENTS !== "undefined" ? CONTENTS.find(x=>x.id===cid) : null;
     if (c && c.strategy_tags) c.strategy_tags.forEach(t=>{ if(!out.includes(t)) out.push(t); });
   });
-  return out;
+  // 카테고리와 동일한 태그는 중복이므로 제외
+  return out.filter(t => t !== (h.category||""));
 }
 
 
@@ -1391,7 +1488,7 @@ const HYPOTHESES = [
   { id:"H080", track:"D", category:"경쟁사",
     title:"기미잡티 PA — 도미나스(트라넥삼산 기미크림) 무성콘텐츠 팔로우, AFTER 강조 포맷",
     source_type:"competitor_followup", parent_id:null, children_ids:["H083","H084"],
-    content_ids:[], insight_ids:[], status:"in_progress",
+    content_ids:["C158"], insight_ids:[], status:"in_progress",
     created_date:"2026-04-23", updated_date:"2026-05-11",
     full_text:"도미나스 무성콘텐츠 46일 게재 사례 분석. 설득논리 없이 임상과 제약회사 밀어붙임 패턴. 코직산=겉기미, 나이아신=속기미 설득논리. 인플 페르소나 연령층 높여 3040 팔로업. 5/15까지 3건 진행 예정.",
     evaluations:{
@@ -1416,7 +1513,7 @@ const HYPOTHESES = [
   { id:"H084", track:"D", category:"포맷",
     title:"무성 PA 포맷 — 임상 수치 + 성분 이야기 + B&A 살짝 + 제품 제형 + 바르는 컷 + AFTER",
     source_type:"competitor_followup", parent_id:"H080", children_ids:[],
-    content_ids:[], insight_ids:[], status:"in_progress",
+    content_ids:["C158"], insight_ids:[], status:"in_progress",
     created_date:"2026-04-23", updated_date:"2026-05-11",
     full_text:"도미나스 무성콘텐츠 (46일 게재) 분석: 트라넥삼산 기미크림이라고만 소개, 설득논리 없이 임상과 제약회사 밀어붙임. 장나라앰플 (기미표적앰플)도 동일 — 고함량/임상/N년차 제약회사로 밀어붙임. 임상 개선 수치 + 성분 이야기 + B&A 살짝 찍먹 + 제품 제형 + 바르는 컷 + AFTER.",
     evaluations:{
@@ -1593,7 +1690,7 @@ const HYPOTHESES = [
   { id:"H112", track:"B", category:"카피",
     title:"두번꺾음 디벨롭 — 동일 메시지여도 카피를 1~2번만, 요소 줄이고 '가격 두번 꺾었습니다' + 가격 + 제품png만",
     source_type:"internal_evolved", parent_id:"H110", children_ids:[],
-    content_ids:[], insight_ids:["I016"], status:"in_progress",
+    content_ids:["C112"], insight_ids:["I016"], status:"in_progress",
     created_date:"2026-04-30", updated_date:"2026-05-07",
     full_text:"동일한 메시지여도 1~2번만 카피, 요소 줄이고 핵심만 배치하면 구매 전환에 도움.",
     evaluations:{
@@ -1664,7 +1761,7 @@ const HYPOTHESES = [
   { id:"H132", track:"B", category:"시즌",
     title:"잡티이별 — 가정의달을 작은 요소로 + USP/소구점 중심 카피 (시즈널 X 일상 베리에이션)",
     source_type:"internal_evolved", parent_id:"H130", children_ids:[],
-    content_ids:[], insight_ids:[], status:"needs_more_data",
+    content_ids:["C131"], insight_ids:[], status:"needs_more_data",
     created_date:"2026-05-07", updated_date:"2026-05-07",
     full_text:"잡티이별 — 지출 ₩9.7K로 미집행 수준. 시즈널 + USP 결합 베리에이션은 더 지켜볼 필요.",
     evaluations:{ "레이첼":"왜…?","버니":"—","다리아":"—" },
@@ -1693,7 +1790,7 @@ const HYPOTHESES = [
   { id:"H150", track:"B", category:"경쟁사",
     title:"지우세요 — 타사 팔로우 + B급 감성 디자인 + 타사 카피 팔로우",
     source_type:"competitor_followup", parent_id:null, children_ids:[],
-    content_ids:[], insight_ids:[], status:"abandoned",
+    content_ids:["C159"], insight_ids:[], status:"abandoned",
     created_date:"2026-04-13", updated_date:"2026-04-24",
     full_text:"타사 팔로우 + B급 감성. 실패. 너무 성의 없어 보였던 걸까?",
     evaluations:{ "레이첼":"—","버니":"—","다리아":"—" },
@@ -1702,7 +1799,7 @@ const HYPOTHESES = [
   { id:"H151", track:"B", category:"카피",
     title:"귀찮아 — 타사 팔로우 + '귀찮아' 워딩으로 공감대 유도",
     source_type:"competitor_followup", parent_id:null, children_ids:[],
-    content_ids:[], insight_ids:[], status:"abandoned",
+    content_ids:["C160"], insight_ids:[], status:"abandoned",
     created_date:"2026-04-13", updated_date:"2026-04-24",
     full_text:"타사 팔로우 + '귀찮아' 워딩으로 고객 공감대 유도. 실패 — 꺼도 될 것 같음.",
     evaluations:{ "레이첼":"—","버니":"—","다리아":"—" },
@@ -1711,7 +1808,7 @@ const HYPOTHESES = [
   { id:"H152", track:"B", category:"카피",
     title:"프롬프트 형식 숏폼 — 릴스/틱톡 트렌드 프롬프트로 제품 홍보 후킹",
     source_type:"trend_test", parent_id:null, children_ids:[],
-    content_ids:[], insight_ids:[], status:"abandoned",
+    content_ids:["C161"], insight_ids:[], status:"abandoned",
     created_date:"2026-04-13", updated_date:"2026-04-24",
     full_text:"트렌드인 프롬프트 형식 시도. OFF — 소비자는 많은 양의 정보를 원하지 않는다. 앞으로 많은 정보전달 숏폼 안 할 예정.",
     evaluations:{ "레이첼":"—","버니":"—","다리아":"—" },
@@ -1720,7 +1817,7 @@ const HYPOTHESES = [
   { id:"H153", track:"B", category:"카피",
     title:"뚫은 — 이전 배너 인사이트(선크림 말고 코직산 토너)를 다른 카피 구성으로",
     source_type:"internal_evolved", parent_id:"H100", children_ids:[],
-    content_ids:[], insight_ids:[], status:"abandoned",
+    content_ids:["C162"], insight_ids:[], status:"abandoned",
     created_date:"2026-04-13", updated_date:"2026-04-24",
     full_text:"선크림 대신 코직산 메시지의 다른 카피 베리에이션. OFF. 더 이상은 먹히지 않는 기획의도이지 않을까.",
     evaluations:{ "레이첼":"—","버니":"—","다리아":"—" },
@@ -1729,7 +1826,7 @@ const HYPOTHESES = [
   { id:"H154", track:"B", category:"경쟁사",
     title:"공식바뀜 — 카드뉴스 트렌드 (트렌드인 카드뉴스 레퍼 서치 및 제작)",
     source_type:"trend_test", parent_id:null, children_ids:[],
-    content_ids:[], insight_ids:[], status:"abandoned",
+    content_ids:["C163"], insight_ids:[], status:"abandoned",
     created_date:"2026-04-13", updated_date:"2026-04-13",
     full_text:"트렌드인 카드뉴스 레퍼 서치 및 제작. 현재 집행 X / OFF 상태.",
     evaluations:{ "레이첼":"—","버니":"—","다리아":"—" },
@@ -1757,7 +1854,7 @@ const HYPOTHESES = [
   { id:"H161", track:"B", category:"신규카테고리",
     title:"코직산 크림 Ver — 토너와 다르게 표현할 소구점 (약국 / 임상 N일 / BNA / 고농축)",
     source_type:"internal_evolved", parent_id:null, children_ids:[],
-    content_ids:[], insight_ids:[], status:"in_progress",
+    content_ids:["C147","C154","C155"], insight_ids:[], status:"in_progress",
     created_date:"2026-05-07", updated_date:"2026-05-11",
     full_text:"토너 차별화 4가지: 약국 소구 / 임상 N일 프로그램 / '집에서 셀프로 ㅇㅇ제거 시술' BNA / 고농축 소구. 숏폼+배너 4건씩.",
     evaluations:{ "버니":"금주 제작 진행 예정.","레이첼":"—","다리아":"—" },
@@ -1783,10 +1880,10 @@ const HYPOTHESES = [
     source_pages:[{name:"노션 다리아 업무일지 5/14 (진짜쉬움)", date:"2026-05-14"}]
   },
 
-  { id:"H164", track:"B", category:"불신제거",
+  { id:"H164", track:"A", category:"불신제거",
     title:"억울해명 — 악플·비판 댓글 직접 언급으로 불신제거 플로우가 구매를 설득한다",
     source_type:"internal_evolved", parent_id:null, children_ids:[],
-    content_ids:[], insight_ids:["I018"], status:"validated",
+    content_ids:["C064"], insight_ids:["I018"], status:"validated",
     created_date:"2026-05-21", updated_date:"2026-05-21",
     full_text:"소비자의 부정적 댓글(불신)을 직접 인용하고 반박하는 플로우를 영상 인트로에 배치하면 신뢰감을 높여 CVR이 상승한다. 억울해명2 (인트로2): 지출 590K, ROAS 2.37, CTR 2.39%, CVR 10.0% 달성.",
     evaluations:{ "레이첼":"인트로2 ROAS 2.37로 검증됨.","버니":"—","다리아":"—" },
@@ -1795,7 +1892,7 @@ const HYPOTHESES = [
   { id:"H165", track:"B", category:"베네핏",
     title:"토너 이득 긍정소구를 세트구성(토너+크림)에 적용해도 구매 전환이 일어난다",
     source_type:"internal_evolved", parent_id:null, children_ids:[],
-    content_ids:[], insight_ids:["I019"], status:"validated",
+    content_ids:["C164"], insight_ids:["I019"], status:"validated",
     created_date:"2026-05-21", updated_date:"2026-05-21",
     full_text:"토너 단독으로 효과적이었던 이득 긍정언어 소구(안버잘, 지금이 등)를 토너+크림 세트 구성에 적용해도 유사한 CTR/CVR이 발생한다는 가설. 지금이 숏폼: ROAS 2.26, CTR 3.68%, CVR 6.67% 달성.",
     evaluations:{ "버니":"지금이 숏폼으로 일부 검증됨.","레이첼":"—","다리아":"—" },
@@ -1809,6 +1906,67 @@ const HYPOTHESES = [
     full_text:"카톡노래AI 후크비율 68% vs 랩배틀AI 39%: 인트로 3초 안에 밀키토너를 솔루션으로 인지시키면 PDP 유입 후 CVR이 오른다. 이 토너가 진짜 된다고? 라는 생각으로 PDP에 유입되게 유도.",
     evaluations:{ "레이첼":"카톡AI 후크비율 68% 확인. CVR 검증 추가 필요.","다리아":"—","버니":"—" },
     source_pages:[{name:"위클리 체크인 (5/21)", date:"2026-05-21"}]
+  },
+  { id:"H167", track:"B", category:"카피",
+    title:"직관적 기미 워딩(썬크림 뚫고 생긴 기미) + 눈에 띄는 가격 소구 조합이 CVR을 끌어올린다",
+    source_type:"internal_evolved", parent_id:null, children_ids:[],
+    content_ids:["C156"], insight_ids:[], status:"in_progress",
+    created_date:"2026-05-26", updated_date:"2026-05-26",
+    full_text:"칭찬해/프롬프트/뚫은 숏폼 실패 원인 분석: 카피가 직관적이지 않고 정상가·할인가 가시성 부족. '썬크림을 뚫고 생긴 기미'처럼 구체적·직관적 워딩 + 1~2개 집중 카피 + 가격 정보가 한눈에 보이는 소구를 조합하면 CVR 개선을 기대할 수 있다.",
+    evaluations:{ "버니":"소비자는 많은 정보를 지루하게 느낀다. 1~2개 카피에 집중해야.","레이첼":"정상가 9만원이 눈에 띄지 않았던 탓. 가격 가시성 순서 조정 필요.","다리아":"해당 연령층에 맞는 카피 구성이 중요. 우리가 흥미롭다 느낀 카피 ≠ 타겟이 반응하는 카피." },
+    source_pages:[{name:"콘텐츠 리뷰 4월 5주차", date:"2026-04-27"}]
+  },
+  { id:"H168", track:"B", category:"BNA",
+    title:"BNA 배너에서 불신제거 형식 카피 + 임상 조합이 CTR과 구매 전환을 만든다",
+    source_type:"internal_evolved", parent_id:null, children_ids:[],
+    content_ids:["C165"], insight_ids:[], status:"needs_more_data",
+    created_date:"2026-05-26", updated_date:"2026-05-26",
+    full_text:"BNA1/2/3 배너 테스트에서 BNA3(옅고 한곳에 밀집된 잡티 이미지)가 ROAS 137로 반응. 단순 BNA 이미지보다 불신제거 형식 카피(믿어도 되나요? → 임상 수치) + 타겟 연령층이 공감하는 BNA 이미지 조합이 CTR과 CVR에 복합적으로 영향을 준다는 가설. 성과 있던 BNA 배너 이미지 비교 분석 필요.",
+    evaluations:{ "버니":"BNA3이 일상에서 흔히 볼 수 있는 기미 형태 — 타겟 공감도 높음.","다리아":"메시지(카피)와 BNA 이미지가 분명해서 반응한 것. 해당 연령층이 생각하는 기미 형태가 BNA에 반영된 것.","레이첼":"고객 반응 있던 BNA 배너 이미지 모아서 비교 분석이 선행되어야." },
+    source_pages:[{name:"콘텐츠 리뷰 4월 5주차", date:"2026-04-27"}]
+  },
+  { id:"H169", track:"A", category:"후킹",
+    title:"단종·사재기 대세감 + 성분 희귀성 소구가 즉각 구매를 유도한다",
+    source_type:"internal_new", parent_id:null, children_ids:[],
+    content_ids:["C157"], insight_ids:[], status:"in_progress",
+    created_date:"2026-05-29", updated_date:"2026-05-29",
+    full_text:"밀키토너 단종 소문 + 약사 사재기 레퍼런스로 희귀성을 형성하고, K-뷰티 글로벌 붐으로 인한 원료 단가 상승 논리로 즉각 구매를 유도하는 기획. 전문가(약사) 레퍼런스와 희귀 원료 스토리텔링이 조합될 때 긴박감 있는 구매 설득이 되는지 검증 필요.",
+    evaluations:{ "레이첼":"기획초안 5월 4주차 - 단종얘기 스크립트 기반. 수정 진행 중.","다리아":"—","버니":"—" },
+    source_pages:[{name:"기획초안 5월 4주차", date:"2026-05-18"}]
+  },
+  { id:"H170", track:"A", category:"후킹",
+    title:"전공자 증언(소분 파우치) + 오가닉 인터뷰 형식이 신뢰도와 CTR을 동시에 높인다",
+    source_type:"internal_new", parent_id:null, children_ids:[],
+    content_ids:[], insight_ids:[], status:"in_progress",
+    created_date:"2026-05-29", updated_date:"2026-05-29",
+    full_text:"화장품공학 전공자가 소분 파우치에 넣어 들고 다닐 만큼 성분이 좋다는 증언 방식. 路거리 오가닉 인터뷰(생얼 공개 미션)와 결합해 진정성을 강화. 전문성+진정성이 조합된 형식이 기존 PPL 대비 CTR과 CVR을 개선하는지 검증 필요.",
+    evaluations:{ "레이첼":"기획초안 5월 4주차 - 오가닉향 스크립트 2안(인트로1 지나가는 예쁜여자 / 인트로3 생얼 미션) 기반.","다리아":"—","버니":"—" },
+  { id:"H171", track:"A", category:"후킹",
+    title:"오가닉 논타겟(여성) 길거리 촬영 + 백색화 단독 소구가 기미잡티 신규 유입을 만든다",
+    source_type:"internal_new", parent_id:"H170", children_ids:[],
+    content_ids:["C166","C167","C169"], insight_ids:[], status:"in_progress",
+    created_date:"2026-06-05", updated_date:"2026-06-05",
+    full_text:"지나가는 일반인 여성을 길거리에서 오가닉 형식으로 촬영하여 논타겟 여성층에게 자연스럽게 노출. '백색화'라는 단일 메시지로 기미잡티 소구를 압축해 전달. 연출된 느낌 없는 오가닉 촬영 + 백색화 직접 소구 조합이 PA 대비 신규 유입을 만드는지 검증.",
+    evaluations:{ "레이첼":"길거리/요롱레퍼/라방썰 3가지 오가닉 형식으로 동시 테스트.","다리아":"—","버니":"—" },
+    source_pages:[{name:"콘텐츠 마스터 보드 기획안", date:"2026-05-20"}]
+  },
+  { id:"H172", track:"A", category:"후킹",
+    title:"인플루언서 깔 후기형 영상언어 + 백색화 메시지가 기미잡티 타겟 CVR을 높인다",
+    source_type:"internal_evolved", parent_id:null, children_ids:[],
+    content_ids:["C168"], insight_ids:[], status:"in_progress",
+    created_date:"2026-06-05", updated_date:"2026-06-05",
+    full_text:"인플루언서 깔끔 편집 포맷의 후기형 롱폼에 기존 영상언어(BnA 과정 컷 + 백색화 메시지)를 결합. PPL 색깔보다 더 자연스러운 후기 형식이 기미잡티 타겟의 신뢰도와 CVR에 미치는 영향 검증.",
+    evaluations:{ "레이첼":"영상언어 포맷 + 인플깔 조합 최초 시도.","다리아":"—","버니":"—" },
+    source_pages:[{name:"콘텐츠 마스터 보드 기획안", date:"2026-06-04"}]
+  },
+  { id:"H173", track:"A", category:"메시지",
+    title:"피부과 캠(피캄) 팔로우 커머셜 포맷 + 불신제거 메시지가 고관여 기미 타겟을 설득한다",
+    source_type:"internal_evolved", parent_id:null, children_ids:[],
+    content_ids:["C171"], insight_ids:[], status:"in_progress",
+    created_date:"2026-06-05", updated_date:"2026-06-05",
+    full_text:"피부과 관련 영상(피캄) 레퍼런스를 팔로우한 커머셜 롱폼에 불신제거 메시지를 결합. 기존 피캄 포맷에서 높은 CTR이 관찰된 점을 활용해 코직산 백색화 효과에 대한 불신을 해소하며 구매 전환까지 이어지는지 검증.",
+    evaluations:{ "레이첼":"커머셜 + 불신제거 조합 새 시도.","다리아":"—","버니":"—" },
+    source_pages:[{name:"콘텐츠 마스터 보드 기획안", date:"2026-06-04"}]
   },
 ];
 
@@ -2024,9 +2182,9 @@ const CONTENTS = [
   { id:"C064", track:"A", type:"longform_video", title:"억울해명 1/2/3",
     variations:[
       {name:"억울해명1", metrics:{}},
-      {name:"억울해명2", metrics:{}},
+      {name:"억울해명2", metrics:{spend:590000, roas:2.37, ctr:0.0239, cvr:0.10}},
       {name:"억울해명3", metrics:{}}
-    ], live_date:"2026-05-14", status:"on", hypothesis_ids:[],
+    ], live_date:"2026-05-14", status:"on", hypothesis_ids:["H164"], strategy_tags:["불신제거"],
     thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1ecNozO808ZIJOg_RM5fCBQ-iNZQkhyn7/view" },
 
   // Track B
@@ -2178,6 +2336,80 @@ const CONTENTS = [
     variations:[{name:"6만원", metrics:{}}],
     live_date:"2026-01-27", status:"on", hypothesis_ids:[],
     thumbnail_url:null, drive_url:"https://drive.google.com/file/d/15jGZoBk_qfgynNwiSKzrEfUn9KCiT0Ql/view" },
+
+  { id:"C154", track:"B", type:"shortform", title:"밀키크림 베네핏 숏폼 (2종: 역컨셉·착한소비)",
+    variations:[{name:"역컨셉", metrics:{}}, {name:"착한소비", metrics:{}}],
+    live_date:"2026-05-26", status:"on", hypothesis_ids:["H161"],
+    thumbnail_url:null, drive_url:null,
+    notion_url:"https://www.notion.so/36634579dc0180eabb5ee9f78783f727" },
+  { id:"C155", track:"B", type:"banner", title:"밀키크림 베네핏 배너 (2종: 파격혜택·단독특가)",
+    variations:[{name:"파격혜택", metrics:{}}, {name:"단독특가", metrics:{}}],
+    live_date:"2026-05-29", status:"on", hypothesis_ids:["H161"],
+    thumbnail_url:null, drive_url:null,
+    notion_url:"https://www.notion.so/36634579dc0180eabb5ee9f78783f727" },
+  { id:"C156", track:"B", type:"shortform", title:"밀키토너 베네핏 숏폼 (2종: 6월한정·준데이)",
+    variations:[{name:"6월한정", metrics:{}}, {name:"준데이", metrics:{}}],
+    live_date:"2026-05-29", status:"on", hypothesis_ids:["H167"],
+    thumbnail_url:null, drive_url:null,
+    notion_url:null },
+  { id:"C157", track:"A", type:"longform_video", title:"밀키토너 기미잡티 롱폼 단종얘기 (백색화·커머셜)",
+    variations:[{name:"인트로1_단종소문", metrics:{}}, {name:"인트로2_약사사재기", metrics:{}}],
+    live_date:null, status:"editing", hypothesis_ids:["H169"],
+    thumbnail_url:null, drive_url:null,
+    notion_url:"https://www.notion.so/36434579dc01809483adffd1b658b6e8" },
+  { id:"C159", track:"B", type:"banner", title:"지우세요 (B급 감성 배너 — 타사 팔로우)",
+    variations:[{name:"지우세요", metrics:{spend:651541, roas:1.14, cpm:43786, ctr:0.0136, cpc:3225, cvr:0.0842, aov:43671}}],
+    live_date:"2026-04-23", status:"off", hypothesis_ids:["H150"],
+    thumbnail_url:null, drive_url:null, notion_url:null },
+  { id:"C160", track:"B", type:"banner", title:"귀찮아 (공감대 유도 카피 배너)",
+    variations:[{name:"귀찮아", metrics:{spend:117655, roas:0.87, cpm:64222, ctr:0.0229, cpc:2801, cvr:0.0714, aov:34133}}],
+    live_date:"2026-04-23", status:"off", hypothesis_ids:["H151"],
+    thumbnail_url:null, drive_url:null, notion_url:null },
+  { id:"C161", track:"B", type:"shortform", title:"프롬프트 숏폼 (릴스·틱톡 트렌드 포맷)",
+    variations:[{name:"프롬프트", metrics:{spend:52792, roas:0, cpm:56644, ctr:0.0182, cpc:3105, cvr:0, aov:0}}],
+    live_date:"2026-04-17", status:"off", hypothesis_ids:["H152"],
+    thumbnail_url:null, drive_url:null, notion_url:null },
+  { id:"C162", track:"B", type:"shortform", title:"뚫은 숏폼 (선크림 비교 소구 카피 베리)",
+    variations:[{name:"뚫은", metrics:{spend:52416, roas:0, cpm:61884, ctr:0.0142, cpc:4368, cvr:0, aov:0}}],
+    live_date:"2026-04-17", status:"off", hypothesis_ids:["H153"],
+    thumbnail_url:null, drive_url:null, notion_url:null },
+  { id:"C163", track:"B", type:"banner", title:"공식바뀜 카드뉴스 (차세대 신원료 소구 트렌드 포맷)",
+    variations:[{name:"공식바뀜", metrics:{spend:929657, roas:0.98, cpm:38458, ctr:0.0251, cpc:1532, cvr:0.0379, aov:39709}}],
+    live_date:"2026-04-08", status:"off", hypothesis_ids:["H154"],
+    thumbnail_url:null, drive_url:null, notion_url:null },
+  { id:"C164", track:"B", type:"shortform", title:"지금이 숏폼 (세트 긍정 워딩 + 가격 비교 소구)",
+    variations:[{name:"지금이", metrics:{spend:23312, roas:1.41, cpm:54723, ctr:0.0305, cpc:1793, cvr:0.0769, aov:32800}}],
+    live_date:"2026-05-14", status:"off", hypothesis_ids:["H165"],
+    thumbnail_url:null, drive_url:null, notion_url:null },
+  { id:"C165", track:"B", type:"banner", title:"BnA임상 배너 (불신제거 카피 + 임상 조합)",
+    variations:[{name:"BnA임상", metrics:{spend:199219, roas:0.68, cpm:47130, ctr:0.013, cpc:3622, cvr:0.0727, aov:34050}}],
+    live_date:"2026-04-07", status:"off", hypothesis_ids:["H168"],
+    thumbnail_url:null, drive_url:null, notion_url:null },
+  { id:"C158", track:"A", type:"longform_video", title:"도미나스FU (무성 포맷 팔로우업 — 임상+B&A+AFTER)",
+  { id:"C166", track:"A", type:"longform_video", title:"길거리 오가닉 롱폼 (기미잡티 백색화 소구 — 논타겟 여성 길거리 촬영)",
+    variations:[],
+    live_date:null, status:"planned", hypothesis_ids:["H171"],
+    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/36634579dc0180afa291e5a00a5a9c55" },
+  { id:"C167", track:"A", type:"longform_video", title:"요롱레퍼 오가닉 롱폼 (기미잡티 백색화 소구 — 요롱 레퍼런스 포맷)",
+    variations:[],
+    live_date:null, status:"planned", hypothesis_ids:["H171"],
+    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/37234579dc01801aadf1cf58537f63e9" },
+  { id:"C168", track:"A", type:"longform_video", title:"인플깔 후기형 롱폼 (기미잡티 백색화 — 인플루언서 깔 영상언어)",
+    variations:[],
+    live_date:null, status:"planned", hypothesis_ids:["H172"],
+    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/36e34579dc0180eaa5c2d197773976ae" },
+  { id:"C169", track:"A", type:"longform_video", title:"라방썰 오가닉 롱폼 (기미잡티 백색화 소구 — 라이브방송 썰 형식)",
+    variations:[],
+    live_date:null, status:"planned", hypothesis_ids:["H171"],
+    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/37534579dc01803a95fce292a4c3bfe2" },
+  { id:"C170", track:"A", type:"longform_video", title:"단종얘기 커머셜 롱폼 (기미잡티 백색화 — 단종 대세감 구매 촉구)",
+    variations:[],
+    live_date:null, status:"planned", hypothesis_ids:["H169"],
+    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/36434579dc01809483adffd1b658b6e8" },
+  { id:"C171", track:"A", type:"longform_video", title:"피캄FU 커머셜 롱폼 (기미잡티 — 피부과캠 팔로우 불신제거)",
+    variations:[],
+    live_date:null, status:"planned", hypothesis_ids:["H173"],
+    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/36d34579dc018095985ac4fad6fec732" },
 ];
 
 const INSIGHTS = [
@@ -2412,10 +2644,10 @@ const INSIGHTS = [
     synergy_with:["I013"],
     cross_track_ref:["I003"]
   },
-  { id:"I018", track:"B",
+  { id:"I018", track:"A",
     headline:"악플 직접 언급 불신제거 플로우 — 인트로에서 진짜 댓글 거론하면 CVR 10%",
     one_line:"억울해명2 (인트로2): 소비자가 실제로 쓴 부정 댓글을 인트로에서 직접 인용·반박하는 플로우가 구매설득. ROAS 2.37, CTR 2.39%, CVR 10.0% 달성.",
-    validated_by_content_ids:[],
+    validated_by_content_ids:["C064"],
     validated_from_hypothesis_id:"H164",
     reproduction_checklist:[
       "실제 악플·의심 댓글 인트로에 직접 노출",
@@ -3665,7 +3897,7 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
 }
 
 
-function ViewSuccessFormula({ track, jumpTo }) {
+function ViewSuccessFormula({ track, jumpTo, selectedI }) {
   const validated = INSIGHTS.filter(i=>i.track===track);
   const [openChecks, setOpenChecks] = useState({});
   return (
@@ -3677,8 +3909,10 @@ function ViewSuccessFormula({ track, jumpTo }) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {validated.map(ins => {
           const linkedContents = CONTENTS.filter(c => ins.validated_by_content_ids.includes(c.id));
+          const isJumped = selectedI === ins.id;
           return (
-            <div key={ins.id} className="card-deep p-4 flex flex-col">
+            <div key={ins.id} id={`insight-${ins.id}`}
+              className={`card-deep p-4 flex flex-col ${isJumped ? "insight-jumped" : ""}`}>
               {/* card header: ID + category + strategy tags */}
               {(() => {
                 const srcH = ins.validated_from_hypothesis_id ? HYPOTHESES.find(h => h.id === ins.validated_from_hypothesis_id) : null;
@@ -3998,7 +4232,7 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
                         return c.variations.map((v,i) => {
                           const { label: vLabel, isOff: vOff } = resolveVName(v.name);
                           return (
-                          <tr key={cid+i} className="hover:bg-cream-deep" style={{color:"#1A1A1A"}}>
+                          <tr key={c.id+i} className="hover:bg-cream-deep" style={{color:"#1A1A1A"}}>
                             {i===0 && <td rowSpan={c.variations.length} className="py-2 pr-3 align-top" style={{minWidth:"160px"}}>
                               <ThumbMini driveUrl={c.drive_url} thumbnailUrl={c.thumbnail_url} w={140} h={105} />
                               <div style={{marginTop:"6px"}}>
@@ -4321,6 +4555,42 @@ function App() {
   const [mmFStatus, setMmFStatus] = useState(new Set());
   const [mmFCategory, setMmFCategory] = useState(new Set());
   const [mmFSource, setMmFSource] = useState(new Set());
+  const isPoppingRef = React.useRef(false);
+  const lastPushedRef = React.useRef(null);
+
+  // ── 브라우저 뒤로가기 / 앞으로가기 지원 ──
+  React.useEffect(() => {
+    // 첫 마운트: 현재 상태를 replaceState 로 등록
+    const init = { track, view, selectedH, selectedI };
+    window.history.replaceState({ saekdongState: init }, "");
+    lastPushedRef.current = init;
+
+    const onPop = (e) => {
+      const s = e.state && e.state.saekdongState;
+      if (!s) return;
+      isPoppingRef.current = true;
+      setTrack(s.track);
+      setView(s.view);
+      setSelectedH(s.selectedH);
+      setSelectedI(s.selectedI);
+      lastPushedRef.current = s;
+      // 다음 tick 에 플래그 해제
+      setTimeout(() => { isPoppingRef.current = false; }, 0);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  // state 변경 시 pushState — popstate 로 인한 변경은 제외
+  React.useEffect(() => {
+    if (isPoppingRef.current) return;
+    const cur = { track, view, selectedH, selectedI };
+    const prev = lastPushedRef.current;
+    // 동일하면 pushState 안 함
+    if (prev && prev.track===cur.track && prev.view===cur.view && prev.selectedH===cur.selectedH && prev.selectedI===cur.selectedI) return;
+    window.history.pushState({ saekdongState: cur }, "");
+    lastPushedRef.current = cur;
+  }, [track, view, selectedH, selectedI]);
 
   function mmToggle(setF, set, val) {
     const next = new Set(set);
@@ -4339,10 +4609,13 @@ function App() {
     if (v==="V4" && id) setSelectedH(id);
     if (v==="V3" && id) {
       setSelectedI(id);
-      setTimeout(()=>{
+      // 카드 마운트 후 스크롤 — 두 번 시도 (paint timing 보정)
+      const tryScroll = (attempt=0) => {
         const el = document.getElementById("insight-"+id);
-        if (el) el.scrollIntoView({behavior:"smooth", block:"center"});
-      }, 100);
+        if (el) { el.scrollIntoView({behavior:"smooth", block:"center"}); }
+        else if (attempt < 5) { setTimeout(()=>tryScroll(attempt+1), 80); }
+      };
+      setTimeout(tryScroll, 80);
     }
   }
 
@@ -4390,17 +4663,43 @@ function App() {
                     <div className="text-xs font-semibold px-2 py-1" style={{color:"#6B6B6B"}}>
                       {k==="H"?"가설":k==="C"?"콘텐츠":"인사이트"} ({searchResults[k].length})
                     </div>
-                    {searchResults[k].slice(0,5).map(item=>(
-                      <button key={item.id} onClick={()=>{
-                        if (k==="H") { setTrack(item.track); jumpTo("V4", item.id); }
-                        else if (k==="I") { setTrack(item.track); jumpTo("V3", item.id); }
-                        else { setTrack(item.track); jumpTo("V4", item.hypothesis_ids?.[0]); }
-                        setQuery(""); setSearchResults(null);
-                      }} className="w-full text-left p-2 rounded flex items-start gap-2" style={{background:"transparent"}}>
-                        <IdChip id={item.id} />
-                        <div className="text-xs flex-1" style={{color:"#1A1A1A"}}>{item.title || item.headline}</div>
-                      </button>
-                    ))}
+                    {searchResults[k].slice(0,5).map(item=>{
+                      const trackLabel = TRACKS[item.track]?.label || item.track;
+                      const typeLabel = k==="C"
+                        ? (item.type==="longform_video"?"롱폼":item.type==="shortform"?"숏폼":item.type==="banner"?"배너":item.type)
+                        : null;
+                      const catLabel = k==="H" ? item.category : null;
+                      return (
+                        <button key={item.id} onClick={()=>{
+                          if (k==="H") { setTrack(item.track); jumpTo("V4", item.id); }
+                          else if (k==="I") { setTrack(item.track); jumpTo("V3", item.id); }
+                          else { setTrack(item.track); jumpTo("V4", item.hypothesis_ids?.[0]); }
+                          setQuery(""); setSearchResults(null);
+                        }} className="w-full text-left p-2 rounded flex items-start gap-2" style={{background:"transparent"}}>
+                          <IdChip id={item.id} />
+                          <div className="flex-1">
+                            <div className="text-xs" style={{color:"#1A1A1A", lineHeight:"1.4"}}>{item.title || item.headline}</div>
+                            <div style={{marginTop:"3px", display:"flex", gap:"4px", flexWrap:"wrap"}}>
+                              {trackLabel && (
+                                <span style={{fontSize:"9px", padding:"1px 5px", borderRadius:"3px", background:"#F0EDE8", color:"#6B6B6B", fontWeight:500}}>
+                                  {trackLabel}
+                                </span>
+                              )}
+                              {typeLabel && (
+                                <span style={{fontSize:"9px", padding:"1px 5px", borderRadius:"3px", background:"#EEF4FF", color:"#2B5BB8", fontWeight:500}}>
+                                  {typeLabel}
+                                </span>
+                              )}
+                              {catLabel && (
+                                <span style={{fontSize:"9px", padding:"1px 5px", borderRadius:"3px", background:"#F5F3FF", color:"#6B52C8", fontWeight:500}}>
+                                  {catLabel}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 ))}
                 {Object.values(searchResults).every(a=>a.length===0) && (
@@ -4519,7 +4818,7 @@ function App() {
           <main style={{flex:1, minWidth:0}}>
             {view==="V1" ? <ViewOverview track={track} jumpTo={jumpTo} />
             : view==="V2" ? <ViewMindMap track={track} jumpTo={jumpTo} fStatus={mmFStatus} fCategory={mmFCategory} fSource={mmFSource} />
-            : view==="V3" ? <div id="insight-anchor"><ViewSuccessFormula track={track} jumpTo={jumpTo} /></div>
+            : view==="V3" ? <div id="insight-anchor"><ViewSuccessFormula track={track} jumpTo={jumpTo} selectedI={selectedI} /></div>
             : view==="V4" ? <ViewDrilldown track={track} selectedId={selectedH} setSelectedId={setSelectedH} query={query} jumpTo={jumpTo} />
             : null}
           </main>
