@@ -1149,7 +1149,7 @@ const HYPOTHESES = [
   { id:"H001", track:"A", category:"메시지",
     title:"\"스킨더스트\" — 기미인지 모를 미세한 흔적이라는 새 개념으로 카테고리어를 정립한다",
     source_type:"internal_evolved", parent_id:null, children_ids:["H010","H030"],
-    content_ids:["C001"], insight_ids:["I001"], status:"validated",
+    content_ids:["C180"], insight_ids:["I001"], status:"validated",
     created_date:"2026-01-09", updated_date:"2026-04-23",
     full_text:"기존 '기미·잡티' 키워드만으로는 컨실러로 가릴 만한 옅은 색소침착 단계를 표현하기 어려움. '스킨더스트'라는 새 카테고리어를 만들어 '이때 잡아야 홈케어로 없어진다'는 메시지로 묶으면, 화상전화/불끄샤워 류 정보성 후킹과 핏하여 구매 설득.",
     evaluations:{
@@ -1964,7 +1964,7 @@ const CONTENTS = [
   // Track A
   { id:"C001", track:"A", type:"longform_video", title:"화상전화 (스킨더스트 후킹)",
     variations:[{name:"본편", metrics:{}}],
-    live_date:"2026-02-20", status:"off", hypothesis_ids:["H001","H010"],
+    live_date:"2026-02-20", status:"off", hypothesis_ids:["H010"],
     thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1T6NdTa3is4Q28-dEzTz9644bKPm5sncd/view",
     notion_url:"https://www.notion.so/34a34579dc018029bb16c0836e3dc6d9" },
   { id:"C002", track:"A", type:"longform_video", title:"불끄샤워2",
@@ -2399,6 +2399,16 @@ const CONTENTS = [
     variations:[{name:"피캄FU1", metrics:{}},{name:"피캄FU2", metrics:{}},{name:"피캄FU3", metrics:{}}],
     live_date:null, status:"planned", hypothesis_ids:["H173"],
     thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/36d34579dc018095985ac4fad6fec732" },
+
+  // 레이저 시리즈 (H001 연결 — 스킨더스트 첫 시도)
+  { id:"C180", track:"A", type:"longform_video", title:"레이저 1/2/3 (스킨더스트 백색화 — 전문가 포맷)",
+    variations:[
+      {name:"레이저1", metrics:{spend:1317287, roas:0.909, ctr:0.0311, cpm:28387, cpc:914}},
+      {name:"레이저2", metrics:{spend:209938, roas:0.398, ctr:0.0234, cpm:24910, cpc:1066}},
+      {name:"레이저3", metrics:{spend:831851, roas:0.997, ctr:0.0662, cpm:55713, cpc:842}}
+    ],
+    live_date:"2025-12-23", status:"off", hypothesis_ids:["H001"],
+    thumbnail_url:null, drive_url:null, notion_url:null },
 
   // AI 콘텐츠 (H051 연결)
   { id:"C172", track:"A", type:"longform_video", title:"AI비타디벨 (기미잡티 — AI비타 디벨롭)",
