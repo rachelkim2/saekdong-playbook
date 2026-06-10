@@ -3857,7 +3857,8 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
                     const h = HYPOTHESES.find(x=>x.id===hid);
                     const c = CONTENTS.find(x=>x.id===cid);
                     const val = reviewMap[key];
-                    lines.push(`${val} ${hid}(${h?.title?.slice(0,25)}) ↔ ${cid}(${c?.title?.slice(0,25)})`);
+                    const correct = reviewMap[key+"_correct"] ? ` → 올바른 콘텐츠: "${reviewMap[key+"_correct"]}"` : "";
+                    lines.push(`${val} ${hid}(${h?.title?.slice(0,25)}) ↔ ${cid}(${c?.title?.slice(0,25)})${correct}`);
                   });
                 }
                 if (lines.length <= 3) { alert("아직 검토한 항목이 없어요."); return; }
@@ -3949,6 +3950,23 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
                         })()}
                       </div>
                     </div>
+                    {/* 검토 모드: ❌일 때 올바른 콘텐츠 입력 */}
+                    {reviewMode && (() => {
+                      const linkKey = sel.id + "_c_" + c.id;
+                      if (reviewMap[linkKey] !== "❌") return null;
+                      return (
+                        <div style={{padding:"6px 10px", background:"#FFF0F3", borderTop:"1px solid #F0EDE8"}}>
+                          <div style={{fontSize:"10px", color:"#8A6573", marginBottom:"3px"}}>올바른 콘텐츠는?</div>
+                          <input
+                            placeholder="소재명 또는 CID 입력 (예: 댓글삭제1, C040)"
+                            value={reviewMap[linkKey+"_correct"] || ""}
+                            onChange={e => setReview(linkKey+"_correct", e.target.value)}
+                            style={{width:"100%", fontSize:"11px", padding:"4px 8px",
+                              border:"1px solid #E8B4BF", borderRadius:"4px", background:"#FFFFFF"}}
+                          />
+                        </div>
+                      );
+                    })()}
                     {/* 베리에이션 테이블 — 4컬럼만 */}
                     <table style={{width:"100%", fontSize:"11px", borderCollapse:"collapse"}}>
                       <thead>
