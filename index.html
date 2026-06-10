@@ -1413,7 +1413,7 @@ const HYPOTHESES = [
 
   { id:"H060", track:"A", category:"경쟁사",
     title:"캡컷 나레 + 인스타 댓글 형태(고객이 볼 법한 댓글)는 신빙성을 부여해 후킹된다",
-    source_type:"trend_test", parent_id:null, children_ids:[],
+    source_type:"trend_test", parent_id:"H174", children_ids:[],
     content_ids:["C040","C041"], insight_ids:[], status:"validated",
     created_date:"2026-03-11", updated_date:"2026-03-16",
     full_text:"댓글삭제(담당자 형태, ROAS 1.60), 식품샤갈(고객 형태, ROAS 2.21 CTR 2.29%) — 인스타 댓글 형태가 신빙성. 인플의 힘도 있을 수 있음.",
@@ -1861,7 +1861,7 @@ const HYPOTHESES = [
   // ====== 불신제거 계보 ======
   { id:"H174", track:"A", category:"메시지",
     title:"불신을 제거하면서 정보를 제공하는 포맷이 기미잡티 타겟의 구매를 설득한다",
-    source_type:"internal_evolved", parent_id:null, children_ids:["H164","H173"],
+    source_type:"internal_evolved", parent_id:null, children_ids:["H164","H173","H060"],
     content_ids:[], insight_ids:[], status:"validated",
     created_date:"2026-01-01", updated_date:"2026-06-05",
     full_text:"식품래퍼 형식처럼 소비자가 가진 불신(D2C/효과/SNS템 등)을 직접 제거하면서 정보를 제공하는 콘텐츠가 기미잡티 소구에서 높은 성과를 낸다. 또플반박 → 악플반박 → 악플디벨 → 억울해명으로 이어지는 불신제거 계보에서 축적된 인사이트.",
