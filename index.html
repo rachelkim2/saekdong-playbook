@@ -1319,7 +1319,7 @@ const HYPOTHESES = [
   },
   { id:"H023", track:"A", category:"후킹",
     title:"후킹은 구매타겟에게만 작동하도록 설계 — 단순 호기심·자극 X",
-    source_type:"internal_evolved", parent_id:"H022", children_ids:[],
+    source_type:"internal_evolved", parent_id:"H022", children_ids:["H040"],
     content_ids:["C024"], insight_ids:[], status:"in_progress",
     created_date:"2026-04-30", updated_date:"2026-05-07",
     full_text:"어그로 후킹의 CVR 문제 분석에서 도출. 5/7 콘텐츠리뷰의 '성분이야기로 설득시 인트로부터 성분 언급하여 고관여자 타겟'과 같은 흐름.",
@@ -1359,7 +1359,7 @@ const HYPOTHESES = [
 
   { id:"H040", track:"A", category:"후킹",
     title:"성분 이야기로 설득 시, 인트로부터 익숙한 미백 성분을 나열해 고관여자를 후킹한다",
-    source_type:"internal_evolved", parent_id:null, children_ids:[],
+    source_type:"internal_evolved", parent_id:"H023", children_ids:[],
     content_ids:["C024"], insight_ids:["I009"], status:"validated",
     created_date:"2026-05-07", updated_date:"2026-05-07",
     full_text:"성분비교1 ROAS 1.39, CTR 6.21%, CPC 938원, 지출 ₩1.8M. 성분비교2/3 ROAS 0.48 OFF. 미백 성분 나열 인트로가 고관여자에게 후킹되어 어려운 성분 이야기 설득까지 이어짐.",
@@ -1913,7 +1913,7 @@ const HYPOTHESES = [
     evaluations:{ "버니":"BNA3이 일상에서 흔히 볼 수 있는 기미 형태 — 타겟 공감도 높음.","다리아":"메시지(카피)와 BNA 이미지가 분명해서 반응한 것. 해당 연령층이 생각하는 기미 형태가 BNA에 반영된 것.","레이첼":"고객 반응 있던 BNA 배너 이미지 모아서 비교 분석이 선행되어야." },
     source_pages:[{name:"콘텐츠 리뷰 4월 5주차", date:"2026-04-27"}]
   },
-  { id:"H169", track:"A", category:"후킹",
+  { id:"H169", track:"A", category:"메시지",
     title:"단종·사재기 대세감 + 성분 희귀성 소구가 즉각 구매를 유도한다",
     source_type:"internal_new", parent_id:null, children_ids:[],
     content_ids:["C157"], insight_ids:[], status:"in_progress",
@@ -1922,7 +1922,7 @@ const HYPOTHESES = [
     evaluations:{ "레이첼":"기획초안 5월 4주차 - 단종얘기 스크립트 기반. 수정 진행 중.","다리아":"—","버니":"—" },
     source_pages:[{name:"기획초안 5월 4주차", date:"2026-05-18"}]
   },
-  { id:"H170", track:"A", category:"후킹",
+  { id:"H170", track:"A", category:"페르소나",
     title:"전공자 증언(소분 파우치) + 오가닉 인터뷰 형식이 신뢰도와 CTR을 동시에 높인다",
     source_type:"internal_new", parent_id:null, children_ids:[],
     content_ids:[], insight_ids:[], status:"in_progress",
@@ -1931,7 +1931,7 @@ const HYPOTHESES = [
     evaluations:{ "레이첼":"기획초안 5월 4주차 - 오가닉향 스크립트 2안(인트로1 지나가는 예쁜여자 / 인트로3 생얼 미션) 기반.","다리아":"—","버니":"—" },
     source_pages:[{name:"콘텐츠 마스터 보드 기획안", date:"2026-05-29"}]
   },
-  { id:"H171", track:"A", category:"후킹",
+  { id:"H171", track:"A", category:"페르소나",
     title:"오가닉 논타겟(여성) 길거리 촬영 + 백색화 단독 소구가 기미잡티 신규 유입을 만든다",
     source_type:"internal_new", parent_id:"H170", children_ids:[],
     content_ids:["C166","C167","C169"], insight_ids:[], status:"in_progress",
