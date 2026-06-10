@@ -1162,7 +1162,7 @@ const HYPOTHESES = [
   { id:"H010", track:"A", category:"후킹",
     title:"\"혹시 ㅇㅇ라고 들어보셨어요?\" — 새 개념 알려주는 정보성 후킹 멘트가 시청 유지로 이어진다",
     source_type:"internal_evolved", parent_id:"H001", children_ids:["H011"],
-    content_ids:["C002","C003"], insight_ids:["I004"], status:"validated",
+    content_ids:["C002"], insight_ids:["I004"], status:"validated",
     created_date:"2026-02-24", updated_date:"2026-04-23",
     full_text:"'스킨더스트라고 아세요?', '백색화라고 들어보셨어요?' 인트로가 '그래서 뭔데?' 호기심을 자극, 5초대 이탈을 늦춤. 불끄샤워2, 화상전화 모두 동일 패턴.",
     evaluations:{
@@ -1173,7 +1173,7 @@ const HYPOTHESES = [
     source_pages:[{name:"콘텐츠 리뷰 4월 3주차", date:"2026-04-13"},{name:"위클리 체크인 (4/23)", date:"2026-04-23"}]
   },
   { id:"H011", track:"A", category:"페르소나",
-    title:"동일 플로우라도 모델 연기력이 몰입감·신뢰감을 만들어 ROAS를 끌어올린다",
+    title:"오가닉한 인터뷰 형식의 콘텐츠는 배우의 연기력이 구매 설득력에 영향을 끼친다",
     source_type:"internal_evolved", parent_id:"H010", children_ids:[],
     content_ids:["C004","C005"], insight_ids:["I005"], status:"validated",
     created_date:"2026-04-10", updated_date:"2026-04-23",
@@ -1186,7 +1186,7 @@ const HYPOTHESES = [
     source_pages:[{name:"위클리 체크인 (4/23)", date:"2026-04-23"}]
   },
   { id:"H030", track:"A", category:"메시지",
-    title:"스킨더스트 키워드로 시작하면서 비타민C 대체 외 다른 설득논리도 시도해본다",
+    title:"스킨더스트 키워드의 후킹 반응은 확인되었지만 <비타민C 대체+코직산 USP> 메시지로만 묶지 말고 다양한 설득 메시지를 시도해본다",
     source_type:"internal_evolved", parent_id:"H001", children_ids:[],
     content_ids:["C005"], insight_ids:[], status:"in_progress",
     created_date:"2026-04-13", updated_date:"2026-05-11",
@@ -1200,9 +1200,9 @@ const HYPOTHESES = [
   },
 
   { id:"H002", track:"A", category:"메시지",
-    title:"영상언어(무성 콘텐츠)로 전달하면 텍스트 메시지의 영향력은 크지 않다",
+    title:"페인포인트1과 같은 무성콘텐츠는 비주얼 후킹이 핵심이므로 자막/텍스트 영향력은 부수적일 것이다",
     source_type:"internal_evolved", parent_id:null, children_ids:["H003"],
-    content_ids:["C010"], insight_ids:[], status:"abandoned",
+    content_ids:["C013"], insight_ids:[], status:"abandoned",
     created_date:"2026-03-09", updated_date:"2026-04-16",
     full_text:"초기 가설: 무성콘텐츠는 비주얼 후킹이 핵심이므로 자막/텍스트 영향력은 부수적일 것. 그러나 페인포인트1(ROAS 167%) 분석에서 텍스트('코직산 백색화')가 은연중 읽혀 설득에 기여 — FALSE.",
     evaluations:{
@@ -1858,9 +1858,19 @@ const HYPOTHESES = [
     source_pages:[{name:"노션 다리아 업무일지 5/14 (진짜쉬움)", date:"2026-05-14"}]
   },
 
+  // ====== 불신제거 계보 ======
+  { id:"H174", track:"A", category:"불신제거",
+    title:"불신을 제거하면서 정보를 제공하는 포맷이 기미잡티 타겟의 구매를 설득한다",
+    source_type:"internal_evolved", parent_id:null, children_ids:["H164","H173"],
+    content_ids:[], insight_ids:[], status:"validated",
+    created_date:"2026-01-01", updated_date:"2026-06-05",
+    full_text:"식품래퍼 형식처럼 소비자가 가진 불신(D2C/효과/SNS템 등)을 직접 제거하면서 정보를 제공하는 콘텐츠가 기미잡티 소구에서 높은 성과를 낸다. 또플반박 → 악플반박 → 악플디벨 → 억울해명으로 이어지는 불신제거 계보에서 축적된 인사이트.",
+    evaluations:{ "레이첼":"—","버니":"—","다리아":"—" },
+    source_pages:[]
+  },
   { id:"H164", track:"A", category:"불신제거",
     title:"억울해명 — 악플·비판 댓글 직접 언급으로 불신제거 플로우가 구매를 설득한다",
-    source_type:"internal_evolved", parent_id:null, children_ids:[],
+    source_type:"internal_evolved", parent_id:"H174", children_ids:[],
     content_ids:["C064"], insight_ids:["I018"], status:"validated",
     created_date:"2026-05-21", updated_date:"2026-05-21",
     full_text:"소비자의 부정적 댓글(불신)을 직접 인용하고 반박하는 플로우를 영상 인트로에 배치하면 신뢰감을 높여 CVR이 상승한다. 억울해명2 (인트로2): 지출 590K, ROAS 2.37, CTR 2.39%, CVR 10.0% 달성.",
@@ -1941,10 +1951,10 @@ const HYPOTHESES = [
   },
   { id:"H173", track:"A", category:"메시지",
     title:"피캄 팔로우 커머셜 포맷 + 불신제거 메시지가 고관여 기미 타겟을 설득한다",
-    source_type:"internal_evolved", parent_id:null, children_ids:[],
+    source_type:"internal_evolved", parent_id:"H174", children_ids:[],
     content_ids:["C171"], insight_ids:[], status:"in_progress",
     created_date:"2026-06-05", updated_date:"2026-06-05",
-    full_text:"피캄 레퍼런스를 팔로우한 커머셜 롱폼에 불신제거 메시지를 결합. 기존 피캄 포맷에서 높은 CTR이 관찰된 점을 활용해 코직산 백색화 효과에 대한 불신을 해소하며 구매 전환까지 이어지는지 검증.",
+    full_text:"불신제거로 구매를 설득하는 경쟁사(피캄) 콘텐츠 팔로우. 피캄 레퍼런스 커머셜 롱폼에 불신제거 메시지를 결합해 코직산 백색화 효과에 대한 불신을 해소하며 구매 전환까지 이어지는지 검증.",
     evaluations:{ "레이첼":"커머셜 + 불신제거 조합 새 시도.","다리아":"—","버니":"—" },
     source_pages:[{name:"콘텐츠 마스터 보드 기획안", date:"2026-06-04"}]
   },
@@ -1962,10 +1972,6 @@ const CONTENTS = [
     live_date:"2026-02-24", status:"on", hypothesis_ids:["H010","H020"],
     thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1zxYOIQkj5JNEVNmh4Vl7kR-Ef18TV394/view",
     notion_url:"https://www.notion.so/33e34579dc0180baac2aeba2395022d5" },
-  { id:"C003", track:"A", type:"longform_video", title:"화상전화 (인사이트1: 스킨더스트 후킹)",
-    variations:[{name:"본편", metrics:{}}], live_date:"2026-02-20", status:"off",
-    hypothesis_ids:["H010"], thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1T6NdTa3is4Q28-dEzTz9644bKPm5sncd/view",
-    notion_url:"https://www.notion.so/34a34579dc018029bb16c0836e3dc6d9" },
   { id:"C004", track:"A", type:"longform_video", title:"이건모델교체 1/2/3",
     variations:[
       {name:"베리1 (화상전화 인트로)", metrics:{spend:419491, roas:1.69, ctr:0.0372, cvr:0.0542, cpc:1112}},
@@ -1984,7 +1990,7 @@ const CONTENTS = [
     notion_url:"https://www.notion.so/34a34579dc018029bb16c0836e3dc6d9" },
   { id:"C010", track:"A", type:"longform_video", title:"페인포인트1 (영상언어 무성)",
     variations:[{name:"본편 (15만원x2세트)", metrics:{spend:3529040, roas:1.67, ctr:0.0393, cvr:0.039, cpc:962, cpm:37846}}],
-    live_date:"2025-12-10", status:"on", hypothesis_ids:["H002","H003"], strategy_tags:["영상언어"],
+    live_date:"2025-12-10", status:"on", hypothesis_ids:["H003"], strategy_tags:["영상언어"],
     thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1IpypoEI0PnI45QzcvFcP0Do3ipQMnRe3/view",
     notion_url:"https://www.notion.so/35134579dc0180dd9106fb4355c2ade4" },
   { id:"C011", track:"A", type:"longform_video", title:"페포축약 (무성 저성과)",
@@ -2001,7 +2007,7 @@ const CONTENTS = [
     variations:[
       {name:"우지레퍼", metrics:{spend:50346, ctr:0.0244, cpc:1865}},
       {name:"영상언어", metrics:{spend:776813, roas:1.02, ctr:0.0291, cvr:0.0387, cpc:1582}}
-    ], live_date:"2026-03-06", status:"off", hypothesis_ids:["H003"], strategy_tags:["영상언어"],
+    ], live_date:"2026-03-06", status:"off", hypothesis_ids:["H002","H003"], strategy_tags:["영상언어"],
     thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1AqVFN1oDgGTm1WCyrxWIIPCmTcOhl917/view",
     notion_url:"https://www.notion.so/35134579dc0180dd9106fb4355c2ade4" },
   { id:"C014", track:"A", type:"longform_video", title:"토닝효과 1/2",
@@ -2390,7 +2396,7 @@ const CONTENTS = [
     live_date:null, status:"planned", hypothesis_ids:["H169"],
     thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/36434579dc01809483adffd1b658b6e8" },
   { id:"C171", track:"A", type:"longform_video", title:"피캄FU 커머셜 롱폼 (기미잡티 — 피캄 팔로우 불신제거)",
-    variations:[],
+    variations:[{name:"피캄FU1", metrics:{}},{name:"피캄FU2", metrics:{}},{name:"피캄FU3", metrics:{}}],
     live_date:null, status:"planned", hypothesis_ids:["H173"],
     thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/36d34579dc018095985ac4fad6fec732" },
 
@@ -3848,7 +3854,7 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
                   lines.push("");
                 }
                 // 콘텐츠 연결 검토
-                const linkKeys = Object.keys(reviewMap).filter(k=>k.includes("_c_"));
+                const linkKeys = Object.keys(reviewMap).filter(k=>k.includes("_c_") && !k.endsWith("_correct"));
                 if (linkKeys.length > 0) {
                   lines.push("── 콘텐츠 연결 ──");
                   linkKeys.forEach(key => {
