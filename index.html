@@ -3893,6 +3893,24 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
                         <span style={{fontSize:"10px", padding:"1px 6px", borderRadius:"3px",
                           background:c.status==="on"?"#E1EFDA":"#EAE0E5",
                           color:c.status==="on"?"#4F7A4C":"#6F4F5C"}}>{c.status.toUpperCase()}</span>
+                        {/* 검토 모드: 콘텐츠 연결 확인 버튼 */}
+                        {reviewMode && (() => {
+                          const linkKey = sel.id + "_c_" + c.id;
+                          const cur = reviewMap[linkKey];
+                          return (
+                            <div style={{display:"flex", gap:"3px"}}>
+                              {[["✅","#4F7A4C"],["❌","#8A6573"]].map(([v,col])=>(
+                                <button key={v} onClick={()=> cur===v ? clearReview(linkKey) : setReview(linkKey, v)}
+                                  title={v==="✅"?"연결 맞음":"연결 틀림"}
+                                  style={{fontSize:"11px", width:"22px", height:"22px", borderRadius:"4px", border:"none", cursor:"pointer",
+                                    background: cur===v ? col : "#F0EDE8",
+                                    color: cur===v ? "#fff" : "#9B9690"}}>
+                                  {v}
+                                </button>
+                              ))}
+                            </div>
+                          );
+                        })()}
                       </div>
                     </div>
                     {/* 베리에이션 테이블 — 4컬럼만 */}
