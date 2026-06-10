@@ -3895,9 +3895,22 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
                   });
                 }
                 if (lines.length <= 3) { alert("아직 검토한 항목이 없어요."); return; }
-                navigator.clipboard.writeText(lines.join("\n")).then(()=>alert("복사 완료! 채팅창에 붙여넣기 하세요 (Cmd+V)"));
+                navigator.clipboard.writeText(lines.join("\n")).then(()=>{
+                  alert("복사 완료! 채팅창에 붙여넣기 하세요 (Cmd+V)\n\n검토 내용을 초기화합니다.");
+                  const empty = {};
+                  setReviewMap(empty);
+                  localStorage.setItem("saekdong_review_v1", JSON.stringify(empty));
+                });
               }} style={{fontSize:"11px", fontWeight:600, padding:"4px 12px", borderRadius:"5px", border:"none", cursor:"pointer", background:"#FFCB05", color:"#1A1A1A"}}>
                 📋 클로드에게 전달
+              </button>
+              <button onClick={()=>{
+                if (!window.confirm("검토 내용을 모두 초기화할까요?")) return;
+                const empty = {};
+                setReviewMap(empty);
+                localStorage.setItem("saekdong_review_v1", JSON.stringify(empty));
+              }} style={{fontSize:"11px", fontWeight:500, padding:"4px 10px", borderRadius:"5px", border:"1px solid #E8EAED", cursor:"pointer", background:"#F0EDE8", color:"#6B6B6B"}}>
+                🗑 초기화
               </button>
             </>
           )}
