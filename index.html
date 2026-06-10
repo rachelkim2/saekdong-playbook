@@ -3778,6 +3778,27 @@ function ViewOverview({ track, jumpTo }) {
 function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
   const hyps = useMemo(()=>HYPOTHESES.filter(h=>h.track===track), [track]);
   const [selectedId, setSelectedId] = React.useState(null);
+  const [reviewMode, setReviewMode] = React.useState(false);
+  const [reviewMap, setReviewMap] = React.useState(() => {
+    try { return JSON.parse(localStorage.getItem("saekdong_review_v1") || "{}"); }
+    catch(e) { return {}; }
+  });
+
+  function setReview(hid, val) {
+    const next = {...reviewMap, [hid]: val};
+    setReviewMap(next);
+    localStorage.setItem("saekdong_review_v1", JSON.stringify(next));
+  }
+  function clearReview(hid) {
+    const next = {...reviewMap};
+    delete next[hid];
+    setReviewMap(next);
+    localStorage.setItem("saekdong_review_v1", JSON.stringify(next));
+  }
+
+  const reviewed = Object.keys(reviewMap).filter(k => HYPOTHESES.find(h=>h.id===k && h.track===track));
+  const flagged  = reviewed.filter(k => reviewMap[k] === "❌");
+  const confirmed = reviewed.filter(k => reviewMap[k] === "✅");
 
   const sel = selectedId ? HYPOTHESES.find(h=>h.id===selectedId) : null;
   // 양방향 콘텐츠 연결: hypothesis.content_ids OR content.hypothesis_ids
@@ -3795,10 +3816,41 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
     <div className="anim-fade" style={{display:"flex", gap:"12px", alignItems:"flex-start"}}>
       {/* 마인드맵 */}
       <div style={{flex:1, minWidth:0}}>
+        {/* 검토 모드 토글 + 요약 */}
+        <div style={{display:"flex", alignItems:"center", gap:"10px", marginBottom:"8px", flexWrap:"wrap"}}>
+          <button onClick={()=>setReviewMode(v=>!v)} style={{
+            fontSize:"12px", fontWeight:600, padding:"4px 12px", borderRadius:"6px", cursor:"pointer", border:"none",
+            background: reviewMode ? "#1A1A1A" : "#F0EDE8", color: reviewMode ? "#FFCB05" : "#6B6B6B"
+          }}>
+            {reviewMode ? "✏️ 검토 중" : "검토 모드"}
+          </button>
+          {reviewMode && (
+            <span style={{fontSize:"11px", color:"#6B6B6B"}}>
+              가설 클릭 후 아래 버튼으로 ✅/❌ 표시 →&nbsp;
+              <span style={{color:"#4F7A4C", fontWeight:600}}>{confirmed.length}개 확인</span>
+              {flagged.length > 0 && <span style={{color:"#8A6573", fontWeight:600, marginLeft:"8px"}}>{flagged.length}개 문제</span>}
+            </span>
+          )}
+        </div>
         <div className="card-deep p-3 overflow-x-auto relative">
           <div id="mindmap-tooltip" className="mm-tooltip" style={{display:"none"}}></div>
           <MindMap track={track} hypotheses={hyps} onNodeClick={handleNodeClick} selectedId={selectedId} filters={{status:fStatus||new Set(), category:fCategory||new Set(), source:fSource||new Set()}} />
         </div>
+        {/* 검토 모드: 문제 가설 목록 */}
+        {reviewMode && flagged.length > 0 && (
+          <div style={{marginTop:"10px", background:"#FFF0F3", border:"1px solid #E8B4BF", borderRadius:"8px", padding:"10px 14px"}}>
+            <div style={{fontSize:"11px", fontWeight:600, color:"#8A6573", marginBottom:"6px"}}>❌ 문제 있는 가설</div>
+            {flagged.map(hid => {
+              const h = HYPOTHESES.find(x=>x.id===hid);
+              return h ? (
+                <div key={hid} style={{fontSize:"11px", color:"#2B2825", marginBottom:"3px"}}>
+                  <span style={{fontWeight:600}}>{hid}</span> — {h.title.slice(0,50)}
+                  {reviewMap[hid+"_note"] && <span style={{color:"#8A6573", marginLeft:"6px"}}>({reviewMap[hid+"_note"]})</span>}
+                </div>
+              ) : null;
+            })}
+          </div>
+        )}
       </div>
 
       {/* 우측 디테일 패널 */}
@@ -3908,6 +3960,37 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
             <button onClick={()=>jumpTo("V4", sel.id)} style={{fontSize:"13px", color:"#2B2825", fontWeight:500, background:"none", border:"none", cursor:"pointer", padding:0}}>
               자세히 보기 →
             </button>
+            {reviewMode && (
+              <div style={{marginTop:"10px"}}>
+                <div style={{fontSize:"11px", color:"#6B6B6B", marginBottom:"6px", fontWeight:500}}>이 가설이 맞나요?</div>
+                <div style={{display:"flex", gap:"6px", flexWrap:"wrap"}}>
+                  {[
+                    {val:"✅", label:"맞음", bg:"#E1EFDA", color:"#4F7A4C", activeBg:"#4F7A4C"},
+                    {val:"❌", label:"틀림", bg:"#EAE0E5", color:"#8A6573", activeBg:"#8A6573"},
+                    {val:"✏️", label:"수정필요", bg:"#FFF5C9", color:"#B58B1F", activeBg:"#B58B1F"},
+                  ].map(({val, label, bg, color, activeBg}) => {
+                    const isActive = reviewMap[sel.id] === val;
+                    return (
+                      <button key={val} onClick={()=> isActive ? clearReview(sel.id) : setReview(sel.id, val)}
+                        style={{fontSize:"12px", padding:"4px 10px", borderRadius:"6px", border:"none", cursor:"pointer", fontWeight:600,
+                          background: isActive ? activeBg : bg,
+                          color: isActive ? "#FFFFFF" : color}}>
+                        {val} {label}
+                      </button>
+                    );
+                  })}
+                </div>
+                {reviewMap[sel.id] === "❌" || reviewMap[sel.id] === "✏️" ? (
+                  <input
+                    placeholder="어떻게 달라야 하나요? (선택)"
+                    value={reviewMap[sel.id+"_note"] || ""}
+                    onChange={e => setReview(sel.id+"_note", e.target.value)}
+                    style={{marginTop:"6px", width:"100%", fontSize:"11px", padding:"4px 8px",
+                      border:"1px solid #E8EAED", borderRadius:"4px", background:"#FAFAFA"}}
+                  />
+                ) : null}
+              </div>
+            )}
           </div>
         </div>
       )}
