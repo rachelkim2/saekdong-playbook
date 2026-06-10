@@ -3095,6 +3095,8 @@ function MindMap({ track, hypotheses, onNodeClick, selectedId, filters }) {
 
     const trackLabelMap = { A:"롱폼", D:"바이럴 PA·PPL", B:"숏폼·배너" };
     const rootName = `밀키토너 — ${trackLabelMap[track] || track}`;
+    // 카테고리 계층 — 부모 카테고리 매핑
+    const CAT_PARENT = { "불신제거": "메시지" };
     const cats = Array.from(new Set(filtered.map(h=>h.category)));
     // Build tree: root → category → top-level (orphan or filtered parent) → children
     function pickChildren(parentId) {
@@ -3105,15 +3107,24 @@ function MindMap({ track, hypotheses, onNodeClick, selectedId, filters }) {
           children: pickChildren(h.id),
         }));
     }
+    function buildCatNode(c) {
+      // 이 카테고리의 서브카테고리들
+      const subCats = cats.filter(sc => CAT_PARENT[sc] === c);
+      return {
+        name: c,
+        isCat: true,
+        children: [
+          ...filtered.filter(h => h.category===c && (h.parent_id === null || !visibleIds.has(h.parent_id)))
+            .map(h => ({ name:h.id, h, children: pickChildren(h.id) })),
+          ...subCats.map(buildCatNode).filter(n => n.children.length>0)
+        ]
+      };
+    }
+    const topLevelCats = cats.filter(c => !CAT_PARENT[c]);
     const data = {
       name: rootName,
       isRoot:true,
-      children: cats.map(c => ({
-        name: c,
-        isCat: true,
-        children: filtered.filter(h => h.category===c && (h.parent_id === null || !visibleIds.has(h.parent_id)))
-          .map(h => ({ name:h.id, h, children: pickChildren(h.id) }))
-      })).filter(c => c.children.length>0)
+      children: topLevelCats.map(buildCatNode).filter(c => c.children.length>0)
     };
 
     const svg = d3.select(ref.current);
