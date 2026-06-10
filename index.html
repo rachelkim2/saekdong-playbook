@@ -3825,11 +3825,35 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
             {reviewMode ? "✏️ 검토 중" : "검토 모드"}
           </button>
           {reviewMode && (
-            <span style={{fontSize:"11px", color:"#6B6B6B"}}>
-              가설 클릭 후 아래 버튼으로 ✅/❌ 표시 →&nbsp;
-              <span style={{color:"#4F7A4C", fontWeight:600}}>{confirmed.length}개 확인</span>
-              {flagged.length > 0 && <span style={{color:"#8A6573", fontWeight:600, marginLeft:"8px"}}>{flagged.length}개 문제</span>}
-            </span>
+            <>
+              <span style={{fontSize:"11px", color:"#6B6B6B"}}>
+                가설 클릭 후 아래 버튼으로 ✅/❌ 표시 →&nbsp;
+                <span style={{color:"#4F7A4C", fontWeight:600}}>{confirmed.length}개 확인</span>
+                {(flagged.length + Object.keys(reviewMap).filter(k=>k.includes("_note")&&reviewMap[k]).length) > 0 &&
+                  <span style={{color:"#8A6573", fontWeight:600, marginLeft:"8px"}}>{flagged.length}개 문제</span>}
+              </span>
+              <button onClick={()=>{
+                const lines = ["=== 가설 검토 결과 ===",""];
+                Object.entries(reviewMap).forEach(([key, val]) => {
+                  if (key.endsWith("_note")) return;
+                  if (key.includes("_c_")) {
+                    // 콘텐츠 연결
+                    const [hid,,cid] = key.split("_c_");
+                    const h = HYPOTHESES.find(x=>x.id===hid);
+                    const c = CONTENTS.find(x=>x.id===cid);
+                    if (val==="❌") lines.push(`[콘텐츠연결 ❌] ${hid}(${h?.title?.slice(0,30)}) ↔ ${cid}(${c?.title?.slice(0,30)})`);
+                  } else {
+                    const h = HYPOTHESES.find(x=>x.id===key);
+                    if (!h) return;
+                    const note = reviewMap[key+"_note"] ? ` → "${reviewMap[key+"_note"]}"` : "";
+                    lines.push(`[${val}] ${key}: ${h.title.slice(0,60)}${note}`);
+                  }
+                });
+                navigator.clipboard.writeText(lines.join("\n")).then(()=>alert("클립보드에 복사됐어요! 채팅창에 붙여넣기 하세요."));
+              }} style={{fontSize:"11px", fontWeight:600, padding:"3px 10px", borderRadius:"5px", border:"none", cursor:"pointer", background:"#FFCB05", color:"#1A1A1A"}}>
+                📋 클로드에게 전달
+              </button>
+            </>
           )}
         </div>
         <div className="card-deep p-3 overflow-x-auto relative">
