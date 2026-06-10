@@ -3833,24 +3833,36 @@ function ViewMindMap({ track, jumpTo, fStatus, fCategory, fSource }) {
                   <span style={{color:"#8A6573", fontWeight:600, marginLeft:"8px"}}>{flagged.length}개 문제</span>}
               </span>
               <button onClick={()=>{
-                const lines = ["=== 가설 검토 결과 ===",""];
-                Object.entries(reviewMap).forEach(([key, val]) => {
-                  if (key.endsWith("_note")) return;
-                  if (key.includes("_c_")) {
-                    // 콘텐츠 연결
-                    const [hid,,cid] = key.split("_c_");
-                    const h = HYPOTHESES.find(x=>x.id===hid);
-                    const c = CONTENTS.find(x=>x.id===cid);
-                    if (val==="❌") lines.push(`[콘텐츠연결 ❌] ${hid}(${h?.title?.slice(0,30)}) ↔ ${cid}(${c?.title?.slice(0,30)})`);
-                  } else {
+                const lines = ["=== 가설 검토 결과 ===", `트랙: ${track} / 총 ${Object.keys(reviewMap).filter(k=>!k.includes("_note")&&!k.includes("_c_")).length}개 가설, ${Object.keys(reviewMap).filter(k=>k.includes("_c_")).length}개 콘텐츠연결 검토`, ""];
+                // 가설 검토
+                const hypKeys = Object.keys(reviewMap).filter(k=>!k.includes("_note")&&!k.includes("_c_"));
+                if (hypKeys.length > 0) {
+                  lines.push("── 가설 ──");
+                  hypKeys.forEach(key => {
                     const h = HYPOTHESES.find(x=>x.id===key);
                     if (!h) return;
-                    const note = reviewMap[key+"_note"] ? ` → "${reviewMap[key+"_note"]}"` : "";
-                    lines.push(`[${val}] ${key}: ${h.title.slice(0,60)}${note}`);
-                  }
-                });
-                navigator.clipboard.writeText(lines.join("\n")).then(()=>alert("클립보드에 복사됐어요! 채팅창에 붙여넣기 하세요."));
-              }} style={{fontSize:"11px", fontWeight:600, padding:"3px 10px", borderRadius:"5px", border:"none", cursor:"pointer", background:"#FFCB05", color:"#1A1A1A"}}>
+                    const val = reviewMap[key];
+                    const note = reviewMap[key+"_note"] ? ` / 메모: "${reviewMap[key+"_note"]}"` : "";
+                    lines.push(`${val} ${key}: ${h.title.slice(0,60)}${note}`);
+                  });
+                  lines.push("");
+                }
+                // 콘텐츠 연결 검토
+                const linkKeys = Object.keys(reviewMap).filter(k=>k.includes("_c_"));
+                if (linkKeys.length > 0) {
+                  lines.push("── 콘텐츠 연결 ──");
+                  linkKeys.forEach(key => {
+                    const parts = key.split("_c_");
+                    const hid = parts[0], cid = parts[1];
+                    const h = HYPOTHESES.find(x=>x.id===hid);
+                    const c = CONTENTS.find(x=>x.id===cid);
+                    const val = reviewMap[key];
+                    lines.push(`${val} ${hid}(${h?.title?.slice(0,25)}) ↔ ${cid}(${c?.title?.slice(0,25)})`);
+                  });
+                }
+                if (lines.length <= 3) { alert("아직 검토한 항목이 없어요."); return; }
+                navigator.clipboard.writeText(lines.join("\n")).then(()=>alert("복사 완료! 채팅창에 붙여넣기 하세요 (Cmd+V)"));
+              }} style={{fontSize:"11px", fontWeight:600, padding:"4px 12px", borderRadius:"5px", border:"none", cursor:"pointer", background:"#FFCB05", color:"#1A1A1A"}}>
                 📋 클로드에게 전달
               </button>
             </>
