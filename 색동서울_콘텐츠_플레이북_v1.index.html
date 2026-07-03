@@ -199,8 +199,8 @@ const { useState, useEffect, useRef, useMemo } = React;
 
 const META = {
   title: "색동서울 콘텐츠 플레이북",
-  version: "v1.4",
-  lastUpdate: "2026-06-26",
+  version: "v1.5",
+  lastUpdate: "2026-07-03",
   brandRoot: "밀키토너",
   brandUSP: "코직애씨드 터메릭 나이아신아마이드 5% 밀키토너",
 };
@@ -1090,6 +1090,17 @@ const OPS_LOG = [
       "토너 올리브디벨롭 숏폼 제작"
     ]
   },
+  { id:"OPS008", date:"2026-07-03", type:"운영결정",
+    title:"paid 롱폼 운영 구조 개편 — 고관여/저관여 분리 + 기획세트 비주얼후킹 탐색",
+    notion_url:null,
+    summary:"콘마 합류로 제작 캐파 확대. ① 밀키토너 기미잡티 paid 롱폼을 고관여(H178)/저관여(H179) 타겟으로 분리해 세그먼트별 뾰족한 소구로 운영. ② 밀키토너 기획세트 롱폼은 비주얼후킹 탐색 전용 트랙(H180)으로 운영 — 판정 지표는 ROAS가 아닌 후킹 지표(CTR·썸스탑·3초 유지). 발굴된 위너 후킹은 본편에 이식.",
+    next_actions:[
+      "신규 소재명 네이밍에 고관여/저관여/기획세트 슬롯 반영 (트래커 자동 매핑용)",
+      "고관여 1차 소재: 성분·임상 설득 논리 기반 기획 (근거: I002·I009)",
+      "저관여 1차 소재: 백색화 단독 압축 메시지 기획 (근거: I001)",
+      "기획세트 후킹 지표 판정 기준 합의 (CTR·썸스탑·3초 유지 기준값)"
+    ]
+  },
 ];
 function lookupSourceUrl(name) {
   if (SOURCE_PAGE_URLS[name]) return SOURCE_PAGE_URLS[name];
@@ -1130,12 +1141,18 @@ const CATEGORY_DESCRIPTIONS = {
 const TAG_DESCRIPTIONS = {
   "AI": "AI 콘텐츠 — AI 비타, AI 노래, 랩배틀 AI, 카톡노래AI 등 인공지능 활용",
   "불신제거": "불신·의혹 반박 포맷 — 또플반박, 진상반박, 악플반박, 댓글삭제 계열",
-  "영상언어": "무성·영상 언어 중심 — BGM/자막만, 내레이션 없는 영상 위주"
+  "영상언어": "무성·영상 언어 중심 — BGM/자막만, 내레이션 없는 영상 위주",
+  "고관여": "기미잡티 고관여 타겟 — 성분·임상·비교 등 깊은 설득 논리에 반응하는 구매의도 높은 타겟 (26.07 콘마 합류 후 분리 운영)",
+  "저관여": "기미잡티 저관여 타겟 — 직관적 후킹·단순 메시지로 신규 유입시키는 타겟 (26.07 콘마 합류 후 분리 운영)",
+  "비주얼후킹": "비주얼후킹 탐색 — 기획세트 롱폼 전용. 판정 지표는 ROAS가 아닌 후킹 지표(CTR·썸스탑·3초 시청 유지)"
 };
 const TAG_KEYWORDS = {
   "AI": [/\bai\b/i, /ai비타/i, /ai피부/i, /ai콘텐츠/i, /ai트랜드/i, /ai트렌드/i, /랩배틀.?ai/i, /ai.?노래/i, /카톡노래/i, /고민ai/i, /안녕나는/i, /인공지능/i],
   "불신제거": [/불신제거/, /불신.?제거/, /또플반박/, /악플반박/, /진상반박/, /댓글삭제/, /해명/, /오해/],
-  "영상언어": [/영상.?언어/, /무성/, /무음/]
+  "영상언어": [/영상.?언어/, /무성/, /무음/],
+  "고관여": [/고관여/],
+  "저관여": [/저관여/],
+  "비주얼후킹": [/비주얼.?후킹/, /기획세트/]
 };
 function computeTags(h) {
   if (!h) return [];
@@ -1278,7 +1295,7 @@ const HYPOTHESES = [
   },
   { id:"H023", track:"A", category:"후킹",
     title:"후킹은 구매타겟에게만 작동하도록 설계 — 단순 호기심·자극 X",
-    source_type:"internal_evolved", parent_id:"H022", children_ids:["H040"],
+    source_type:"internal_evolved", parent_id:"H022", children_ids:["H040","H177"],
     content_ids:["C024"], insight_ids:[], status:"in_progress",
     created_date:"2026-04-30", updated_date:"2026-05-07",
     full_text:"어그로 후킹의 CVR 문제 분석에서 도출. 5/7 콘텐츠리뷰의 '성분이야기로 설득시 인트로부터 성분 언급하여 고관여자 타겟'과 같은 흐름.",
@@ -1820,6 +1837,44 @@ const HYPOTHESES = [
     evaluations:["자사 콘텐츠 분석 기반 — 아직 미검증."],
     source_pages:[{name:"자사 콘텐츠 분석 (6/10)", date:"2026-06-10"}]
   },
+
+  // ====== 26.07 운영 구조 개편 — 콘마 합류로 제작 캐파 확대 ======
+  { id:"H177", track:"A", category:"메시지",
+    title:"기미잡티 소구를 고관여/저관여 타겟으로 분리 제작하면 세그먼트별로 더 뾰족한 소구가 가능하다",
+    source_type:"internal_evolved", parent_id:"H023", children_ids:["H178","H179"],
+    content_ids:[], insight_ids:[], status:"in_progress",
+    created_date:"2026-07-03", updated_date:"2026-07-03",
+    full_text:"H023(후킹은 구매타겟에게만 작동하도록 설계)의 발전형. 기존에는 1인 제작 캐파 한계로 기미잡티 소구를 단일 트랙으로 운영했으나, 콘마 합류로 제작 수량이 확보되어 고관여(성분·임상·비교 반응)/저관여(직관 후킹 반응) 타겟을 분리해 각각 최적화된 paid 롱폼을 병행 운영한다. 판정: 세그먼트별 CVR/CTR이 통합 운영 대비 개선되는가.",
+    evaluations:["1인 운영 시절엔 수량 한계로 못 하던 분리 실험 — 콘마 합류로 가능해짐 (26.07 운영 결정)."],
+    source_pages:[{name:"운영 구조 개편 결정 (7/3)", date:"2026-07-03"}]
+  },
+  { id:"H178", track:"A", category:"메시지",
+    title:"[고관여] 성분·임상·비교 등 깊은 설득 논리가 고관여 기미잡티 타겟의 CVR을 높인다",
+    source_type:"internal_evolved", parent_id:"H177", children_ids:[],
+    content_ids:[], insight_ids:[], status:"in_progress",
+    created_date:"2026-07-03", updated_date:"2026-07-03",
+    full_text:"고관여 세그먼트 전용 paid 롱폼. 기존 검증 근거: I002(BnA 입증 근거 누적 플로우), I009(익숙한 미백 성분 나열 인트로가 고관여자 후킹 — 성분비교1 ROAS 139%·CTR 6.21%), H040. 이 세그먼트는 정보 밀도를 높여도 이탈하지 않는다는 전제 검증.",
+    evaluations:["신규 세그먼트 실험 — 성과 데이터 수집 전."],
+    source_pages:[{name:"운영 구조 개편 결정 (7/3)", date:"2026-07-03"}]
+  },
+  { id:"H179", track:"A", category:"메시지",
+    title:"[저관여] 직관적 후킹 + 단일 압축 메시지(백색화 단독 등)가 저관여 타겟 신규 유입을 만든다",
+    source_type:"internal_evolved", parent_id:"H177", children_ids:[],
+    content_ids:[], insight_ids:[], status:"in_progress",
+    created_date:"2026-07-03", updated_date:"2026-07-03",
+    full_text:"저관여 세그먼트 전용 paid 롱폼. 기존 검증 근거: I001(메시지는 단일 키워드로 압축 — 백색화 단독 ROAS 167% vs 성분 2개 조합 35~102%), H070(설명이 필요한 후킹은 저관여에서 작동 안 함), H006. 정보량을 줄이고 직관 후킹으로 모수를 확장하는 것이 유효한지 검증.",
+    evaluations:["신규 세그먼트 실험 — 성과 데이터 수집 전."],
+    source_pages:[{name:"운영 구조 개편 결정 (7/3)", date:"2026-07-03"}]
+  },
+  { id:"H180", track:"A", category:"후킹",
+    title:"기획세트 롱폼은 비주얼후킹 탐색 전용으로 운영한다 — 판정 지표는 ROAS가 아닌 후킹 지표(CTR·썸스탑·3초 유지)",
+    source_type:"internal_new", parent_id:null, children_ids:[],
+    content_ids:[], insight_ids:["I003"], status:"in_progress",
+    created_date:"2026-07-03", updated_date:"2026-07-03",
+    full_text:"밀키토너 기획세트 롱폼을 '비주얼후킹을 찾자' 목적의 탐색 트랙으로 분리 운영. 검증된 비주얼후킹은 현재 I003(손가락으로 훑는 페인포인트 컷) 하나뿐 — 이런 후킹 자산을 늘리는 것이 목적이므로, 이 트랙의 콘텐츠는 전환(ROAS)이 아니라 후킹 지표(CTR·썸스탑·3초 시청 유지)로 평가한다. 여기서 발굴된 위너 후킹은 고관여/저관여 본편(H178/H179)에 이식.",
+    evaluations:["탐색 트랙과 전환 트랙의 KPI를 분리해야 탐색 콘텐츠가 '저성과'로 조기 OFF되지 않음 (26.07 운영 결정)."],
+    source_pages:[{name:"운영 구조 개편 결정 (7/3)", date:"2026-07-03"}]
+  },
 ];
 
 const CONTENTS = [
@@ -1827,12 +1882,12 @@ const CONTENTS = [
   { id:"C001", track:"A", type:"longform_video", title:"화상전화 (스킨더스트 후킹)",
     variations:[{name:"본편", metrics:{spend:5027332, roas:2.048, ctr:0.0418, cpm:30702, cpc:733}}],
     live_date:"2026-02-20", status:"off", hypothesis_ids:["H010"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1T6NdTa3is4Q28-dEzTz9644bKPm5sncd/view",
+    thumbnail_url:"thumbs/C001.jpg", drive_url:"https://drive.google.com/file/d/1T6NdTa3is4Q28-dEzTz9644bKPm5sncd/view",
     notion_url:"https://www.notion.so/34a34579dc018029bb16c0836e3dc6d9" },
   { id:"C002", track:"A", type:"longform_video", title:"불끄샤워2",
     variations:[{name:"본편", metrics:{spend:14059571, roas:1.78, ctr:0.0422, cvr:0.041, cpc:1065, cpm:43095}}],
     live_date:"2026-02-24", status:"on", hypothesis_ids:["H010","H020"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1zxYOIQkj5JNEVNmh4Vl7kR-Ef18TV394/view",
+    thumbnail_url:"thumbs/C002.jpg", drive_url:"https://drive.google.com/file/d/1zxYOIQkj5JNEVNmh4Vl7kR-Ef18TV394/view",
     notion_url:"https://www.notion.so/33e34579dc0180baac2aeba2395022d5" },
   { id:"C004", track:"A", type:"longform_video", title:"이건모델교체 1/2/3",
     variations:[
@@ -1840,7 +1895,7 @@ const CONTENTS = [
       {name:"베리2 (불끄샤워2 인트로)", metrics:{spend:231230, roas:2.06, ctr:0.0435, cvr:0.078, cpc:1616}},
       {name:"베리3", metrics:{spend:52202, ctr:0.0278, cpc:1683}}
     ], live_date:"2026-04-10", status:"on", hypothesis_ids:["H011"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1KYD9xoBe_V870DizCc2QerpxUimtLOql/view",
+    thumbnail_url:"thumbs/C004.jpg", drive_url:"https://drive.google.com/file/d/1KYD9xoBe_V870DizCc2QerpxUimtLOql/view",
     notion_url:"https://www.notion.so/34a34579dc018029bb16c0836e3dc6d9" },
   { id:"C005", track:"A", type:"longform_video", title:"이건스킨 1/2/3 (실패 - 모델 교체 전)",
     variations:[
@@ -1848,41 +1903,41 @@ const CONTENTS = [
       {name:"베리2", metrics:{spend:1847897, roas:1.08, ctr:0.0337, cvr:0.0478, cpc:1597}},
       {name:"베리3", metrics:{spend:121013, roas:0.45, ctr:0.0325, cvr:0.0156, cpc:1862}}
     ], live_date:"2026-03-26", status:"off", hypothesis_ids:["H011","H030"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1v5NDvH_GGVXXTwiKf9gcxS0wQoT2G3X0/view",
+    thumbnail_url:"thumbs/C005.jpg", drive_url:"https://drive.google.com/file/d/1v5NDvH_GGVXXTwiKf9gcxS0wQoT2G3X0/view",
     notion_url:"https://www.notion.so/34a34579dc018029bb16c0836e3dc6d9" },
   { id:"C010", track:"A", type:"longform_video", title:"페인포인트1 (영상언어 무성)",
     variations:[{name:"본편 (15만원x2세트)", metrics:{spend:3529040, roas:1.67, ctr:0.0393, cvr:0.039, cpc:962, cpm:37846}}],
     live_date:"2025-12-10", status:"on", hypothesis_ids:["H003"], strategy_tags:["영상언어"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1IpypoEI0PnI45QzcvFcP0Do3ipQMnRe3/view",
+    thumbnail_url:"thumbs/C010.jpg", drive_url:"https://drive.google.com/file/d/1IpypoEI0PnI45QzcvFcP0Do3ipQMnRe3/view",
     notion_url:"https://www.notion.so/35134579dc0180dd9106fb4355c2ade4" },
   { id:"C011", track:"A", type:"longform_video", title:"페포축약 (무성 저성과)",
     variations:[{name:"본편", metrics:{spend:284474, roas:0.35, ctr:0.0321, cvr:0.0194, cpc:1756}}],
     live_date:"2026-01-16", status:"off", hypothesis_ids:["H003"], strategy_tags:["영상언어"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1YinDoOkoNpm8LtN9C8QKScxtdVJ_xH2G/view",
+    thumbnail_url:"thumbs/C011.jpg", drive_url:"https://drive.google.com/file/d/1YinDoOkoNpm8LtN9C8QKScxtdVJ_xH2G/view",
     notion_url:"https://www.notion.so/35134579dc0180dd9106fb4355c2ade4" },
   { id:"C012", track:"A", type:"longform_video", title:"식품축약 (무성 저성과)",
     variations:[{name:"본편", metrics:{spend:175130, roas:0.47, ctr:0.0335, cvr:0.0143, cpc:1307}}],
     live_date:"2026-01-15", status:"off", hypothesis_ids:["H003"], strategy_tags:["영상언어"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1zaWm0ggI2EBl3zoTNQx5EraYUqq7zxXd/view",
+    thumbnail_url:"thumbs/C012.jpg", drive_url:"https://drive.google.com/file/d/1zaWm0ggI2EBl3zoTNQx5EraYUqq7zxXd/view",
     notion_url:"https://www.notion.so/35134579dc0180dd9106fb4355c2ade4" },
   { id:"C013", track:"A", type:"longform_video", title:"우지레퍼 / 영상언어 (저성과)",
     variations:[
       {name:"우지레퍼", metrics:{spend:50346, ctr:0.0244, cpc:1865}},
       {name:"영상언어", metrics:{spend:776813, roas:1.02, ctr:0.0291, cvr:0.0387, cpc:1582}}
     ], live_date:"2026-03-06", status:"off", hypothesis_ids:["H002","H003"], strategy_tags:["영상언어"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1AqVFN1oDgGTm1WCyrxWIIPCmTcOhl917/view",
+    thumbnail_url:"thumbs/C013.jpg", drive_url:"https://drive.google.com/file/d/1AqVFN1oDgGTm1WCyrxWIIPCmTcOhl917/view",
     notion_url:"https://www.notion.so/35134579dc0180dd9106fb4355c2ade4" },
   { id:"C014", track:"A", type:"longform_video", title:"토닝효과 1/2",
     variations:[
       {name:"토닝효과1", metrics:{spend:1174987, roas:1.06, ctr:0.0438, cvr:0.0358, cpc:1467}},
       {name:"토닝효과2", metrics:{spend:2071292, roas:1.31, ctr:0.0526, cvr:0.0530, cpc:1489}}
     ], live_date:"2026-04-03", status:"on", hypothesis_ids:["H004"], strategy_tags:["영상언어"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1NV6m7ONXB11tLOR2O5oAdh6tAtDqInEX/view",
+    thumbnail_url:"thumbs/C014.jpg", drive_url:"https://drive.google.com/file/d/1NV6m7ONXB11tLOR2O5oAdh6tAtDqInEX/view",
     notion_url:"https://www.notion.so/35134579dc0180dd9106fb4355c2ade4" },
   { id:"C015", track:"A", type:"longform_video", title:"영상베리3",
     variations:[{name:"베리3", metrics:{spend:1587059, roas:1.40, ctr:0.0291, cvr:0.0607, cpc:1660}}],
     live_date:"2026-03-18", status:"on", hypothesis_ids:["H004"], strategy_tags:["영상언어"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1w75SeGdXGERMwtA0IpO-iKK_3_vlVaR_/view",
+    thumbnail_url:"thumbs/C015.jpg", drive_url:"https://drive.google.com/file/d/1w75SeGdXGERMwtA0IpO-iKK_3_vlVaR_/view",
     notion_url:"https://www.notion.so/35134579dc0180dd9106fb4355c2ade4" },
   { id:"C016", track:"A", type:"longform_video", title:"아이슬로 1/2/3",
     variations:[
@@ -1890,7 +1945,7 @@ const CONTENTS = [
       {name:"아이슬로2", metrics:{spend:1413742, roas:1.18, ctr:0.0307, cvr:0.035, cpc:1176}},
       {name:"아이슬로3", metrics:{spend:3787788, roas:1.12, ctr:0.0467, cvr:0.0611, cpc:1437}}
     ], live_date:"2026-03-24", status:"on", hypothesis_ids:["H004"], strategy_tags:["영상언어"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1_IW3qCp2wMmTPTdY5sUOrSwWrX6FwhcP/view",
+    thumbnail_url:"thumbs/C016.jpg", drive_url:"https://drive.google.com/file/d/1_IW3qCp2wMmTPTdY5sUOrSwWrX6FwhcP/view",
     notion_url:"https://www.notion.so/35134579dc0180dd9106fb4355c2ade4" },
   { id:"C017", track:"A", type:"longform_video", title:"백색화만 1/2/3 (BGM 템포 이슈)",
     variations:[
@@ -1898,17 +1953,17 @@ const CONTENTS = [
       {name:"베리2", metrics:{spend:4260, ctr:0.0217, cpc:2130}},
       {name:"베리3", metrics:{spend:52703, roas:0.53, ctr:0.0226, cvr:0.0417, cpc:2196}}
     ], live_date:"2026-04-21", status:"off", hypothesis_ids:["H006"], strategy_tags:["영상언어"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/18w7CCoKhmXjxvtgL0RqdXA3UExvUnqQw/view",
+    thumbnail_url:"thumbs/C017.jpg", drive_url:"https://drive.google.com/file/d/18w7CCoKhmXjxvtgL0RqdXA3UExvUnqQw/view",
     notion_url:"https://www.notion.so/35034579dc0180c3afb3cac6338228bf" },
   { id:"C020", track:"A", type:"longform_video", title:"비커실험2 (주조사백색화 논리설득)",
     variations:[{name:"본편", metrics:{spend:199698, roas:1.15, ctr:0.0353, cvr:0.0446, cpc:1276}}],
     live_date:"2025-10-02", status:"on", hypothesis_ids:["H020"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1E0HngbiGHH6zBGeIuHc-h-f6oOridBDs/view",
+    thumbnail_url:"thumbs/C020.jpg", drive_url:"https://drive.google.com/file/d/1E0HngbiGHH6zBGeIuHc-h-f6oOridBDs/view",
     notion_url:"https://www.notion.so/29d34579dc018007a2cdd9456a02e0a0" },
   { id:"C021", track:"A", type:"longform_video", title:"또플반박2 (불신제거)",
     variations:[{name:"본편 (일예산 20만원)", metrics:{spend:4988956, roas:1.65, ctr:0.0369, cvr:0.0558, cpc:988}}],
     live_date:"2026-03-20", status:"on", hypothesis_ids:["H021"], strategy_tags:["불신제거"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/128wd4zQywEIsQC4O4hK-EsR76P8ul0BE/view",
+    thumbnail_url:"thumbs/C021.jpg", drive_url:"https://drive.google.com/file/d/128wd4zQywEIsQC4O4hK-EsR76P8ul0BE/view",
     notion_url:"https://www.notion.so/33e34579dc0180baac2aeba2395022d5" },
   { id:"C022", track:"A", type:"longform_video", title:"진상반박 1/2/3 (어그로 후킹)",
     variations:[
@@ -1916,7 +1971,7 @@ const CONTENTS = [
       {name:"진상반박2", metrics:{spend:50714, ctr:0.0292}},
       {name:"진상반박3", metrics:{spend:146841, roas:0.35, ctr:0.0474, cvr:0.0137, cpc:1749}}
     ], live_date:"2026-04-21", status:"off", hypothesis_ids:["H022"], strategy_tags:["불신제거"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/10HUgPn-bjEhmsp_RqTkO63xZ9Jb_g7Rk/view",
+    thumbnail_url:"thumbs/C022.jpg", drive_url:"https://drive.google.com/file/d/10HUgPn-bjEhmsp_RqTkO63xZ9Jb_g7Rk/view",
     notion_url:"https://www.notion.so/35034579dc0180c3afb3cac6338228bf" },
   { id:"C023", track:"A", type:"longform_video", title:"이소티논 1/2/3 (7년 피부관리 페르소나)",
     variations:[
@@ -1924,7 +1979,7 @@ const CONTENTS = [
       {name:"이소티논2 OFF", metrics:{spend:58630, roas:0.60, ctr:0.0193, cvr:0.0408, cpc:2769}},
       {name:"이소티논3", metrics:{spend:48945, roas:1.38, ctr:0.0404, cvr:0.0489, cpc:1569, cpm:60744}}
     ], live_date:"2026-04-27", status:"on", hypothesis_ids:["H024","H025"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1Cj46m2rtZGJYbtW6WfIE9gep9hM6wop1/view",
+    thumbnail_url:"thumbs/C023.jpg", drive_url:"https://drive.google.com/file/d/1Cj46m2rtZGJYbtW6WfIE9gep9hM6wop1/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C024", track:"A", type:"longform_video", title:"성분비교 1/2/3",
     variations:[
@@ -1932,7 +1987,7 @@ const CONTENTS = [
       {name:"성분비교2", metrics:{spend:393954, roas:0.48, ctr:0.0316, cvr:0.0288, cpc:1894}},
       {name:"성분비교3", metrics:{spend:217401, roas:0.48, ctr:0.0323, cvr:0.0282, cpc:1531}}
     ], live_date:"2026-04-03", status:"on", hypothesis_ids:["H040","H023"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1sdIoc9WJqa9086xyf28GCcpuxsIOb1qF/view",
+    thumbnail_url:"thumbs/C024.jpg", drive_url:"https://drive.google.com/file/d/1sdIoc9WJqa9086xyf28GCcpuxsIOb1qF/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C025", track:"A", type:"longform_video", title:"미국에선 1/2/3 (외국 대세감 - 실패)",
     variations:[
@@ -1940,17 +1995,17 @@ const CONTENTS = [
       {name:"인트로2 OFF", metrics:{spend:57161, ctr:0.017, cpc:1844}},
       {name:"인트로3 OFF", metrics:{spend:50477, ctr:0.042, cpc:1530}}
     ], live_date:"2026-04-14", status:"off", hypothesis_ids:["H041"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1kKqDjeV8hE7tNFUFJJtn71yHvYqqNvrV/view",
+    thumbnail_url:"thumbs/C025.jpg", drive_url:"https://drive.google.com/file/d/1kKqDjeV8hE7tNFUFJJtn71yHvYqqNvrV/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C026", track:"A", type:"longform_video", title:"커뮤연출 (피부과 의사 페르소나)",
     variations:[{name:"본편", metrics:{spend:394248, roas:1.01, ctr:0.0758, cvr:0.1875}}],
     live_date:"2026-04-22", status:"on", hypothesis_ids:["H041"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1VwV85MbH2qdpBTtCjFHrDpFUOatTObaq/view",
+    thumbnail_url:"thumbs/C026.jpg", drive_url:"https://drive.google.com/file/d/1VwV85MbH2qdpBTtCjFHrDpFUOatTObaq/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C030", track:"A", type:"longform_video", title:"BnAAI (AI 논리설득)",
     variations:[{name:"본편", metrics:{spend:3461911, roas:1.36, ctr:0.0391, cvr:0.0578, cpc:1248}}],
     live_date:"2026-04-15", status:"on", hypothesis_ids:["H050"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1V2mbx7TMAz2vTYLJS8nLUJu_y1V6dNzU/view",
+    thumbnail_url:"thumbs/C030.jpg", drive_url:"https://drive.google.com/file/d/1V2mbx7TMAz2vTYLJS8nLUJu_y1V6dNzU/view",
     notion_url:"https://www.notion.so/34a34579dc018029bb16c0836e3dc6d9" },
   { id:"C040", track:"A", type:"longform_video", title:"댓글삭제 (담당자 댓글 형태)",
     variations:[
@@ -1962,29 +2017,29 @@ const CONTENTS = [
        drive_url:"https://drive.google.com/file/d/1LvZipE1jxm4pUmVT70xReLyMPF127sJA/view"},
     ],
     live_date:"2026-03-11", status:"off", hypothesis_ids:["H060"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1VuoTIVP7_LcuYvBKgmAV1CGSK2cDdAuf/view",
+    thumbnail_url:"thumbs/C040.jpg", drive_url:"https://drive.google.com/file/d/1VuoTIVP7_LcuYvBKgmAV1CGSK2cDdAuf/view",
     notion_url:"https://www.notion.so/32534579dc0180c9ba91ff52207f4dba" },
   { id:"C041", track:"A", type:"longform_video", title:"식품샤갈2 (고객 댓글 형태)",
     variations:[{name:"본편", metrics:{spend:2262783, roas:1.14, ctr:0.0199, cvr:0.0851, cpc:1822, cpm:28479}}],
     live_date:"2026-03-11", status:"off", hypothesis_ids:["H060"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1KO7klhqxjKz183l_v1_nSLMK_YXwoeul/view",
+    thumbnail_url:"thumbs/C041.jpg", drive_url:"https://drive.google.com/file/d/1KO7klhqxjKz183l_v1_nSLMK_YXwoeul/view",
     notion_url:"https://www.notion.so/32534579dc0180c9ba91ff52207f4dba" },
   { id:"C042", track:"A", type:"longform_video", title:"태연선망2 (워너비 후킹)",
     variations:[{name:"본편", metrics:{spend:10247254, roas:1.33, ctr:0.0485, cpc:668, cpm:37819}}],
     live_date:"2025-11-26", status:"off", hypothesis_ids:["H062"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/14n2X3HF7YWHBV3WzbE5iQlNegcDdY5mE/view",
+    thumbnail_url:"thumbs/C042.jpg", drive_url:"https://drive.google.com/file/d/14n2X3HF7YWHBV3WzbE5iQlNegcDdY5mE/view",
     notion_url:"https://www.notion.so/32534579dc0180c9ba91ff52207f4dba" },
   { id:"C050", track:"A", type:"longform_video", title:"디오레퍼2 (호흡 늦은 후킹 - 실패)",
     variations:[{name:"본편", metrics:{}}], live_date:"2026-03-27", status:"off",
-    hypothesis_ids:["H070"], thumbnail_url:null, drive_url:"https://drive.google.com/file/d/164qEJ_xd8J66D9aqfoDZS6BUXFDvs5J_/view",
+    hypothesis_ids:["H070"], thumbnail_url:"thumbs/C050.jpg", drive_url:"https://drive.google.com/file/d/164qEJ_xd8J66D9aqfoDZS6BUXFDvs5J_/view",
     notion_url:"https://www.notion.so/33e34579dc0180baac2aeba2395022d5" },
   { id:"C051", track:"A", type:"longform_video", title:"간단해결 (설명 필요 후킹 - 실패)",
     variations:[{name:"본편", metrics:{}}], live_date:"2026-04-10", status:"off",
-    hypothesis_ids:["H070"], thumbnail_url:null, drive_url:"https://drive.google.com/file/d/16inXEF6XdMl0M4XjKREmI-TjJ2znzOVj/view",
+    hypothesis_ids:["H070"], thumbnail_url:"thumbs/C051.jpg", drive_url:"https://drive.google.com/file/d/16inXEF6XdMl0M4XjKREmI-TjJ2znzOVj/view",
     notion_url:"https://www.notion.so/33e34579dc0180baac2aeba2395022d5" },
   { id:"C052", track:"A", type:"longform_video", title:"랩배틀AI",
     variations:[{name:"본편 (세트3개)", metrics:{}}], live_date:"2026-04-15", status:"off",
-    hypothesis_ids:["H071"], thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1EQJKZKzjxCAdSpAqXWYjrvJAR0w0qbJP/view",
+    hypothesis_ids:["H071"], thumbnail_url:"thumbs/C052.jpg", drive_url:"https://drive.google.com/file/d/1EQJKZKzjxCAdSpAqXWYjrvJAR0w0qbJP/view",
     notion_url:"https://www.notion.so/35034579dc0180c3afb3cac6338228bf" },
 
   { id:"C065", track:"A", type:"longform_video", title:"악플반박 1/2/3",
@@ -1993,7 +2048,7 @@ const CONTENTS = [
       {name:"악플반박2", metrics:{}},
       {name:"악플반박3", metrics:{}}
     ], live_date:"2026-01-22", status:"on", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1StZNShhM49KCdSz0y4-H6iz9tSirQ1LJ/view" },
+    thumbnail_url:"thumbs/C065.jpg", drive_url:"https://drive.google.com/file/d/1StZNShhM49KCdSz0y4-H6iz9tSirQ1LJ/view" },
 
   { id:"C060", track:"A", type:"longform_video", title:"악플디벨 1/2/3",
     variations:[
@@ -2001,7 +2056,7 @@ const CONTENTS = [
       {name:"악플디벨2", metrics:{}},
       {name:"악플디벨3", metrics:{}}
     ], live_date:"2026-02-12", status:"on", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1-7bJLp6WWVHLrMNr1Mt47iV37NJ5D2Ek/view" },
+    thumbnail_url:"thumbs/C060.jpg", drive_url:"https://drive.google.com/file/d/1-7bJLp6WWVHLrMNr1Mt47iV37NJ5D2Ek/view" },
 
   { id:"C061", track:"A", type:"longform_video", title:"환자 1/2/3",
     variations:[
@@ -2009,7 +2064,7 @@ const CONTENTS = [
       {name:"환자2", metrics:{}},
       {name:"환자3", metrics:{}}
     ], live_date:"2025-11-18", status:"off", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1d4rET0xeBFis406bts2s2lN79jcViIrl/view" },
+    thumbnail_url:"thumbs/C061.jpg", drive_url:"https://drive.google.com/file/d/1d4rET0xeBFis406bts2s2lN79jcViIrl/view" },
 
   { id:"C062", track:"A", type:"longform_video", title:"정보전달 1/2/3",
     variations:[
@@ -2017,7 +2072,7 @@ const CONTENTS = [
       {name:"정보전달2", metrics:{}},
       {name:"정보전달3", metrics:{}}
     ], live_date:"2026-04-30", status:"off", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1DWP9V2Q52nbS3CoCY8cMUL9LkCn4Afe3/view" },
+    thumbnail_url:"thumbs/C062.jpg", drive_url:"https://drive.google.com/file/d/1DWP9V2Q52nbS3CoCY8cMUL9LkCn4Afe3/view" },
 
   { id:"C063", track:"A", type:"longform_video", title:"고순도 1/2/3",
     variations:[
@@ -2025,7 +2080,7 @@ const CONTENTS = [
       {name:"고순도2", metrics:{}},
       {name:"고순도3", metrics:{}}
     ], live_date:"2026-05-07", status:"on", hypothesis_ids:["H169"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1LCp2018O7A2Tbl5IOQ0NPjxnCTLXQGT8/view" },
+    thumbnail_url:"thumbs/C063.jpg", drive_url:"https://drive.google.com/file/d/1LCp2018O7A2Tbl5IOQ0NPjxnCTLXQGT8/view" },
 
   { id:"C064", track:"A", type:"longform_video", title:"억울해명 1/2/3",
     variations:[
@@ -2033,59 +2088,59 @@ const CONTENTS = [
       {name:"억울해명2", metrics:{spend:590000, roas:2.37, ctr:0.0239, cvr:0.10}},
       {name:"억울해명3", metrics:{}}
     ], live_date:"2026-05-14", status:"on", hypothesis_ids:["H164"], strategy_tags:["불신제거"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1ecNozO808ZIJOg_RM5fCBQ-iNZQkhyn7/view" },
+    thumbnail_url:"thumbs/C064.jpg", drive_url:"https://drive.google.com/file/d/1ecNozO808ZIJOg_RM5fCBQ-iNZQkhyn7/view" },
 
   // Track B
   { id:"C100", track:"B", type:"shortform", title:"선크림보다 (대체 소구 — 시조)",
     variations:[{name:"본편", metrics:{}}], live_date:"2026-03-06", status:"off",
-    hypothesis_ids:["H100"], thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1VZwvEYT7Pys2bD0UN8KBHXJNsCG7pmy3/view",
+    hypothesis_ids:["H100"], thumbnail_url:"thumbs/C100.jpg", drive_url:"https://drive.google.com/file/d/1VZwvEYT7Pys2bD0UN8KBHXJNsCG7pmy3/view",
     notion_url:"https://www.notion.so/32534579dc0180c9ba91ff52207f4dba" },
   { id:"C101", track:"B", type:"shortform", title:"선크림디벨",
     variations:[{name:"본편", metrics:{spend:369929, roas:0.67}}],
     live_date:"2026-03-30", status:"off", hypothesis_ids:["H101"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1ECJvPSBk39R_KUlllNefUcH0L5p3TCd0/view",
+    thumbnail_url:"thumbs/C101.jpg", drive_url:"https://drive.google.com/file/d/1ECJvPSBk39R_KUlllNefUcH0L5p3TCd0/view",
     notion_url:"https://www.notion.so/33e34579dc0180baac2aeba2395022d5" },
   { id:"C102", track:"B", type:"shortform", title:"선크림철벽",
     variations:[{name:"본편", metrics:{spend:23719, roas:2.34, ctr:0.0157, cvr:0.0324, cpc:2635, cpm:41250}}],
     live_date:"2026-04-30", status:"on", hypothesis_ids:["H102"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1I3fz2YNJ3n3eCez_eBONLPMIcwYHDgVC/view",
+    thumbnail_url:"thumbs/C102.jpg", drive_url:"https://drive.google.com/file/d/1I3fz2YNJ3n3eCez_eBONLPMIcwYHDgVC/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C103", track:"B", type:"shortform", title:"자외선잡티 (실패 - 키워드 불신)",
     variations:[{name:"본편", metrics:{spend:5031}}],
     live_date:"2026-04-30", status:"off", hypothesis_ids:["H102"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1sHvWMXlwqE_BPjo4TM4_mQqGJ976DU_j/view",
+    thumbnail_url:"thumbs/C103.jpg", drive_url:"https://drive.google.com/file/d/1sHvWMXlwqE_BPjo4TM4_mQqGJ976DU_j/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C104", track:"B", type:"shortform", title:"올리브선크림",
     variations:[{name:"본편", metrics:{spend:2087719, roas:1.55, ctr:0.0284, cvr:0.0625, cpc:1720, cpm:47206}}],
     live_date:"2026-04-30", status:"on", hypothesis_ids:["H103"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1svD9djFOAJMWUELGSHOi9OCEDX9ic0_b/view",
+    thumbnail_url:"thumbs/C104.jpg", drive_url:"https://drive.google.com/file/d/1svD9djFOAJMWUELGSHOi9OCEDX9ic0_b/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C110", track:"B", type:"banner", title:"당첨 (다리아 - 41% 비밀링크)",
     variations:[{name:"본편", metrics:{spend:1306441, roas:1.18, ctr:0.0231, cvr:0.0625}}],
     live_date:"2026-04-23", status:"on", hypothesis_ids:["H110"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1aVt2b8MeE3HaNcyAQp50I1KxM9XO6Xf5/view",
+    thumbnail_url:"thumbs/C110.jpg", drive_url:"https://drive.google.com/file/d/1aVt2b8MeE3HaNcyAQp50I1KxM9XO6Xf5/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C111", track:"B", type:"banner", title:"첫구매 (긍정 할인 소구)",
     variations:[{name:"본편 OFF", metrics:{spend:298300, roas:1.81}}],
     live_date:"2026-04-16", status:"off", hypothesis_ids:["H110"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1Q2x-mkMQa5xaEK5to7YP2De3f_9zDD4c/view",
+    thumbnail_url:"thumbs/C111.jpg", drive_url:"https://drive.google.com/file/d/1Q2x-mkMQa5xaEK5to7YP2De3f_9zDD4c/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C112", track:"B", type:"banner", title:"두번꺾음 (가격 긍정 소구)",
     variations:[{name:"본편 OFF", metrics:{spend:636829, roas:1.12, ctr:0.0205, cvr:0.0702}}],
     live_date:"2026-04-16", status:"off", hypothesis_ids:["H110","H112"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1bXclDyxUvCe8LRJr4BczivXaDM5DnP3g/view",
+    thumbnail_url:"thumbs/C112.jpg", drive_url:"https://drive.google.com/file/d/1bXclDyxUvCe8LRJr4BczivXaDM5DnP3g/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C113", track:"B", type:"shortform", title:"할인당첨 (숏폼)",
     variations:[{name:"본편", metrics:{spend:61970, roas:0.82, ctr:0.0108, cvr:0.05, cpc:3262, cpm:35071}}],
     live_date:"2026-04-30", status:"on", hypothesis_ids:["H111"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1ZBQmmS2bme8Kiv2jadNACLs6-88j6_wN/view",
+    thumbnail_url:"thumbs/C113.jpg", drive_url:"https://drive.google.com/file/d/1ZBQmmS2bme8Kiv2jadNACLs6-88j6_wN/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C114", track:"B", type:"shortform", title:"칭찬해 / 안사고 (안버잘 재현 시도)",
     variations:[
       {name:"칭찬해 OFF", metrics:{spend:52084, roas:0, ctr:0.0157, cpm:62267, cpc:3832}},
       {name:"안사고", metrics:{spend:55778, roas:0, ctr:0.0238, cpm:41468, cpc:1907}}
     ], live_date:"2026-04-30", status:"off", hypothesis_ids:["H113"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1bmZ2YU8ag2QvxHeg_0dO4YwW60vA0IFY/view",
+    thumbnail_url:"thumbs/C114.jpg", drive_url:"https://drive.google.com/file/d/1bmZ2YU8ag2QvxHeg_0dO4YwW60vA0IFY/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C120", track:"B", type:"banner", title:"BNA 1/2/3 (이미지 테스트)",
     variations:[
@@ -2093,7 +2148,7 @@ const CONTENTS = [
       {name:"BNA2 (촘촘한 짙은 기미)", metrics:{spend:4260, ctr:0.0217, cpc:2130}},
       {name:"BNA3 (옅고 밀집된 기미)", metrics:{spend:189886, roas:1.19, ctr:0.0319, cvr:0.0483, cpc:1274}}
     ], live_date:"2026-04-23", status:"on", hypothesis_ids:["H120"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1VfSKq6HOBBYTeM1wt9gjVKtdtZsmtYKQ/view",
+    thumbnail_url:"thumbs/C120.jpg", drive_url:"https://drive.google.com/file/d/1VfSKq6HOBBYTeM1wt9gjVKtdtZsmtYKQ/view",
     notion_url:"https://www.notion.so/35034579dc0180c3afb3cac6338228bf" },
   { id:"C121", track:"B", type:"banner", title:"충분해요 1/2/3",
     variations:[
@@ -2101,166 +2156,166 @@ const CONTENTS = [
       {name:"충분해요2 (악플반박)", metrics:{spend:26653, roas:0.89, ctr:0.0105, cvr:0.1667, cpc:4442}},
       {name:"충분해요3 (레이저/걷어드립니다)", metrics:{spend:29000, roas:1.10, ctr:0.0169, cvr:0.0583, cpc:2331}}
     ], live_date:"2026-05-07", status:"on", hypothesis_ids:["H121"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1dO4GaakyYIwozIdQz5gIumYu4ldhAjjg/view",
+    thumbnail_url:"thumbs/C121.jpg", drive_url:"https://drive.google.com/file/d/1dO4GaakyYIwozIdQz5gIumYu4ldhAjjg/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C130", track:"B", type:"banner", title:"오월이라 (5월특가 시즈널)",
     variations:[{name:"본편", metrics:{spend:1206210, roas:1.50, ctr:0.0181, cvr:0.0568, cpc:1560, cpm:33714}}],
     live_date:"2026-05-07", status:"on", hypothesis_ids:["H130"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1o8nkp6-XgIsyF3ha1YsMAsFSp6C9Aim3/view",
+    thumbnail_url:"thumbs/C130.jpg", drive_url:"https://drive.google.com/file/d/1o8nkp6-XgIsyF3ha1YsMAsFSp6C9Aim3/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C131", track:"B", type:"banner", title:"잡티이별 (가정의달+USP 베리)",
     variations:[{name:"본편", metrics:{spend:9655, ctr:0.0149, cpc:2414}}],
     live_date:"2026-05-07", status:"off", hypothesis_ids:["H132"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1ON_UC5T1KaM-OUt_oCjGd-smQ6Um_Wel/view",
+    thumbnail_url:"thumbs/C131.jpg", drive_url:"https://drive.google.com/file/d/1ON_UC5T1KaM-OUt_oCjGd-smQ6Um_Wel/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C132", track:"B", type:"banner", title:"가정의달 (어버이날 1+1)",
     variations:[{name:"본편", metrics:{spend:613254, roas:1.48, ctr:0.0372, cvr:0.0534, cpc:1271, cpm:50723}}],
     live_date:"2026-05-07", status:"on", hypothesis_ids:["H131"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/14qRAHCDNJAXDSKxpIUKlNXv0X9UXkSjY/view",
+    thumbnail_url:"thumbs/C132.jpg", drive_url:"https://drive.google.com/file/d/14qRAHCDNJAXDSKxpIUKlNXv0X9UXkSjY/view",
     notion_url:"https://www.notion.so/35934579dc0180d88ff9f8de99de8cfe" },
   { id:"C140", track:"B", type:"shortform", title:"일냈다 (봄 시즌+가격)",
     variations:[{name:"본편", metrics:{spend:556109, roas:0.94, ctr:0.0267}}],
     live_date:"2026-04-13", status:"on", hypothesis_ids:["H140"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1vOhZph2iIiFBq8Ll_Ox96TFut0qJ7Qc1/view",
+    thumbnail_url:"thumbs/C140.jpg", drive_url:"https://drive.google.com/file/d/1vOhZph2iIiFBq8Ll_Ox96TFut0qJ7Qc1/view",
     notion_url:"https://www.notion.so/33e34579dc0180baac2aeba2395022d5" },
   { id:"C141", track:"B", type:"shortform", title:"이게되네 (BNA 리뷰+가격)",
     variations:[{name:"본편", metrics:{spend:3426}}],
     live_date:"2026-04-13", status:"on", hypothesis_ids:["H141"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1mREBUd833zB64luxKGHgMKWp9L7BbGRl/view",
+    thumbnail_url:"thumbs/C141.jpg", drive_url:"https://drive.google.com/file/d/1mREBUd833zB64luxKGHgMKWp9L7BbGRl/view",
     notion_url:"https://www.notion.so/33e34579dc0180baac2aeba2395022d5" },
 
   { id:"C142", track:"B", type:"longform_video", title:"하나둘올록담 (스킨더스트·논리설득)",
     variations:[{name:"본편", metrics:{}}],
     live_date:"2026-05-22", status:"planned", hypothesis_ids:["H110"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1hS4cHhvQvejYEagZDN3AsWBZpjRiavDz/view",
+    thumbnail_url:"thumbs/C142.jpg", drive_url:"https://drive.google.com/file/d/1hS4cHhvQvejYEagZDN3AsWBZpjRiavDz/view",
     notion_url:"https://www.notion.so/36034579dc018004ba14df1e5c7f3cf5" },
   { id:"C143", track:"B", type:"longform_video", title:"카톡노래AI (스킨더스트·커머셜)",
     variations:[{name:"본편", metrics:{}}],
     live_date:"2026-05-07", status:"planned", hypothesis_ids:["H110"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1EYmQv8htm3GQmvqH21YZH7wIw52QEtZw/view",
+    thumbnail_url:"thumbs/C143.jpg", drive_url:"https://drive.google.com/file/d/1EYmQv8htm3GQmvqH21YZH7wIw52QEtZw/view",
     notion_url:"https://www.notion.so/36034579dc018065a65fc315d14e001c" },
   { id:"C144", track:"B", type:"longform_video", title:"진짜쉬움 (피부과 언니 추천 페르소나)",
     variations:[{name:"인트로1", metrics:{}}, {name:"인트로2", metrics:{}}],
     live_date:"2026-05-14", status:"planned", hypothesis_ids:["H163"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1Tm-vEUdZDRTt_-u87-eoEU0fu5uW0pSQ/view",
+    thumbnail_url:"thumbs/C144.jpg", drive_url:"https://drive.google.com/file/d/1Tm-vEUdZDRTt_-u87-eoEU0fu5uW0pSQ/view",
     notion_url:"https://www.notion.so/36034579dc0180e2b7ccef02a924b97e" },
   { id:"C145", track:"B", type:"longform_video", title:"이거뭐야 (엔드베네핏 선노출 후기형)",
     variations:[{name:"인트로1", metrics:{}}, {name:"인트로2", metrics:{}}],
     live_date:"2026-05-14", status:"planned", hypothesis_ids:["H162"],
-    thumbnail_url:null, drive_url:null,
+    thumbnail_url:"thumbs/C145.jpg", drive_url:null,
     notion_url:"https://www.notion.so/36034579dc0180ea9376e6842a2d1d3e" },
   { id:"C146", track:"B", type:"shortform", title:"밀키토너 베네핏 숏폼 3종 (가장큰혜택·미백띄우자 외)",
     variations:[{name:"3종 묶음", metrics:{}}],
     live_date:"2026-05-14", status:"planned", hypothesis_ids:["H140"],
-    thumbnail_url:null, drive_url:null,
+    thumbnail_url:"thumbs/C146.jpg", drive_url:null,
     notion_url:"https://www.notion.so/36034579dc018013acb7dae4df670442" },
   { id:"C147", track:"B", type:"banner", title:"밀키크림·세트 베네핏 배너 4종 (하나로끝·안버잘투·고민 외)",
     variations:[{name:"4종 묶음", metrics:{}}],
     live_date:"2026-05-14", status:"planned", hypothesis_ids:["H161"],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1uYTdfV5-hGFvL7W_OOvWNBpmuPPZM4zd/view",
+    thumbnail_url:"thumbs/C147.jpg", drive_url:"https://drive.google.com/file/d/1uYTdfV5-hGFvL7W_OOvWNBpmuPPZM4zd/view",
     notion_url:"https://www.notion.so/36034579dc0180e7a8e8ff1230bcd05e" },
   { id:"C148", track:"B", type:"longform_video", title:"길거리 오가닉 롱폼 (기미잡티·백색화, 논타겟 여성)",
     variations:[{name:"인트로1", metrics:{}}, {name:"인트로2", metrics:{}}, {name:"인트로3", metrics:{}}],
     live_date:"2026-06-19", status:"filming", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:null,
+    thumbnail_url:"thumbs/C148.jpg", drive_url:null,
     notion_url:"https://www.notion.so/36634579dc0180afa291e5a00a5a9c55" },
 
   { id:"C150", track:"B", type:"shortform", title:"흔들흔들",
     variations:[{name:"흔들흔들", metrics:{}}],
     live_date:"2026-02-04", status:"on", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1_A7DJ68DZK1GqGtb94xraWoARazBeb2c/view" },
+    thumbnail_url:"thumbs/C150.jpg", drive_url:"https://drive.google.com/file/d/1_A7DJ68DZK1GqGtb94xraWoARazBeb2c/view" },
 
   { id:"C151", track:"B", type:"shortform", title:"두쫀쿠",
     variations:[{name:"두쫀쿠", metrics:{}}],
     live_date:"2026-02-04", status:"on", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1nygwGVRpvxBC1OHDKwTetbRjBZCNHASh/view" },
+    thumbnail_url:"thumbs/C151.jpg", drive_url:"https://drive.google.com/file/d/1nygwGVRpvxBC1OHDKwTetbRjBZCNHASh/view" },
 
   { id:"C152", track:"B", type:"banner", title:"안버잘",
     variations:[{name:"안버잘", metrics:{}}],
     live_date:"2026-04-07", status:"on", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/1SKPi5a7qjU0PAShPa3GvpMyvp870drzZ/view" },
+    thumbnail_url:"thumbs/C152.jpg", drive_url:"https://drive.google.com/file/d/1SKPi5a7qjU0PAShPa3GvpMyvp870drzZ/view" },
 
   { id:"C153", track:"B", type:"banner", title:"6만원",
     variations:[{name:"6만원", metrics:{}}],
     live_date:"2026-01-27", status:"on", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:"https://drive.google.com/file/d/15jGZoBk_qfgynNwiSKzrEfUn9KCiT0Ql/view" },
+    thumbnail_url:"thumbs/C153.jpg", drive_url:"https://drive.google.com/file/d/15jGZoBk_qfgynNwiSKzrEfUn9KCiT0Ql/view" },
 
   { id:"C154", track:"B", type:"shortform", title:"밀키크림 베네핏 숏폼 (2종: 역컨셉·착한소비)",
     variations:[{name:"역컨셉", metrics:{spend:50974, roas:1.283, ctr:0.0332, cpm:45675, cpc:1377}}, {name:"착한소비", metrics:{}}],
     live_date:"2026-05-26", status:"on", hypothesis_ids:["H161"],
-    thumbnail_url:null, drive_url:null,
+    thumbnail_url:"thumbs/C154.jpg", drive_url:null,
     notion_url:"https://www.notion.so/36634579dc0180eabb5ee9f78783f727" },
   { id:"C155", track:"B", type:"banner", title:"밀키크림 베네핏 배너 (2종: 파격혜택·단독특가)",
     variations:[{name:"파격혜택", metrics:{}}, {name:"단독특가", metrics:{}}],
     live_date:"2026-05-29", status:"on", hypothesis_ids:["H161"],
-    thumbnail_url:null, drive_url:null,
+    thumbnail_url:"thumbs/C155.jpg", drive_url:null,
     notion_url:"https://www.notion.so/36634579dc0180eabb5ee9f78783f727" },
   { id:"C156", track:"B", type:"shortform", title:"밀키토너 베네핏 숏폼 (2종: 6월한정·준데이)",
     variations:[{name:"6월한정", metrics:{spend:52259, roas:0, ctr:0.0093, cpm:34631, cpc:3732}}, {name:"준데이", metrics:{spend:35514, roas:0, ctr:0.0099, cpm:39241, cpc:3946}}],
     live_date:"2026-05-29", status:"on", hypothesis_ids:["H167"],
-    thumbnail_url:null, drive_url:null,
+    thumbnail_url:"thumbs/C156.jpg", drive_url:null,
     notion_url:null },
   { id:"C157", track:"A", type:"longform_video", title:"밀키토너 기미잡티 롱폼 단종얘기 (백색화·커머셜)",
     variations:[{name:"단종얘기1", metrics:{spend:1415297, roas:2.601, ctr:0.0297, cpm:42158, cpc:1420}},{name:"단종얘기2", metrics:{spend:2347, roas:0, ctr:0, cpm:37854, cpc:0}},{name:"단종얘기3", metrics:{spend:2174, roas:0, ctr:0, cpm:25576, cpc:0}}],
     live_date:null, status:"editing", hypothesis_ids:["H175"],
-    thumbnail_url:null, drive_url:null,
+    thumbnail_url:"thumbs/C157.jpg", drive_url:null,
     notion_url:"https://www.notion.so/36434579dc01809483adffd1b658b6e8" },
   { id:"C159", track:"B", type:"banner", title:"지우세요 (B급 감성 배너 — 타사 팔로우)",
     variations:[{name:"지우세요", metrics:{spend:651541, roas:1.14, cpm:43786, ctr:0.0136, cpc:3225, cvr:0.0842, aov:43671}}],
     live_date:"2026-04-23", status:"off", hypothesis_ids:["H150"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C159.jpg", drive_url:null, notion_url:null },
   { id:"C160", track:"B", type:"banner", title:"귀찮아 (공감대 유도 카피 배너)",
     variations:[{name:"귀찮아", metrics:{spend:117655, roas:0.87, cpm:64222, ctr:0.0229, cpc:2801, cvr:0.0714, aov:34133}}],
     live_date:"2026-04-23", status:"off", hypothesis_ids:["H151"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C160.jpg", drive_url:null, notion_url:null },
   { id:"C161", track:"B", type:"shortform", title:"프롬프트 숏폼 (릴스·틱톡 트렌드 포맷)",
     variations:[{name:"프롬프트", metrics:{spend:52792, roas:0, cpm:56644, ctr:0.0182, cpc:3105, cvr:0, aov:0}}],
     live_date:"2026-04-17", status:"off", hypothesis_ids:["H152"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C161.jpg", drive_url:null, notion_url:null },
   { id:"C162", track:"B", type:"shortform", title:"뚫은 숏폼 (선크림 비교 소구 카피 베리)",
     variations:[{name:"뚫은", metrics:{spend:52416, roas:0, cpm:61884, ctr:0.0142, cpc:4368, cvr:0, aov:0}}],
     live_date:"2026-04-17", status:"off", hypothesis_ids:["H153"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C162.jpg", drive_url:null, notion_url:null },
   { id:"C163", track:"B", type:"banner", title:"공식바뀜 카드뉴스 (차세대 신원료 소구 트렌드 포맷)",
     variations:[{name:"공식바뀜", metrics:{spend:929657, roas:0.98, cpm:38458, ctr:0.0251, cpc:1532, cvr:0.0379, aov:39709}}],
     live_date:"2026-04-08", status:"off", hypothesis_ids:["H154"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C163.jpg", drive_url:null, notion_url:null },
   { id:"C164", track:"B", type:"shortform", title:"지금이 숏폼 (세트 긍정 워딩 + 가격 비교 소구)",
     variations:[{name:"지금이", metrics:{spend:23312, roas:1.41, cpm:54723, ctr:0.0305, cpc:1793, cvr:0.0769, aov:32800}}],
     live_date:"2026-05-14", status:"off", hypothesis_ids:["H160","H165"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C164.jpg", drive_url:null, notion_url:null },
   { id:"C165", track:"B", type:"banner", title:"BnA임상 배너 (불신제거 카피 + 임상 조합)",
     variations:[{name:"BnA임상", metrics:{spend:199219, roas:0.68, cpm:47130, ctr:0.013, cpc:3622, cvr:0.0727, aov:34050}}],
     live_date:"2026-04-07", status:"off", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C165.jpg", drive_url:null, notion_url:null },
   { id:"C158", track:"A", type:"longform_video", title:"도미나스FU (무성 포맷 팔로우업 — 임상+B&A+AFTER)",
     variations:[{name:"도미나스FU", metrics:{spend:359023, roas:0.44, cpm:58963, ctr:0.0297, cpc:1984, cvr:0.0276, aov:31240}}],
     live_date:"2026-05-01", status:"needs_more_data", hypothesis_ids:["H084"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C158.jpg", drive_url:null, notion_url:null },
   { id:"C166", track:"A", type:"longform_video", title:"길거리 오가닉 롱폼 (기미잡티 백색화 소구 — 논타겟 여성 길거리 촬영)",
     variations:[],
     live_date:null, status:"planned", hypothesis_ids:["H171"],
-    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/36634579dc0180afa291e5a00a5a9c55" },
+    thumbnail_url:"thumbs/C166.jpg", drive_url:null, notion_url:"https://app.notion.com/p/36634579dc0180afa291e5a00a5a9c55" },
   { id:"C167", track:"A", type:"longform_video", title:"요롱레퍼 오가닉 롱폼 (기미잡티 백색화 소구 — 요롱 레퍼런스 포맷)",
     variations:[],
     live_date:null, status:"planned", hypothesis_ids:["H171"],
-    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/37234579dc01801aadf1cf58537f63e9" },
+    thumbnail_url:"thumbs/C167.jpg", drive_url:null, notion_url:"https://app.notion.com/p/37234579dc01801aadf1cf58537f63e9" },
   { id:"C168", track:"A", type:"longform_video", title:"인플깔 후기형 롱폼 (기미잡티 백색화 — 인플루언서 깔 영상언어)",
     variations:[],
     live_date:null, status:"planned", hypothesis_ids:["H172"],
-    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/36e34579dc0180eaa5c2d197773976ae" },
+    thumbnail_url:"thumbs/C168.jpg", drive_url:null, notion_url:"https://app.notion.com/p/36e34579dc0180eaa5c2d197773976ae" },
   { id:"C169", track:"A", type:"longform_video", title:"라방썰 오가닉 롱폼 (기미잡티 백색화 소구 — 라이브방송 썰 형식)",
     variations:[],
     live_date:null, status:"planned", hypothesis_ids:["H171"],
-    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/37534579dc01803a95fce292a4c3bfe2" },
+    thumbnail_url:"thumbs/C169.jpg", drive_url:null, notion_url:"https://app.notion.com/p/37534579dc01803a95fce292a4c3bfe2" },
   { id:"C170", track:"A", type:"longform_video", title:"단종얘기 커머셜 롱폼 (기미잡티 백색화 — 단종 대세감 구매 촉구)",
     variations:[],
     live_date:null, status:"planned", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/36434579dc01809483adffd1b658b6e8" },
+    thumbnail_url:"thumbs/C170.jpg", drive_url:null, notion_url:"https://app.notion.com/p/36434579dc01809483adffd1b658b6e8" },
   { id:"C171", track:"A", type:"longform_video", title:"피캄FU 커머셜 롱폼 (기미잡티 — 피캄 팔로우 불신제거)",
     variations:[{name:"피캄FU1", metrics:{spend:13971, roas:0, ctr:0.0233, cpm:54361, cpc:2328}},{name:"피캄FU2", metrics:{spend:58502, roas:1.422, ctr:0.0231, cpm:46503, cpc:2017}},{name:"피캄FU3", metrics:{spend:2451, roas:0, ctr:0, cpm:29178, cpc:0}}],
     live_date:null, status:"planned", hypothesis_ids:["H173"],
-    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/36d34579dc018095985ac4fad6fec732" },
+    thumbnail_url:"thumbs/C171.jpg", drive_url:null, notion_url:"https://app.notion.com/p/36d34579dc018095985ac4fad6fec732" },
 
   // 레이저 시리즈 (H001 연결 — 스킨더스트 첫 시도)
   { id:"C180", track:"A", type:"longform_video", title:"레이저 1/2/3 (스킨더스트 백색화 — 전문가 포맷)",
@@ -2270,66 +2325,66 @@ const CONTENTS = [
       {name:"레이저3", metrics:{spend:831851, roas:0.997, ctr:0.0662, cpm:55713, cpc:842}}
     ],
     live_date:"2025-12-23", status:"off", hypothesis_ids:["H001"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C180.jpg", drive_url:null, notion_url:null },
   { id:"C181", track:"A", type:"longform_video", title:"레이저1 사본 (스킨더스트 백색화 — 전문가 포맷 리런)",
     variations:[
       {name:"레이저1(사본)", metrics:{spend:376799, roas:1.800, ctr:0.0326, cpm:18507, cpc:567}}
     ],
     live_date:"2025-12-23", status:"off", hypothesis_ids:["H001"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C181.jpg", drive_url:null, notion_url:null },
 
   // AI 콘텐츠 (H051 연결)
   { id:"C172", track:"A", type:"longform_video", title:"AI비타디벨 (기미잡티 — AI비타 디벨롭)",
     variations:[{name:"AI비타디벨", metrics:{spend:1513454, roas:1.33, cpm:56252, ctr:0.0372, cpc:1513, cvr:0.046, aov:43693}}],
     live_date:"2026-03-23", status:"off", hypothesis_ids:["H051"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C172.jpg", drive_url:null, notion_url:null },
   { id:"C173", track:"B", type:"longform_video", title:"AI피부관리 (스킨더스트 — AI트렌드 팔로우)",
     variations:[{name:"AI피부관리", metrics:{spend:55186, roas:0.47, cpm:38484, ctr:0.0146, cpc:2628, cvr:0.0476, aov:25800}}],
     live_date:"2026-04-20", status:"off", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C173.jpg", drive_url:null, notion_url:null },
   { id:"C174", track:"A", type:"longform_video", title:"랩배틀 AI (기미잡티 — AI 비교 소구)",
     variations:[{name:"랩배틀 AI", metrics:{spend:110894, roas:0.25, cpm:41643, ctr:0.0481, cpc:866, cvr:0.0078, aov:27800}}],
     live_date:"2026-04-16", status:"off", hypothesis_ids:["H051"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C174.jpg", drive_url:null, notion_url:null },
   { id:"C175", track:"B", type:"longform_video", title:"카톡노래AI (스킨더스트 — AI 노래 후킹)",
     variations:[{name:"카톡노래AI", metrics:{spend:51533, roas:0, ctr:0.0875, cpm:33419, cpc:381, cvr:0, aov:0}}],
     live_date:"2026-05-14", status:"off", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C175.jpg", drive_url:null, notion_url:null },
 
   // 토너+크림 세트 (H160 연결)
   { id:"C176", track:"B", type:"banner", title:"하나로끝 배너 (베네핏 세트 — 펫네임+용도 소구)",
     variations:[{name:"하나로끝", metrics:{spend:4324, roas:0, ctr:0.0238, cpm:51476, cpc:2162, cvr:0, aov:0}}],
     live_date:"2026-05-14", status:"off", hypothesis_ids:["H160","H165"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C176.jpg", drive_url:null, notion_url:null },
   { id:"C177", track:"B", type:"banner", title:"안버잘투 배너 (베네핏 세트 — 안버잘 디벨롭)",
     variations:[{name:"안버잘투", metrics:{spend:53192, roas:0, ctr:0.0172, cpm:41491, cpc:241718, cvr:0, aov:0}}],
     live_date:"2026-05-14", status:"off", hypothesis_ids:["H160","H165"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C177.jpg", drive_url:null, notion_url:null },
   { id:"C178", track:"B", type:"banner", title:"최저가당첨 배너 (베네핏 세트 — 펫네임+가격긍정소구)",
     variations:[{name:"최저가당첨", metrics:{spend:169214, roas:1.46, cpm:54392, ctr:0.017, cpc:3193, cvr:0.1321, aov:35200}}],
     live_date:"2026-05-14", status:"off", hypothesis_ids:["H160","H165"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C178.jpg", drive_url:null, notion_url:null },
   { id:"C179", track:"B", type:"banner", title:"6만원리버스 배너 (베네핏 세트 — 6만원 카피 디벨롭)",
     variations:[{name:"6만원리버스", metrics:{spend:81, roas:0, cpm:20250, ctr:0, cpc:0, cvr:0, aov:0}}],
     live_date:"2026-05-14", status:"off", hypothesis_ids:["H160","H165"],
-    thumbnail_url:null, drive_url:null, notion_url:null },
+    thumbnail_url:"thumbs/C179.jpg", drive_url:null, notion_url:null },
   // 6월 신규 콘텐츠 (2026-06-09~11)
   { id:"C182", track:"B", type:"shortform_video", title:"밀키토너 기미잡티 쌀백색화현상 숏폼 (3종)",
     variations:[{name:"쌀백색화현상숏폼", metrics:{spend:0, roas:0, ctr:0, cpm:0, cpc:0, cvr:0, aov:0}}],
     live_date:"2026-06-09", status:"live", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/2a334579dc01806180f5d47891d95e55" },
+    thumbnail_url:"thumbs/C182.jpg", drive_url:null, notion_url:"https://app.notion.com/p/2a334579dc01806180f5d47891d95e55" },
   { id:"C183", track:"B", type:"banner", title:"밀키토너&버블세럼 베네핏 배너 (8종)",
     variations:[{name:"버블세럼배너8종", metrics:{spend:0, roas:0, ctr:0, cpm:0, cpc:0, cvr:0, aov:0}}],
     live_date:"2026-06-09", status:"live", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/2b934579dc0180c0a674c3d9b35e4fe4" },
+    thumbnail_url:"thumbs/C183.jpg", drive_url:null, notion_url:"https://app.notion.com/p/2b934579dc0180c0a674c3d9b35e4fe4" },
   { id:"C184", track:"B", type:"banner", title:"밀키토너&버블세럼 베네핏 배너 (9종)",
     variations:[{name:"버블세럼배너9종", metrics:{spend:0, roas:0, ctr:0, cpm:0, cpc:0, cvr:0, aov:0}}],
     live_date:"2026-06-09", status:"live", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/29a34579dc01804dab98ea1b5e21e694" },
+    thumbnail_url:"thumbs/C184.jpg", drive_url:null, notion_url:"https://app.notion.com/p/29a34579dc01804dab98ea1b5e21e694" },
   { id:"C185", track:"B", type:"banner", title:"밀키토너 기미잡티&베네핏 배너 (6종)",
     variations:[{name:"기미잡티베네핏배너6종", metrics:{spend:0, roas:0, ctr:0, cpm:0, cpc:0, cvr:0, aov:0}}],
     live_date:"2026-06-09", status:"live", hypothesis_ids:[],
-    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/36f34579dc0180e49e7ec634b8ee3454" },
+    thumbnail_url:"thumbs/C185.jpg", drive_url:null, notion_url:"https://app.notion.com/p/36f34579dc0180e49e7ec634b8ee3454" },
   { id:"C186", track:"B", type:"banner", title:"코직산 크림 기미잡티&베네핏 배너 (4종)",
     variations:[
       {name:"런칭기념특가", metrics:{spend:61150, roas:0.66, ctr:0.0121, cpm:40958, cpc:3397, cvr:0.0556, aov:40600}},
@@ -2338,7 +2393,7 @@ const CONTENTS = [
       {name:"오특", metrics:{spend:15049, roas:0, ctr:0, cpm:0, cpc:0, cvr:0, aov:0}}
     ],
     live_date:"2026-06-11", status:"off", hypothesis_ids:[], insight_ids:["I023"],
-    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/32534579dc0180c9ba91ff52207f4dba" },
+    thumbnail_url:"thumbs/C186.jpg", drive_url:null, notion_url:"https://app.notion.com/p/32534579dc0180c9ba91ff52207f4dba" },
   { id:"C187", track:"B", type:"banner", title:"밀키토너 기미잡티&베네핏 배너 (6월 결과, 4종)",
     variations:[
       {name:"네고성공", metrics:{spend:64458, roas:0.66, ctr:0.0105, cpm:16046, cpc:1535, cvr:0.0244, aov:42600}},
@@ -2347,7 +2402,7 @@ const CONTENTS = [
       {name:"산후기미", metrics:{spend:34755, roas:1.17, ctr:0.0162, cpm:37573, cpc:2317, cvr:0.0667, aov:40600}}
     ],
     live_date:"2026-06-11", status:"off", hypothesis_ids:[], insight_ids:["I024"],
-    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/32534579dc0180c9ba91ff52207f4dba" },
+    thumbnail_url:"thumbs/C187.jpg", drive_url:null, notion_url:"https://app.notion.com/p/32534579dc0180c9ba91ff52207f4dba" },
 ];
 
 const INSIGHTS = [
@@ -2784,28 +2839,7 @@ function ThumbMini({ driveUrl, thumbnailUrl, w=64, h=48 }) {
     );
   }
 
-  // ③ img 실패 + 파일 ID 있음 → iframe fallback (lazy 속성으로 브라우저 추가 최적화)
-  if (driveId) {
-    const scale = 0.25;
-    const iW = Math.round(w / scale);
-    const iH = Math.round(h / scale);
-    return (
-      <div ref={wrapRef} style={{...wrapBase, display:"block"}} onClick={handleClick} title="Drive에서 열기">
-        <div style={{position:"absolute", inset:0, overflow:"hidden", pointerEvents:"none"}}>
-          <iframe
-            loading="lazy"
-            src={`https://drive.google.com/file/d/${driveId}/preview`}
-            style={{width:iW, height:iH, transform:`scale(${scale})`, transformOrigin:"0 0", border:"none"}}
-            allow=""
-            sandbox="allow-scripts allow-same-origin"
-          />
-        </div>
-        {hoverOverlay}
-      </div>
-    );
-  }
-
-  // ④ 최종 플레이스홀더
+  // ③ 최종 플레이스홀더 (iframe 미니 폴백은 Drive 미로그인 시 에러페이지가 노출되어 제거)
   return (
     <div ref={wrapRef} style={{...wrapBase, display:"flex", alignItems:"center", justifyContent:"center"}}
       onClick={handleClick} title={driveUrl ? "Drive에서 열기" : ""}>
@@ -2892,10 +2926,12 @@ function fmtKRW(n) {
 }
 
 // ============================================================
-// Meta API — 읽기전용 (인사이트 조회만)
+// Meta API — 라이브 연동 비활성화 (정적 스냅샷 모드)
+// 공개 사이트에 액세스 토큰을 심을 수 없으므로 클라이언트 직접 호출 제거.
+// 라이브 연동이 필요해지면 토큰을 서버측(Apps Script 프록시 등)에 두고
+// fetchMetaWinners가 그 프록시 URL을 호출하도록 복원할 것.
 // ============================================================
-const META_TOKEN = "EAF9LKUE2lMkBRv4D0GAaNeoeV9YBnuFCSBuCSKc7oN8KSPjxJGtCznVEezvqPPchNSrMEuZAmhGan05rwcHoKZCiDF2LgydRQ6Ws8IIZAQqQvWZAtbcUPlraDJO5xijTTCqCw7ZBOV5JbAn6LTbY8QixpDYqEub6FFqSFzHvpAVwVkRXAwDroZA904of7oejG4PwZDZD";
-const META_ACCOUNT = "act_1409601676868887";
+const META_PROXY_URL = null; // 예: Apps Script 웹앱 URL (토큰은 프록시 내부에만 보관)
 const WINNER_ROAS = 1.5;
 const WINNER_SPEND_MIN = 100000; // 위너 인정 최소 지출 ₩10만 (노이즈 제거)
 
@@ -2967,6 +3003,7 @@ const META_PRESETS = {
 // key = 소재명(sojaemyeong) 단위로 각각 별도 집계 (이건모델교체1, 이건모델교체2 분리)
 async function fetchMetaWinners(preset) {
   if (!preset) return null;
+  if (!META_PROXY_URL) return null; // 정적 스냅샷 모드 — 라이브 조회 안 함
   // ── sessionStorage 캐시 (10분 TTL) ────────────────────────────
   const CACHE_TTL = 10 * 60 * 1000;
   const cacheKey = `milky_meta_v1_${preset}`;
@@ -2978,7 +3015,7 @@ async function fetchMetaWinners(preset) {
     }
   } catch(e) {}
   // ─────────────────────────────────────────────────────────────
-  const url = `https://graph.facebook.com/v19.0/${META_ACCOUNT}/insights?fields=ad_name,spend,purchase_roas,ctr&level=ad&date_preset=${preset}&limit=1000&access_token=${META_TOKEN}`;
+  const url = `${META_PROXY_URL}?fields=ad_name,spend,purchase_roas,ctr&level=ad&date_preset=${preset}&limit=1000`;
   try {
     const res = await fetch(url);
     if (!res.ok) return null;
@@ -3106,7 +3143,16 @@ function MindMap({ track, hypotheses, onNodeClick, selectedId, filters }) {
     svg.attr("preserveAspectRatio", "xMinYMin meet");
     svg.style("min-width", `${Math.max(svgWidth, containerWidth)}px`);
 
-    const g = svg.append("g").attr("transform", `translate(${padX - minY}, ${30 - minX})`);
+    const zoomG = svg.append("g"); // 줌/팬 대상 래퍼
+    const g = zoomG.append("g").attr("transform", `translate(${padX - minY}, ${30 - minX})`);
+    // 휠 줌(0.35~2.5x) + 드래그 팬 — 트리가 커져도 화면 안에서 탐색 가능
+    svg.call(
+      d3.zoom()
+        .scaleExtent([0.35, 2.5])
+        .filter(ev => ev.type !== "dblclick") // 더블클릭 줌은 노드 클릭과 충돌하므로 제외
+        .on("zoom", ev => zoomG.attr("transform", ev.transform))
+    );
+    svg.style("cursor", "grab");
 
     g.selectAll("path.link")
       .data(root.links())
@@ -3494,11 +3540,11 @@ function ViewOverview({ track, jumpTo }) {
         ))}
       </div>
 
-      {/* 기간 선택 */}
+      {/* 기간 선택 — 라이브 연동(META_PROXY_URL) 있을 때만 노출 */}
       <div>
         <div style={{display:"flex", alignItems:"center", gap:"6px", marginBottom:"5px"}}>
           <span style={monoLabel}>기간</span>
-          {PERIODS.map(p=>(
+          {META_PROXY_URL && PERIODS.map(p=>(
             <button key={p.label} onClick={()=>setPeriod(p.key)}
               style={{fontSize:"11px", padding:"3px 12px", borderRadius:"20px", cursor:"pointer", fontFamily:"inherit", border:"1px solid", transition:"all 0.15s",
                 background: period===p.key?"#1A1A1A":"#FFFFFF",
@@ -3510,7 +3556,12 @@ function ViewOverview({ track, jumpTo }) {
           {metaLoading && (
             <span className="meta-spinner" style={{marginLeft:"6px"}} />
           )}
-          {metaError && (
+          {!META_PROXY_URL && (
+            <span style={{fontSize:"10px", color:"#6B6B6B", fontFamily:"'JetBrains Mono', ui-monospace, monospace", marginLeft:"4px"}}>
+              📌 정적 스냅샷 · {META.lastUpdate} 기준
+            </span>
+          )}
+          {META_PROXY_URL && metaError && (
             <span style={{fontSize:"10px", color:"#B58B1F", fontFamily:"'JetBrains Mono', ui-monospace, monospace", marginLeft:"4px"}}>
               ⚠ {metaError}
             </span>
@@ -3523,7 +3574,7 @@ function ViewOverview({ track, jumpTo }) {
         </div>
         {/* 선택된 기간 기준 설명 */}
         <div style={{fontSize:"11px", color:"#9B9690", paddingLeft:"2px"}}>
-          {PERIODS.find(p=>p.key===period)?.desc || "전체 기간 누적 기준"}
+          {META_PROXY_URL ? (PERIODS.find(p=>p.key===period)?.desc || "전체 기간 누적 기준") : `${META.lastUpdate} 업데이트 시점의 누적 성과 기준`}
           {" "}· ROAS ≥ {WINNER_ROAS} 이상인 소재만 위너로 분류
         </div>
       </div>
@@ -3571,12 +3622,12 @@ function ViewOverview({ track, jumpTo }) {
         <div style={{marginBottom:"12px"}}>
           {winnerView==="winner" && (
             <span style={{...monoLabel, color:"#4F7A4C"}}>
-              {PERIODS.find(p=>p.key===period)?.desc || "전체 기간 누적 기준"} — ROAS ≥ {WINNER_ROAS}
+              {META_PROXY_URL ? (PERIODS.find(p=>p.key===period)?.desc || "전체 기간 누적 기준") : `누적 성과 (${META.lastUpdate} 스냅샷)`} — ROAS ≥ {WINNER_ROAS}
             </span>
           )}
           {winnerView==="drop" && (
             <span style={{...monoLabel, color:"#8A6573"}}>
-              {PERIODS.find(p=>p.key===period)?.desc || "전체 기간 누적 기준"} — OFF 소재 · ₩5만↑ 소진 & ROAS 1.5 미달
+              {META_PROXY_URL ? (PERIODS.find(p=>p.key===period)?.desc || "전체 기간 누적 기준") : `누적 성과 (${META.lastUpdate} 스냅샷)`} — OFF 소재 · ₩5만↑ 소진 & ROAS 1.5 미달
             </span>
           )}
         </div>
@@ -4482,12 +4533,14 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
   );
 }
 
-function ViewTracker() {
+function ViewTracker({ extQuery, jumpToContent }) {
   const [filterOwner, setFilterOwner] = useState("");
   const [filterAngle, setFilterAngle] = useState("");
   const [filterFormat, setFilterFormat] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(extQuery || "");
+  // 전역 검색 → 트래커 점프 시 검색어 주입
+  React.useEffect(() => { if (extQuery) setQuery(extQuery); }, [extQuery]);
   const [expandedRow, setExpandedRow] = useState(null);
   const [metaData, setMetaData] = React.useState(null);
   const [metaLoading, setMetaLoading] = React.useState(false);
@@ -4638,6 +4691,7 @@ function ViewTracker() {
                     <td className="p-2"><span className="font-mono text-xs px-1.5 py-0.5 rounded" style={{background:"#FAF8F4", color:"#1A1A1A"}}>{r.o}</span></td>
                     <td className="p-2 font-medium">
                       {r.n}
+                      {matchContentId(r.n) && <span title="플레이북 연결됨 — 행을 펼쳐 이동" style={{marginLeft:"5px", fontSize:"9px", color:"#B58B1F", verticalAlign:"middle"}}>🔗</span>}
                       {isLive && <span style={{marginLeft:"5px", fontSize:"9px", background:"#E1EFDA", color:"#4F7A4C", borderRadius:"3px", padding:"1px 4px", fontWeight:600, verticalAlign:"middle"}}>LIVE</span>}
                     </td>
                     <td className="p-2"><span className="text-xs px-1.5 py-0.5 rounded" style={{background:"#FFF5C9", color:"#1A1A1A"}}>#{r.a}</span></td>
@@ -4672,10 +4726,22 @@ function ViewTracker() {
                             <div className="text-xs leading-relaxed" style={{color:"#1A1A1A"}}>{r.next || "—"}</div>
                           </div>
                         </div>
-                        <div className="flex gap-4 text-xs pt-2 border-t" style={{borderColor:"#F3EFE8", color:"#6B6B6B"}}>
+                        <div className="flex gap-4 text-xs pt-2 border-t items-center" style={{borderColor:"#F3EFE8", color:"#6B6B6B"}}>
                           <span>기획주차: {r.wP}</span>
                           <span>아웃풋: {r.wO}</span>
                           <span>AOV: {n(m.aov)!==null ? fmtKRW(m.aov) : "—"}</span>
+                          {(() => {
+                            const cid = matchContentId(r.n);
+                            const c = cid ? CONTENTS.find(x=>x.id===cid) : null;
+                            if (!c || !jumpToContent) return null;
+                            return (
+                              <button onClick={(e)=>{e.stopPropagation(); jumpToContent(c.id);}}
+                                style={{marginLeft:"auto", fontSize:"11px", padding:"3px 10px", borderRadius:"4px", cursor:"pointer",
+                                  background:"#FFF5C9", color:"#5A4A00", border:"1px solid #FFCB05", fontWeight:600, fontFamily:"inherit"}}>
+                                🔗 플레이북에서 보기 — {c.id} {c.title.length>18 ? c.title.slice(0,18)+"…" : c.title}
+                              </button>
+                            );
+                          })()}
                         </div>
                       </td>
                     </tr>
@@ -4709,6 +4775,7 @@ function App() {
   const [selectedI, setSelectedI] = useState(null);
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState(null);
+  const [trackerQuery, setTrackerQuery] = useState("");
   const [mmFStatus, setMmFStatus] = useState(new Set());
   const [mmFCategory, setMmFCategory] = useState(new Set());
   const [mmFSource, setMmFSource] = useState(new Set());
@@ -4776,14 +4843,26 @@ function App() {
     }
   }
 
+  // 트래커 행 → 플레이북 상세(해당 콘텐츠의 가설 카드)로 점프
+  function jumpToContent(cid) {
+    const c = CONTENTS.find(x=>x.id===cid);
+    if (!c) return;
+    setTrack(c.track);
+    setView("V4");
+    setSelectedH(c.hypothesis_ids?.[0] || null);
+  }
+
   function onGlobalSearch(q) {
     setQuery(q);
     if (!q) { setSearchResults(null); return; }
     const lq = q.toLowerCase();
+    const blobH = h => [h.title, h.id, h.full_text, ...(h.evaluations||[])].join(" ").toLowerCase();
+    const blobI = i => [i.headline, i.id, i.one_line, ...(i.reproduction_checklist||[])].join(" ").toLowerCase();
     const hits = {
-      H: HYPOTHESES.filter(h => h.title.toLowerCase().includes(lq) || h.id.toLowerCase().includes(lq)),
-      C: CONTENTS.filter(c => c.title.toLowerCase().includes(lq) || c.id.toLowerCase().includes(lq)),
-      I: INSIGHTS.filter(i => i.headline.toLowerCase().includes(lq) || i.id.toLowerCase().includes(lq)),
+      H: HYPOTHESES.filter(h => blobH(h).includes(lq)),
+      C: CONTENTS.filter(c => (c.title + " " + c.id).toLowerCase().includes(lq)),
+      I: INSIGHTS.filter(i => blobI(i).includes(lq)),
+      T: TRACKER.filter(r => [r.n, r.hyp, r.ins, r.next, OWNERS[r.o]||r.o].join(" ").toLowerCase().includes(lq)),
     };
     setSearchResults(hits);
   }
@@ -4815,12 +4894,24 @@ function App() {
             </div>
             {searchResults && (
               <div className="absolute top-full right-0 mt-1 w-96 card-deep p-2 max-h-96 overflow-y-auto z-40">
-                {["H","C","I"].map(k => searchResults[k].length>0 && (
+                {["H","C","I","T"].map(k => searchResults[k].length>0 && (
                   <div key={k} className="mb-2">
                     <div className="text-xs font-semibold px-2 py-1" style={{color:"#6B6B6B"}}>
-                      {k==="H"?"가설":k==="C"?"콘텐츠":"인사이트"} ({searchResults[k].length})
+                      {k==="H"?"가설":k==="C"?"콘텐츠":k==="I"?"인사이트":"운영 트래커"} ({searchResults[k].length})
                     </div>
-                    {searchResults[k].slice(0,5).map(item=>{
+                    {k==="T" && searchResults[k].slice(0,5).map((item,ti)=>(
+                      <button key={"t"+ti} onClick={()=>{
+                        setTrackerQuery(item.n); setTrack("E"); setView("V1");
+                        setQuery(""); setSearchResults(null);
+                      }} className="w-full text-left p-2 rounded flex items-start gap-2" style={{background:"transparent"}}>
+                        <span className="chip-id">{OWNERS[item.o]?.slice(0,3)||item.o}</span>
+                        <div className="flex-1">
+                          <div className="text-xs" style={{color:"#1A1A1A", lineHeight:"1.4"}}>{item.n} · {item.a} · {item.f}</div>
+                          <div className="text-xs" style={{color:"#9B9690", lineHeight:"1.4", marginTop:"2px"}}>{(item.hyp||"").slice(0,50)}</div>
+                        </div>
+                      </button>
+                    ))}
+                    {k!=="T" && searchResults[k].slice(0,5).map(item=>{
                       const trackLabel = TRACKS[item.track]?.label || item.track;
                       const typeLabel = k==="C"
                         ? (item.type==="longform_video"?"롱폼":item.type==="shortform"?"숏폼":item.type==="banner"?"배너":item.type)
@@ -4952,7 +5043,7 @@ function App() {
       {/* ── Body ── */}
       {track === "E" ? (
         <div className="max-w-[1440px] mx-auto px-5 py-5">
-          <ViewTracker />
+          <ViewTracker extQuery={trackerQuery} jumpToContent={jumpToContent} />
         </div>
       ) : (
         <div className="max-w-[1440px] mx-auto px-5 py-5 flex gap-5">
