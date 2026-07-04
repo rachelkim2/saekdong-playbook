@@ -187,7 +187,8 @@
   /* ── 모바일/좁은 화면 대응 ── */
   @media (max-width: 820px) {
     .sp-topbar { height: auto; min-height: 52px; }
-    .sp-topbar > div { flex-wrap: wrap; row-gap: 6px; padding-top: 8px; padding-bottom: 8px; }
+    .sp-topbar > div:not(.sp-topbar-accent) { flex-wrap: wrap; row-gap: 6px; padding-top: 8px; padding-bottom: 8px; }
+    .sp-topbar-accent { padding: 0; }
     .sp-search { width: 100%; }
     .sp-tabnav { height: auto; }
     .sp-tabnav > div { height: auto !important; flex-wrap: wrap; row-gap: 4px; padding-top: 6px; padding-bottom: 6px; }
