@@ -199,8 +199,8 @@ const { useState, useEffect, useRef, useMemo } = React;
 
 const META = {
   title: "색동서울 콘텐츠 플레이북",
-  version: "v1.5",
-  lastUpdate: "2026-07-03",
+  version: "v1.6",
+  lastUpdate: "2026-07-04",
   brandRoot: "밀키토너",
   brandUSP: "코직애씨드 터메릭 나이아신아마이드 5% 밀키토너",
 };
@@ -1093,7 +1093,7 @@ const OPS_LOG = [
   { id:"OPS008", date:"2026-07-03", type:"운영결정",
     title:"paid 롱폼 운영 구조 개편 — 고관여/저관여 분리 + 기획세트 비주얼후킹 탐색",
     notion_url:null,
-    summary:"콘마 합류로 제작 캐파 확대. ① 밀키토너 기미잡티 paid 롱폼을 고관여(H178)/저관여(H179) 타겟으로 분리해 세그먼트별 뾰족한 소구로 운영. ② 밀키토너 기획세트 롱폼은 비주얼후킹 탐색 전용 트랙(H180)으로 운영 — 판정 지표는 ROAS가 아닌 후킹 지표(CTR·썸스탑·3초 유지). 발굴된 위너 후킹은 본편에 이식.",
+    summary:"콘마 합류로 제작 캐파 확대. ① 밀키토너 기미잡티 paid 롱폼을 고관여(H178)/저관여(H179) 타겟으로 분리해 세그먼트별 뾰족한 소구로 운영. ② 밀키토너 기획세트 롱폼은 비주얼후킹 탐색 전용 트랙(H180)으로 운영 — 판정 지표는 ROAS가 아닌 후킹 지표(CTR·썸스탑·3초 유지). 발굴된 위너 후킹은 본편에 이식. ③ 숏폼 재정립(H181) — 설득논리 스킵, 소비자의 언어로 메시지 경량화. Q3 판정 기준: 일예산 30만+ · ROAS 180%+ 소재 발굴.",
     next_actions:[
       "신규 소재명 네이밍에 고관여/저관여/기획세트 슬롯 반영 (트래커 자동 매핑용)",
       "고관여 1차 소재: 성분·임상 설득 논리 기반 기획 (근거: I002·I009)",
@@ -1102,6 +1102,54 @@ const OPS_LOG = [
     ]
   },
 ];
+// ============================================================
+// 분기 회고 — 목표 → 판정 → 병목 → 다음 시도 (스토리 뷰)
+// 분기말 회고 때 verdict 확정 + 다음 분기 추가. 콘텐츠 그리드는 live_date로 자동 분류.
+// ============================================================
+const QUARTERS = [
+  { key:"Q1", period:"2025.12 – 2026.03", start:"2025-12-01", end:"2026-03-31",
+    goal:"워킹하는 USP 메시지를 만들자", verdict:"success",
+    summary:"주조사백색화 USP에서 백색화 단독 USP로 진화. 위너 콘텐츠 두 축(페인포인트1, 악플반박1)을 발굴하고 각각 다각화를 시도해, 재현 가능한 메시지 공식을 확보했다.",
+    turns:[
+      { date:"2025-12-10", text:"영상언어(무성) 포맷 발견 — 페인포인트1 ROAS 167%. 내레이션 없이도 전환이 나온다", refs:["C010","H003"] },
+      { date:"2026-01-09", text:"'스킨더스트' 카테고리어 정립 — 옅은 색소침착을 우리만의 언어로. 정보성 후킹 계보의 뿌리", refs:["H001"] },
+      { date:"2026-02-24", text:"\"혹시 들어보셨어요?\" 정보성 후킹 확립 — 불끄샤워2 ROAS 178%", refs:["H010","I004","C002"] },
+      { date:"2026-03-16", text:"악플반박·댓글삭제로 불신제거 계보 시작 — 인스타 댓글 형태가 신빙성을 만든다", refs:["H060"] },
+    ],
+    insights:["I001","I003","I004"],
+    next:"메시지는 워킹한다. 그럼 이 메시지로 스케일이 되는가? → Q2"
+  },
+  { key:"Q2", period:"2026.04 – 2026.06", start:"2026-04-01", end:"2026-06-30",
+    goal:"일예산 30만+ · ROAS 180%+ 소재를 발굴하자 (월지출 1천만 소재)", verdict:"fail",
+    summary:"질적 발견은 컸다 — 불신제거 계보의 정점(억울해명2 ROAS 2.37 · CVR 10%), 신뢰의 축(배우 교체로 68→206%), 타겟 정밀화 원칙. 월매출 1억도 달성했다. 그러나 목표였던 '고예산을 소화하는 소재'는 발굴하지 못했다.",
+    turns:[
+      { date:"2026-04-16", text:"무성 가설의 반전 — 무성이라도 텍스트 메시지가 성과를 가른다 (백색화 단독 167% vs 조합 35~102%)", refs:["H002","H003","I001"] },
+      { date:"2026-04-23", text:"신뢰의 축 — 같은 플로우에서 배우만 바꿔 ROAS 68~108% → 169~206%. 또플반박2 219%", refs:["H011","I005","H021"] },
+      { date:"2026-04-30", text:"어그로 후킹 실패 — CTR 4.7%인데 CVR 1.4%. '후킹은 구매타겟에게만' 원칙 성립", refs:["H022","H023","I010"] },
+      { date:"2026-05-21", text:"억울해명2 ROAS 2.37 · CVR 10% — 불신제거 계보의 정점. 월매출 1.03억 달성", refs:["H164","I018","H174"] },
+      { date:"2026-06-10", text:"AI·UGC 포맷 실험 확장 — 카톡노래AI CTR 10.25%, 오가닉 UGC 가설 착수", refs:["H166","H176"] },
+    ],
+    bottlenecks:[
+      { title:"병목 ① 운영 방식의 미스매치", text:"운영이 부족했다기보다, '고예산 소재 발굴'이라는 목표에 맞춰 퍼포먼스 운영 방식 자체가 함께 개선될 필요가 있음이 확인됐다." },
+      { title:"병목 ② 일예산 30만원을 소화할 콘텐츠의 부재", text:"현재의 설득논리 메시지만으로는 무겁다. 더 가볍게, 소비자의 언어로 구매를 설득하는 진입장벽 낮은 콘텐츠가 필요하다." },
+    ],
+    insights:["I005","I006","I010","I013","I018"],
+    next:"소비자의 언어로 진입장벽을 낮추자 → Q3"
+  },
+  { key:"Q3", period:"2026.07 – 2026.09", start:"2026-07-01", end:"2026-09-30",
+    goal:"소비자의 언어로 구매진입장벽 낮은 콘텐츠를 만들자", verdict:"ongoing",
+    summary:"Q2의 목표는 유지하고 접근을 바꾼다 — 무거운 설득논리 대신 소비자의 언어로. 콘마 합류로 가능해진 3개 축을 병행한다.",
+    attempts:[
+      { title:"시도 1 · 소구 분리 — 고관여 / 저관여", text:"기미잡티 소구를 고관여(성분·임상 깊은 설득)와 저관여(직관 후킹·압축 메시지)로 나눠, 각 타겟에 맞는 더 뾰족한 메시지로 설득 범위를 확장한다.", refs:["H177","H178","H179"] },
+      { title:"시도 2 · 기획세트 — 시그니처 비주얼훅", text:"토너크림 기획세트는 메시지가 아닌 비주얼 후킹으로 설득한다 (샤르드처럼 시그니처 비주얼훅 만들기). 판정 지표는 ROAS가 아닌 후킹 지표(CTR·썸스탑·3초 유지).", refs:["H180","I003"] },
+      { title:"시도 3 · 숏폼 재정립 — 설득논리 스킵", text:"백색화/코직산 원리 설명을 스킵해 메시지를 가볍게 만드는 포맷. 소구 분리와 직교하는 축 — 숏폼도 고관여/저관여 타겟별로 제작하되 포맷 차원에서 가벼워진다.", refs:["H181"] },
+    ],
+    turns:[],
+    insights:[],
+    criteria:"분기말 판정 기준: 일예산 30만+ · ROAS 180%+ 소재 발굴 — Q2와 동일 기준으로 재도전",
+  },
+];
+
 function lookupSourceUrl(name) {
   if (SOURCE_PAGE_URLS[name]) return SOURCE_PAGE_URLS[name];
   // 부분 매칭 (예: "위클리 체크인 (4/30, 5/11)" → "위클리 체크인 (4/30)" 시도)
@@ -1188,7 +1236,7 @@ const HYPOTHESES = [
     source_type:"internal_evolved", parent_id:"H001", children_ids:["H011"],
     content_ids:["C002"], insight_ids:["I004"], status:"validated",
     created_date:"2026-02-24", updated_date:"2026-04-23",
-    full_text:"'스킨더스트라고 아세요?', '백색화라고 들어보셨어요?' 인트로가 '그래서 뭔데?' 호기심을 자극, 5초대 이탈을 늦춤. 불끄샤워2, 화상전화 모두 동일 패턴.",
+    full_text:"'스킨더스트라고 아세요?', '백색화라고 들어보셨어요?' 인트로가 '그래서 뭔데?' 호기심을 자극해 시청을 유지시킴. 불끄샤워2, 화상전화 모두 동일 패턴.",
     evaluations:["\"혹시 백색화라고…\" 멘트가 후킹. '그래서 뭐가 다른데?'라는 생각에 계속 보게 됨. 몰라서 긁혔나?","정보전달 느낌의 후킹은 논리설득과 매치가 좋다. 공감대 후킹은 논리설득에 효과적이지 못하다.","기존 인사이트와 공감."],
     source_pages:[{name:"콘텐츠 리뷰 4월 3주차", date:"2026-04-13"},{name:"위클리 체크인 (4/23)", date:"2026-04-23"}]
   },
@@ -1199,7 +1247,7 @@ const HYPOTHESES = [
     created_date:"2026-04-10", updated_date:"2026-04-23",
     full_text:"이건스킨1/2/3 (ROAS 68%/108%/45%) 동일 플로우였으나 모델 교체 후 이건모델교체1/2 (ROAS 169%/206%)로 반등. 인터뷰 형식은 모델보다 연기 경력 있는 배우 섭외 필요.",
     evaluations:["또플반박, 불끄샤워, 이건모델교체 — 공통점은 '저 사람이 말하니까 진짜인 것 같다'는 신뢰성 확보.","배우 연기가 몰입감+신뢰감. 자막이 인물 얼굴 근처라 시야에 계속 들어옴.","예쁨에서 오는 신뢰감 있음 — 고해상도라 어설픈 보정은 티남."],
-    source_pages:[{name:"위클리 체크인 (4/23)", date:"2026-04-23"}]
+    source_pages:[{name:"위클리 체크인 (4/23)", date:"2026-04-23"},{name:"콘텐츠 리뷰 4월 3주차", date:"2026-04-13"}]
   },
   { id:"H030", track:"A", category:"메시지",
     title:"스킨더스트 키워드의 후킹 반응은 확인되었지만 <비타민C 대체+코직산 USP> 메시지로만 묶지 말고 다양한 설득 메시지를 시도해본다",
@@ -1234,7 +1282,7 @@ const HYPOTHESES = [
     source_type:"internal_evolved", parent_id:"H003", children_ids:[],
     content_ids:["C014","C015","C016"], insight_ids:["I003"], status:"validated",
     created_date:"2026-04-16", updated_date:"2026-04-29",
-    full_text:"토닝효과1 ROAS 231%, 토닝효과2 139%, 아이슬로2 118% 등 손가락으로 기미잡티 훑는 장면 소재에서 CTR 우세. 시선을 계속 끄는 편집과 장면으로 이탈 방지 + 시청 유지. 무성(영상언어) 스타일 — 내레이션 없이 장면으로만 전달.",
+    full_text:"토닝효과1 ROAS 231%(4/16 기준), 토닝효과2 139%, 아이슬로2 118% 등 손가락으로 기미잡티 훑는 장면 소재에서 CTR 우세. 시선을 계속 끄는 편집과 장면으로 이탈 방지 + 시청 유지. 무성(영상언어) 스타일 — 내레이션 없이 장면으로만 전달.",
     evaluations:["Bna 앞단 배치 + 공감성 페인포인트가 이탈을 낯추는 요소.","공감되는 페인포인트 장면의 빈도수와 과정 BnA가 후킹·설득 모두 잡음.","페인포인트의 나열, 피부상태를 집중력 잃을 때쯤 한번 보여주는 구성이 효과적."],
     source_pages:[{name:"우지 전달 (무성콘텐츠 인사이트)", date:"2026-04-16"}]
   },
@@ -1579,12 +1627,12 @@ const HYPOTHESES = [
     source_pages:[{name:"위클리 체크인 (4/30)", date:"2026-04-30"}]
   },
   { id:"H121", track:"B", category:"BNA",
-    title:"충분해요 1/2/3 — 짙은 기미 BNA가 배너에서도 통한다 (롱폼·배너 BNA 이미지 구분 없음)",
+    title:"충분해요 1/2/3 — 옅고 밀집된 기미 BNA가 배너에서도 통한다 (롱폼·배너 BNA 이미지 구분 없음)",
     source_type:"internal_evolved", parent_id:"H120", children_ids:[],
     content_ids:["C121"], insight_ids:["I013","I017"], status:"validated",
     created_date:"2026-05-07", updated_date:"2026-05-07",
     full_text:"충분해요1(₩68K ROAS 0.82), 2(₩27K ROAS 0.89 CVR 16.67%), 3(₩29K ROAS 1.10). 적은 지출에도 ROAS 100 넘김. 롱폼·배너 BNA 이미지 구분 없음.",
-    evaluations:["가장 짙은 기미에 해당하는 아이들이 먹히는 BNA 구성."],
+    evaluations:["옅은 기미잡티는 롱폼·배너 구분 없이 다 반응한다 (5/21 위클리 확인). 짙고 퍼진 형태는 무성과 — 4/30 BNA 테스트와 동일 결론."],
     source_pages:[{name:"콘텐츠 리뷰 5월 2주차", date:"2026-05-07"}]
   },
 
@@ -1732,7 +1780,7 @@ const HYPOTHESES = [
   { id:"H174", track:"A", category:"메시지",
     title:"불신을 제거하면서 정보를 제공하는 포맷이 기미잡티 타겟의 구매를 설득한다",
     source_type:"internal_evolved", parent_id:null, children_ids:["H164","H173","H060"],
-    content_ids:[], insight_ids:[], status:"validated",
+    content_ids:["C021","C064"], insight_ids:["I006","I018"], status:"validated",
     created_date:"2026-01-01", updated_date:"2026-06-05",
     full_text:"식품래퍼 형식처럼 소비자가 가진 불신(D2C/효과/SNS템 등)을 직접 제거하면서 정보를 제공하는 콘텐츠가 기미잡티 소구에서 높은 성과를 낸다. 또플반박 → 악플반박 → 악플디벨 → 억울해명으로 이어지는 불신제거 계보에서 축적된 인사이트.",
     evaluations:[],
@@ -1779,7 +1827,7 @@ const HYPOTHESES = [
     source_type:"internal_evolved", parent_id:null, children_ids:[],
     content_ids:[], insight_ids:[], status:"needs_more_data",
     created_date:"2026-05-26", updated_date:"2026-05-26",
-    full_text:"BNA1/2/3 배너 테스트에서 BNA3(옅고 한곳에 밀집된 잡티 이미지)가 ROAS 137로 반응. 단순 BNA 이미지보다 불신제거 형식 카피(믿어도 되나요? → 임상 수치) + 타겟 연령층이 공감하는 BNA 이미지 조합이 CTR과 CVR에 복합적으로 영향을 준다는 가설. 성과 있던 BNA 배너 이미지 비교 분석 필요.",
+    full_text:"BNA1/2/3 배너 테스트에서 BNA3(옅고 한곳에 밀집된 잡티 이미지)가 ROAS 137로 반응. 단순 BNA 이미지보다 불신제거 형식의 카피와 임상 조합 + 타겟 연령층이 공감하는 BNA 이미지 조합이 CTR과 CVR에 복합적으로 영향을 준다는 가설. 성과 있던 BNA 배너 이미지 비교 분석 필요.",
     evaluations:["BNA3이 일상에서 흔히 볼 수 있는 기미 형태 — 타겟 공감도 높음.","메시지(카피)와 BNA 이미지가 분명해서 반응한 것. 해당 연령층이 생각하는 기미 형태가 BNA에 반영된 것.","고객 반응 있던 BNA 배너 이미지 모아서 비교 분석이 선행되어야."],
     source_pages:[{name:"콘텐츠 리뷰 4월 5주차", date:"2026-04-27"}]
   },
@@ -1864,6 +1912,15 @@ const HYPOTHESES = [
     created_date:"2026-07-03", updated_date:"2026-07-03",
     full_text:"저관여 세그먼트 전용 paid 롱폼. 기존 검증 근거: I001(메시지는 단일 키워드로 압축 — 백색화 단독 ROAS 167% vs 성분 2개 조합 35~102%), H070(설명이 필요한 후킹은 저관여에서 작동 안 함), H006. 정보량을 줄이고 직관 후킹으로 모수를 확장하는 것이 유효한지 검증.",
     evaluations:["신규 세그먼트 실험 — 성과 데이터 수집 전."],
+    source_pages:[{name:"운영 구조 개편 결정 (7/3)", date:"2026-07-03"}]
+  },
+  { id:"H181", track:"B", category:"포맷",
+    title:"숏폼 재정립 — 설득논리(백색화 원리)를 스킵해 메시지를 가볍게 만들면 진입장벽이 낮아진다",
+    source_type:"internal_evolved", parent_id:null, children_ids:[],
+    content_ids:[], insight_ids:[], status:"in_progress",
+    created_date:"2026-07-04", updated_date:"2026-07-04",
+    full_text:"숏폼의 개념 재정립: 백색화/코직산이 어떻게 하얗게 만드는지의 설득논리를 스킵하고 소비자의 언어로 메시지를 가볍게 가져간다. 고관여/저관여 소구 분리(H177)와 직교하는 포맷 축 — 숏폼도 고관여/저관여 타겟별로 제작하되 포맷 차원에서 가벼워진다. 근거: 정보량 과다 숏폼의 반복 실패(H152 — 소비자는 많은 정보에 피로감), Q2 병목(설득논리 메시지만으로는 무겁다).",
+    evaluations:["Q3 운영 구조 개편의 시도 3 — 성과 데이터 수집 전."],
     source_pages:[{name:"운영 구조 개편 결정 (7/3)", date:"2026-07-03"}]
   },
   { id:"H180", track:"A", category:"후킹",
@@ -2437,7 +2494,7 @@ const INSIGHTS = [
   },
   { id:"I003", track:"A",
     headline:"손가락으로 훑는 페인포인트 장면이 CTR을 만든다",
-    one_line:"손가락으로 기미잡티를 훑는 oddly-satisfying 컷이 시선을 유지 → 토닝효과1 ROAS 231%, 토닝효과2 139%, 아이슬로2 118%.",
+    one_line:"손가락으로 기미잡티를 훑는 oddly-satisfying 컷이 시선을 유지 → 토닝효과1 ROAS 231%(4/16 기준), 토닝효과2 139%, 아이슬로2 118%.",
     validated_by_content_ids:["C014","C016"],
     validated_from_hypothesis_id:"H004",
     reproduction_checklist:[
@@ -2451,8 +2508,8 @@ const INSIGHTS = [
   },
   { id:"I004", track:"A",
     headline:"\"혹시 ㅇㅇ라고 들어보셨어요?\" — 정보성 후킹 멘트가 시청 유지를 만든다",
-    one_line:"새 개념(스킨더스트/백색화)을 알려주는 듯한 멘트 → '그래서 뭐가 다른데?' 호기심 유발. 불끄샤워2 ROAS 162%, 화상전화 동일 패턴.",
-    validated_by_content_ids:["C002","C003"],
+    one_line:"새 개념(스킨더스트/백색화)을 알려주는 듯한 멘트 → '그래서 뭐가 다른데?' 호기심 유발. 불끄샤워2 ROAS 162%(4/13 기준, 이후 누적 178%), 화상전화 동일 패턴.",
+    validated_by_content_ids:["C002","C001"],
     validated_from_hypothesis_id:"H010",
     reproduction_checklist:[
       "인트로 첫 문장: \"혹시 [새 개념]라고 들어보셨어요?\"",
@@ -2492,7 +2549,7 @@ const INSIGHTS = [
   },
   { id:"I007", track:"A",
     headline:"AI 논리설득 콘텐츠는 \"설명형 후킹\"과 매치된다",
-    one_line:"공감대 후킹(\"20대인데 얼굴은 40대 같죠?\") X / 설명형 후킹(\"20대인데 40대처럼 되는 이유 설명해드리겠습니다\") O. BnAAI ROAS 175%.",
+    one_line:"공감대 후킹(\"20대인데 얼굴은 40대 같죠?\") X / 설명형 후킹(\"20대인데 40대처럼 되는 이유 설명해드리겠습니다\") O. BnAAI ROAS 175% (4/23 기준).",
     validated_by_content_ids:["C030"],
     validated_from_hypothesis_id:"H050",
     reproduction_checklist:[
@@ -2574,7 +2631,7 @@ const INSIGHTS = [
     cross_track_ref:[]
   },
   { id:"I013", track:"B",
-    headline:"짙은 기미 BNA 이미지가 배너에서도 통한다 — 옅은 형태는 무성과",
+    headline:"옅고 밀집된 기미 BNA 이미지가 배너에서도 통한다 — 짙고 퍼진 형태는 무성과",
     one_line:"BNA3(옅은 기미) ROAS 1.19 / BNA1·2(짙고 퍼진 기미) 거의 무성과. 충분해요1/2/3 BNA 배너 모두 ROAS 100 근접.",
     validated_by_content_ids:["C120","C121"],
     validated_from_hypothesis_id:"H121",
@@ -4533,6 +4590,154 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
   );
 }
 
+function ViewStory({ jumpToItem }) {
+  const VERDICT = {
+    success: { label:"성공", bg:"#E1EFDA", color:"#4F7A4C", border:"#4F7A4C", icon:"✅" },
+    fail:    { label:"실패", bg:"#EAE0E5", color:"#8A6573", border:"#8A6573", icon:"❌" },
+    ongoing: { label:"진행중", bg:"#FAEFCC", color:"#7A5F1F", border:"#B58B1F", icon:"🔄" },
+  };
+  // 분기별 콘텐츠 자동 분류: live_date 기준, 지출 상위 8 (위너·저성과 배지 포함)
+  function quarterContents(q) {
+    return CONTENTS
+      .filter(c => c.live_date && c.live_date >= q.start && c.live_date <= q.end)
+      .map(c => {
+        const spend = (c.variations||[]).reduce((a,v)=>a+(v.metrics?.spend||0), 0);
+        const roas = Math.max(0, ...(c.variations||[]).map(v=>v.metrics?.roas||0));
+        return { c, spend, roas };
+      })
+      .filter(x => x.spend > 0)
+      .sort((a,b) => b.spend - a.spend)
+      .slice(0, 8);
+  }
+  return (
+    <div className="max-w-[880px] mx-auto px-5 py-8 anim-fade">
+      <div style={{marginBottom:"26px"}}>
+        <div className="font-display" style={{fontSize:"22px"}}>지금까지의 스토리 — 분기 회고</div>
+        <div style={{fontSize:"13px", color:"#6B6B6B", marginTop:"6px", lineHeight:1.6}}>
+          분기마다 목표를 세우고, 판정하고, 병목을 찾고, 접근을 바꿉니다. 처음 합류했다면 위에서부터 읽는 것이 가장 빠른 온보딩입니다 — ID를 누르면 상세로 이동합니다.
+        </div>
+      </div>
+
+      {QUARTERS.map((q, qi) => {
+        const V = VERDICT[q.verdict];
+        const grid = quarterContents(q);
+        return (
+          <React.Fragment key={q.key}>
+            <div className="card-deep" style={{padding:"20px 22px", borderTop:`3px solid ${V.border}`}}>
+              {/* 헤더: 분기 · 기간 · 목표 · 판정 */}
+              <div style={{display:"flex", alignItems:"baseline", gap:"10px", flexWrap:"wrap"}}>
+                <span className="font-mono" style={{fontSize:"13px", fontWeight:700, color:"#1A1A1A"}}>{q.key}</span>
+                <span className="font-mono" style={{fontSize:"11px", color:"#9B9690"}}>{q.period}</span>
+                <span style={{marginLeft:"auto", fontSize:"11px", fontWeight:700, padding:"2px 10px", borderRadius:"12px",
+                  background:V.bg, color:V.color, border:`1px solid ${V.border}`}}>{V.icon} {V.label}</span>
+              </div>
+              <div className="font-display" style={{fontSize:"17px", marginTop:"8px"}}>{q.goal}</div>
+              <div style={{fontSize:"13px", color:"#3A3733", lineHeight:1.65, marginTop:"8px"}}>{q.summary}</div>
+
+              {/* 전환점 */}
+              {q.turns && q.turns.length > 0 && (
+                <div style={{marginTop:"16px"}}>
+                  <div className="sp-sidebar-label">이 시기의 전환점</div>
+                  {q.turns.map((t,i)=>(
+                    <div key={i} style={{display:"flex", gap:"10px", alignItems:"flex-start", padding:"6px 0",
+                      borderBottom: i<q.turns.length-1 ? "1px solid #F3EFE8" : "none"}}>
+                      <span className="font-mono" style={{fontSize:"10px", color:"#9B9690", flexShrink:0, paddingTop:"3px"}}>{t.date.slice(5).replace("-","/")}</span>
+                      <span style={{fontSize:"12.5px", color:"#3A3733", lineHeight:1.55, flex:1}}>{t.text}</span>
+                      <span style={{display:"flex", gap:"3px", flexShrink:0}}>
+                        {t.refs.map(r=><IdChip key={r} id={r} onClick={()=>jumpToItem(r)} />)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Q3 시도들 */}
+              {q.attempts && (
+                <div style={{marginTop:"16px", display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(230px,1fr))", gap:"8px"}}>
+                  {q.attempts.map((a,i)=>(
+                    <div key={i} style={{background:"#FAF8F4", border:"1px solid #EBE7E0", borderRadius:"6px", padding:"12px 14px"}}>
+                      <div style={{fontSize:"12.5px", fontWeight:700, color:"#1A1A1A"}}>{a.title}</div>
+                      <div style={{fontSize:"12px", color:"#3A3733", lineHeight:1.55, marginTop:"5px"}}>{a.text}</div>
+                      <div style={{marginTop:"8px", display:"flex", gap:"3px", flexWrap:"wrap"}}>
+                        {a.refs.map(r=><IdChip key={r} id={r} onClick={()=>jumpToItem(r)} />)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* 병목 (실패 분기) */}
+              {q.bottlenecks && (
+                <div style={{marginTop:"16px"}}>
+                  {q.bottlenecks.map((b,i)=>(
+                    <div key={i} style={{background:"#FBF4F6", border:"1px solid #E5D3DA", borderLeft:"3px solid #8A6573",
+                      borderRadius:"6px", padding:"10px 14px", marginBottom:"6px"}}>
+                      <div style={{fontSize:"12px", fontWeight:700, color:"#6F4F5C"}}>{b.title}</div>
+                      <div style={{fontSize:"12.5px", color:"#3A3733", lineHeight:1.55, marginTop:"3px"}}>{b.text}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* 이 시기의 콘텐츠 (자동: 지출 상위 8, 실패작 포함) */}
+              {grid.length > 0 && (
+                <div style={{marginTop:"16px"}}>
+                  <div className="sp-sidebar-label">이 시기의 콘텐츠 (지출 상위 · 실패작 포함)</div>
+                  <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(96px,1fr))", gap:"8px"}}>
+                    {grid.map(({c, spend, roas})=>(
+                      <div key={c.id} onClick={()=>jumpToItem(c.id)} title={c.title}
+                        style={{cursor:"pointer", position:"relative", borderRadius:"6px", overflow:"hidden",
+                          border:"1px solid #EBE7E0", background:"#FAF8F4", aspectRatio:"3/4"}}>
+                        <img src={"thumbs/"+c.id+".jpg"} alt="" onError={(e)=>{e.target.style.display="none";}}
+                          style={{width:"100%", height:"100%", objectFit:"cover", display:"block"}} />
+                        <div style={{position:"absolute", top:"4px", left:"4px", fontSize:"9px", fontWeight:700, padding:"1px 6px", borderRadius:"3px",
+                          background: roas>=1.5&&spend>=100000 ? "#E1EFDA" : roas<1 ? "#EAE0E5" : "#F4F5F7",
+                          color: roas>=1.5&&spend>=100000 ? "#4F7A4C" : roas<1 ? "#8A6573" : "#6B6B6B"}}>
+                          {roas>=1.5&&spend>=100000 ? "위너" : roas<1 ? "저성과" : "—"} {roas>0 ? Math.round(roas*100)+"%" : ""}
+                        </div>
+                        <div style={{position:"absolute", bottom:0, left:0, right:0, padding:"3px 6px",
+                          background:"linear-gradient(to top, rgba(0,0,0,0.75), transparent)", color:"#fff", fontSize:"10px", lineHeight:1.3}}>
+                          {c.title.length>14 ? c.title.slice(0,14)+"…" : c.title}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 인사이트 칩 */}
+              {q.insights && q.insights.length > 0 && (
+                <div style={{marginTop:"14px", display:"flex", gap:"4px", alignItems:"center", flexWrap:"wrap"}}>
+                  <span className="sp-sidebar-label" style={{marginBottom:0}}>도출 인사이트</span>
+                  {q.insights.map(r=><IdChip key={r} id={r} onClick={()=>jumpToItem(r)} />)}
+                </div>
+              )}
+
+              {/* 판정 기준 (진행중 분기) */}
+              {q.criteria && (
+                <div style={{marginTop:"14px", background:"#FFFBEA", border:"1px dashed #B58B1F", borderRadius:"6px",
+                  padding:"9px 14px", fontSize:"12.5px", color:"#5A4A00", fontWeight:600}}>
+                  📏 {q.criteria}
+                </div>
+              )}
+            </div>
+
+            {/* 다음 분기 연결 */}
+            {q.next && (
+              <div style={{textAlign:"center", padding:"12px 0", color:"#7A5F1F", fontSize:"12.5px", fontWeight:600}}>
+                ↓ {q.next}
+              </div>
+            )}
+          </React.Fragment>
+        );
+      })}
+      <div style={{fontSize:"11px", color:"#ABA89F", textAlign:"center", padding:"18px 0"}}>
+        분기말 회고 때 판정을 확정하고 다음 분기 챕터를 추가합니다. 콘텐츠 그리드는 live_date 기준 자동 분류.
+      </div>
+    </div>
+  );
+}
+
 function ViewTracker({ extQuery, jumpToContent }) {
   const [filterOwner, setFilterOwner] = useState("");
   const [filterAngle, setFilterAngle] = useState("");
@@ -4843,6 +5048,19 @@ function App() {
     }
   }
 
+  // 스토리 뷰 → H/I/C 어디로든 점프 (트랙 자동 전환)
+  function jumpToItem(id) {
+    if (id.startsWith("H")) {
+      const h = HYPOTHESES.find(x=>x.id===id);
+      if (h) { setTrack(h.track); jumpTo("V4", id); }
+    } else if (id.startsWith("I")) {
+      const it = INSIGHTS.find(x=>x.id===id);
+      if (it) { setTrack(it.track); jumpTo("V3", id); }
+    } else if (id.startsWith("C")) {
+      jumpToContent(id);
+    }
+  }
+
   // 트래커 행 → 플레이북 상세(해당 콘텐츠의 가설 카드)로 점프
   function jumpToContent(cid) {
     const c = CONTENTS.find(x=>x.id===cid);
@@ -4966,6 +5184,7 @@ function App() {
         <div className="max-w-[1440px] mx-auto px-5 flex items-stretch" style={{height:"42px"}}>
           {[
             {k:"V1", label:"Overview"},
+            {k:"V5", label:"스토리"},
             {k:"V2", label:"Mind Map"},
             {k:"V3", label:"성공공식"},
             {k:"V4", label:"자세히 보기"},
@@ -5045,6 +5264,8 @@ function App() {
         <div className="max-w-[1440px] mx-auto px-5 py-5">
           <ViewTracker extQuery={trackerQuery} jumpToContent={jumpToContent} />
         </div>
+      ) : view === "V5" ? (
+        <ViewStory jumpToItem={jumpToItem} />
       ) : (
         <div className="max-w-[1440px] mx-auto px-5 py-5 flex gap-5">
 
