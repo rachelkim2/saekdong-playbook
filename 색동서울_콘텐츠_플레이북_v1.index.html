@@ -2758,7 +2758,7 @@ const INSIGHTS = [
     cross_track_ref:[]
   },
 
-  { id:"I021", easy_title:"'속는 셈치고 써봄' — 광고 티 없는 UGC가 불신을 우회한다", easy_body:"직원 반박보다 일반 소비자 페르소나의 오가닉 포맷. 3Q 검증 예정 (아직 미검증).", q:"3Q", track:"A",
+  { id:"I021", pending:true, easy_title:"'속는 셈치고 써봄' — 광고 티 없는 UGC가 불신을 우회한다", easy_body:"직원 반박보다 일반 소비자 페르소나의 오가닉 포맷. 3Q 검증 예정 (아직 미검증).", q:"3Q", track:"A",
     headline:"오가닉 UGC 포맷이 광고 불신을 우회한다 — '속는 셈치고 써봄' 류 소비자 포맷",
     one_line:"직원 반박 플로우보다 일반 소비자처럼 보이는 오가닉 SNS 콘텐츠 느낌(비#광고 포맷)이 신뢰 장벽을 낮출 수 있다. 자사 콘텐츠 분석 기반 미검증 가설.",
     validated_by_content_ids:[],
@@ -2772,7 +2772,7 @@ const INSIGHTS = [
     synergy_with:["I006","I018"],
     cross_track_ref:[]
   },
-  { id:"I022", easy_title:"AI는 쓰되 B급 감성은 거른다", easy_body:"경쟁사 AI 트렌드는 B급 감성 — 색동서울의 신뢰 톤과 충돌한다. 브랜드 감도 필터 필수.", q:"3Q", track:"A",
+  { id:"I022", pending:true, easy_title:"AI는 쓰되 B급 감성은 거른다", easy_body:"경쟁사 AI 트렌드는 B급 감성 — 색동서울의 신뢰 톤과 충돌한다. 브랜드 감도 필터 필수.", q:"3Q", track:"A",
     headline:"경쟁사 AI 콘텐츠 B급 감성 — 색동서울 브랜드 감도와 충돌 주의",
     one_line:"경쟁사 AI 생성 콘텐츠가 B급 감성으로 트렌드를 형성 중이나, 색동서울 신뢰·전문성 이미지와 톤 충돌 우려. AI 콘텐츠 활용 시 브랜드 감도 필수 유지.",
     validated_by_content_ids:[],
@@ -4732,11 +4732,11 @@ function ViewWinners({ openDetail }) {
             <span style={{fontSize:"12.5px", color:"#3A3733"}}>{q.goal}</span>
             <span style={{marginLeft:"auto", fontSize:"12px", fontWeight:700, color:V_BADGE[q.verdict].c}}>{V_BADGE[q.verdict].t}</span>
           </div>
-          {(groups[q.key]||[]).length === 0 && (
-            <div style={{fontSize:"12.5px", color:"#ABA89F", padding:"10px 2px"}}>아직 검증된 인사이트 없음 — 실험 진행 중</div>
+          {(groups[q.key]||[]).filter(x=>!x.pending).length === 0 && (
+            <div style={{fontSize:"12.5px", color:"#ABA89F", padding:"10px 2px"}}>아직 검증된 위너 없음 — 실험 진행 중 (판정 기준: 일예산 30만+ · ROAS 180%+)</div>
           )}
           <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(380px,1fr))", gap:"10px"}}>
-            {(groups[q.key]||[]).map(ins=>{
+            {(groups[q.key]||[]).filter(x=>!x.pending).map(ins=>{
               const thumbC = (ins.validated_by_content_ids||[]).map(cid=>CONTENTS.find(c=>c.id===cid)).find(c=>c&&c.thumbnail_url);
               return (
                 <div key={ins.id} onClick={()=>openDetail(ins.id)} className="card-deep"
@@ -4755,6 +4755,18 @@ function ViewWinners({ openDetail }) {
               );
             })}
           </div>
+          {(groups[q.key]||[]).some(x=>x.pending) && (
+            <div style={{marginTop:"10px", display:"flex", gap:"6px", alignItems:"center", flexWrap:"wrap"}}>
+              <span style={{fontSize:"11px", fontWeight:700, color:"#6A7FA0"}}>🧪 검증 대기 (위너 아님)</span>
+              {(groups[q.key]||[]).filter(x=>x.pending).map(ins=>(
+                <span key={ins.id} onClick={()=>openDetail(ins.id)}
+                  style={{fontSize:"11.5px", padding:"4px 10px", borderRadius:"14px", cursor:"pointer",
+                    background:"#E1E7F0", border:"1px solid #B9C5DA", color:"#4D5E7E"}}>
+                  {ins.easy_title || ins.headline}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       ))}
     </div>
