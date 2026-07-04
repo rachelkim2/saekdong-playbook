@@ -1138,7 +1138,7 @@ const QUARTERS = [
   },
   { key:"Q3", period:"2026.07 – 2026.09", start:"2026-07-01", end:"2026-09-30",
     goal:"소비자의 언어로 구매진입장벽 낮은 콘텐츠를 만들자", verdict:"ongoing",
-    summary:"Q2의 목표는 유지하고 접근을 바꾼다 — 무거운 설득논리 대신 소비자의 언어로. 콘마 합류로 가능해진 3개 축을 병행한다.",
+    summary:"Q2의 목표는 유지하고 접근을 바꾼다 — 무거운 설득논리 대신 소비자의 언어로. Q3는 아래 세 가지 가설로 콘텐츠 제작에 몰입한다.",
     attempts:[
       { title:"시도 1 · 소구 분리 — 고관여 / 저관여", text:"기미잡티 소구를 고관여(성분·임상 깊은 설득)와 저관여(직관 후킹·압축 메시지)로 나눠, 각 타겟에 맞는 더 뾰족한 메시지로 설득 범위를 확장한다.", refs:["H177","H178","H179"] },
       { title:"시도 2 · 기획세트 — 시그니처 비주얼훅", text:"토너크림 기획세트는 메시지가 아닌 비주얼 후킹으로 설득한다 (샤르드처럼 시그니처 비주얼훅 만들기). 판정 지표는 ROAS가 아닌 후킹 지표(CTR·썸스탑·3초 유지).", refs:["H180","I003"] },
@@ -1187,21 +1187,44 @@ const CATEGORY_DESCRIPTIONS = {
 
 // 가설의 추가 태그 (META 광고관리자 소재명 맨끝 suffix 기반의 주제 그룹)
 const TAG_DESCRIPTIONS = {
-  "AI": "AI 콘텐츠 — AI 비타, AI 노래, 랩배틀 AI, 카톡노래AI 등 인공지능 활용",
-  "불신제거": "불신·의혹 반박 포맷 — 또플반박, 진상반박, 악플반박, 댓글삭제 계열",
-  "영상언어": "무성·영상 언어 중심 — BGM/자막만, 내레이션 없는 영상 위주",
-  "고관여": "기미잡티 고관여 타겟 — 성분·임상·비교 등 깊은 설득 논리에 반응하는 구매의도 높은 타겟 (26.07 콘마 합류 후 분리 운영)",
-  "저관여": "기미잡티 저관여 타겟 — 직관적 후킹·단순 메시지로 신규 유입시키는 타겟 (26.07 콘마 합류 후 분리 운영)",
-  "비주얼후킹": "비주얼후킹 탐색 — 기획세트 롱폼 전용. 판정 지표는 ROAS가 아닌 후킹 지표(CTR·썸스탑·3초 시청 유지)"
+  "백색화": "백색화 USP — 주조사백색화에서 진화한 단독 메시지. 압축할수록 강하다 (I001)",
+  "코직산·성분": "코직산·나이아신 등 성분 설득 — 성분 나열 인트로는 고관여자 후킹 (I009)",
+  "BnA": "Before & After — 입증 근거 누적 플로우 (I002), 옅고 밀집된 기미 형태가 반응 (I013)",
+  "불신제거": "불신·의혹 반박 포맷 — 또플반박, 진상반박, 악플반박, 억울해명 계열 (I006·I018)",
+  "스킨더스트": "스킨더스트 카테고리어 — 옅은 색소침착을 우리 언어로 (H001 계보)",
+  "영상언어": "무성·영상 언어 중심 — 무성이라도 텍스트 메시지가 성과를 가른다 (I001)",
+  "가격소구": "가격·특가·1+1 소구 — 직관적 가격 노출이 관건",
+  "긍정소구": "긍정 언어 소구 — 손해 강조보다 얻는 이득 강조가 반응",
+  "임상": "임상 수치 소구 — BnA와 조합 시 불신제거 효과",
+  "어그로": "어그로 후킹 — CTR은 좋지만 CVR 붕괴, 구매타겟에게만 후킹할 것 (I010)",
+  "신뢰·연기력": "인물 신뢰의 축 — 배우 연기력이 몰입과 신뢰를 만든다 (I005)",
+  "AI": "AI 콘텐츠 — AI 비타, 랩배틀 AI, 카톡노래AI 등. 설명형 후킹과 매치 (I007)",
+  "고관여": "기미잡티 고관여 타겟 — 성분·임상·비교 등 깊은 설득 논리에 반응 (26.07 분리 운영)",
+  "저관여": "기미잡티 저관여 타겟 — 직관적 후킹·단순 메시지로 신규 유입 (26.07 분리 운영)",
+  "비주얼후킹": "비주얼후킹 탐색 — 기획세트 전용. 판정 지표는 ROAS가 아닌 후킹 지표"
 };
 const TAG_KEYWORDS = {
-  "AI": [/\bai\b/i, /ai비타/i, /ai피부/i, /ai콘텐츠/i, /ai트랜드/i, /ai트렌드/i, /랩배틀.?ai/i, /ai.?노래/i, /카톡노래/i, /고민ai/i, /안녕나는/i, /인공지능/i],
-  "불신제거": [/불신제거/, /불신.?제거/, /또플반박/, /악플반박/, /진상반박/, /댓글삭제/, /해명/, /오해/],
+  "백색화": [/백색화/],
+  "코직산·성분": [/코직산/, /나이아신/, /성분/],
+  "BnA": [/bna/i, /비포.?애프터/, /비커실험/],
+  "불신제거": [/불신제거/, /불신.?제거/, /불신/, /또플반박/, /악플반박/, /진상반박/, /댓글삭제/, /해명/, /오해/],
+  "스킨더스트": [/스킨더스트/],
   "영상언어": [/영상.?언어/, /무성/, /무음/],
+  "가격소구": [/가격/, /특가/, /할인/, /1\+1/, /혜택/],
+  "긍정소구": [/긍정/],
+  "임상": [/임상/],
+  "어그로": [/어그로/, /진상반박/],
+  "신뢰·연기력": [/신뢰/, /연기/, /배우/, /페르소나/],
+  "AI": [/\bai\b/i, /ai비타/i, /ai피부/i, /ai콘텐츠/i, /ai트랜드/i, /ai트렌드/i, /랩배틀.?ai/i, /ai.?노래/i, /카톡노래/i, /고민ai/i, /안녕나는/i, /인공지능/i],
   "고관여": [/고관여/],
   "저관여": [/저관여/],
   "비주얼후킹": [/비주얼.?후킹/, /기획세트/]
 };
+// 가설 텍스트가 키워드 태그에 걸리는지 (마인드맵 키워드 필터용)
+function hypMatchesTag(h, tag) {
+  const blob = ((h.title||"") + " " + (h.full_text||"")).toLowerCase();
+  return (TAG_KEYWORDS[tag]||[]).some(re => re.test(blob));
+}
 function computeTags(h) {
   if (!h) return [];
   const blob = ((h.title||"") + " " + (h.full_text||"")).toLowerCase();
@@ -3160,7 +3183,7 @@ function MindMap({ track, hypotheses, onNodeClick, selectedId, filters }) {
 
   const isDim = h =>
     (filters.status.size && !filters.status.has(h.status)) ||
-    (filters.category.size && !filters.category.has(h.category)) ||
+    (filters.category.size && ![...filters.category].some(tag => hypMatchesTag(h, tag))) ||
     (filters.source.size && !filters.source.has(h.source_type));
 
   // ── 엣지: 렌더 후 노드 위치를 측정해 SVG로 그림 ──
@@ -4673,6 +4696,33 @@ function ViewStory({ jumpToItem }) {
                 </div>
               )}
 
+              {/* 진행중 분기: 제작 파이프라인 (트래커의 기획·편집 소재) */}
+              {q.verdict === "ongoing" && (() => {
+                const pipeline = TRACKER.filter(r => r.s === "기획" || r.s === "편집");
+                if (!pipeline.length) return null;
+                return (
+                  <div style={{marginTop:"16px"}}>
+                    <div className="sp-sidebar-label">지금 제작 중 (운영 트래커 기준 — 편집 {pipeline.filter(r=>r.s==="편집").length} · 기획 {pipeline.filter(r=>r.s==="기획").length})</div>
+                    <div style={{display:"flex", gap:"5px", flexWrap:"wrap"}}>
+                      {pipeline.map((r,i)=>{
+                        const cid = matchContentId(r.n);
+                        return (
+                          <span key={i} onClick={cid ? ()=>jumpToItem(cid) : undefined}
+                            style={{fontSize:"11.5px", padding:"4px 10px", borderRadius:"14px",
+                              background: r.s==="편집" ? "#FFFBEA" : "#F4F5F7",
+                              border:"1px solid " + (r.s==="편집" ? "#EBD98A" : "#E8EAED"),
+                              color:"#3A3733", cursor: cid ? "pointer" : "default", whiteSpace:"nowrap"}}>
+                            {r.s==="편집" ? "✂️" : "📝"} {r.n}
+                            <span style={{color:"#ABA89F", marginLeft:"4px", fontSize:"10px"}}>{OWNERS[r.o]?.split("·")[0]||r.o}</span>
+                            {cid && <span style={{marginLeft:"3px", fontSize:"9px", color:"#B58B1F"}}>🔗</span>}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
+
               {/* 인사이트 칩 */}
               {q.insights && q.insights.length > 0 && (
                 <div style={{marginTop:"14px", display:"flex", gap:"4px", alignItems:"center", flexWrap:"wrap"}}>
@@ -5211,12 +5261,13 @@ function App() {
                   클릭 · 미리보기 &nbsp;·&nbsp; 마우스 올림 · 툴팁
                 </div>
               </div>
-              {/* Row 2: 주제 */}
+              {/* Row 2: 키워드 (인사이트에서 자주 나타나는 실전 키워드 — 카테고리 아님) */}
               <div style={{display:"flex", alignItems:"center", gap:"4px", flexWrap:"wrap"}}>
-                <span style={lbStyle}>주제</span>
-                {mmAllCats.map(c=>(
+                <span style={lbStyle}>키워드</span>
+                {Object.keys(TAG_KEYWORDS).map(c=>(
                   <button key={c} onClick={()=>mmToggle(setMmFCategory, mmFCategory, c)}
                     className={mmFCategory.has(c)?"filter-active":"filter-inactive"}
+                    title={TAG_DESCRIPTIONS[c]||""}
                     style={{fontSize:"11px", padding:"3px 10px", borderRadius:"20px", border:"1px solid #E8EAED", cursor:"pointer", fontFamily:"inherit"}}>
                     #{c}
                   </button>
