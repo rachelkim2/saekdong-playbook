@@ -199,7 +199,7 @@ const { useState, useEffect, useRef, useMemo } = React;
 
 const META = {
   title: "색동서울 콘텐츠 플레이북",
-  version: "v1.6",
+  version: "v2.0",
   lastUpdate: "2026-07-04",
   brandRoot: "밀키토너",
   brandUSP: "코직애씨드 터메릭 나이아신아마이드 5% 밀키토너",
@@ -2486,7 +2486,7 @@ const CONTENTS = [
 ];
 
 const INSIGHTS = [
-  { id:"I001", track:"A",
+  { id:"I001", easy_title:"메시지는 하나만 — 백색화면 백색화만", easy_body:"무성이어도 자막이 일한다. '백색화' 하나만 말한 소재는 ROAS 167%, 코직산+나이아신 두 개를 욱여넣은 소재들은 35~102%에 그쳤다.", track:"A",
     headline:"무성 콘텐츠라도 텍스트 메시지의 영향력이 크다 — 무성≠메시지 자유",
     one_line:"같은 영상언어 포맷이라도 자막/텍스트가 \"코직산-백색화\" 단독이면 ROAS 167%, \"코직산+나이아신5%\" 묶으면 35~102%로 갈림.",
     validated_by_content_ids:["C010","C014"],
@@ -2500,7 +2500,7 @@ const INSIGHTS = [
     synergy_with:["I002","I003"],
     cross_track_ref:[]
   },
-  { id:"I002", track:"A",
+  { id:"I002", easy_title:"'진짜야?'에는 증거를 쌓아서 답한다", easy_body:"즉각 BnA → 주조사·쌀누룩 스토리 → 실험 컷 → 흡수력 99%까지, 입증을 누적하는 플로우가 코직산을 설득한다 (이소티논 149%).", track:"A",
     headline:"BnA 입증 근거 누적 플로우가 코직산 설득력을 결정한다",
     one_line:"\"이것봐 진짜지? 실험도 그래. 후기도 이래\" — 즉각 BnA → 주조사/쌀누룩 입증 → 실험 → 흡수력 수치까지 누적하면 ROAS 발생.",
     validated_by_content_ids:["C020","C023"],
@@ -2515,7 +2515,7 @@ const INSIGHTS = [
     synergy_with:["I006"],
     cross_track_ref:["I013"]
   },
-  { id:"I003", track:"A",
+  { id:"I003", easy_title:"손가락으로 잡티를 훑는 컷이 시선을 잡는다", easy_body:"묘하게 계속 보게 되는 훑기 클로즈업이 이탈을 막는다 — 토닝효과1 ROAS 231%(4/16), 아이슬로2 118%.", track:"A",
     headline:"손가락으로 훑는 페인포인트 장면이 CTR을 만든다",
     one_line:"손가락으로 기미잡티를 훑는 oddly-satisfying 컷이 시선을 유지 → 토닝효과1 ROAS 231%(4/16 기준), 토닝효과2 139%, 아이슬로2 118%.",
     validated_by_content_ids:["C014","C016"],
@@ -2529,7 +2529,7 @@ const INSIGHTS = [
     synergy_with:["I001"],
     cross_track_ref:["I013"]
   },
-  { id:"I004", track:"A",
+  { id:"I004", easy_title:"모르는 단어가 후킹이 된다 — \"혹시 백색화라고 들어보셨어요?\"", easy_body:"새 개념을 알려주는 인트로에 '그래서 뭔데?'로 붙잡힌다. 불끄샤워2 178%, 화상전화 205%.", track:"A",
     headline:"\"혹시 ㅇㅇ라고 들어보셨어요?\" — 정보성 후킹 멘트가 시청 유지를 만든다",
     one_line:"새 개념(스킨더스트/백색화)을 알려주는 듯한 멘트 → '그래서 뭐가 다른데?' 호기심 유발. 불끄샤워2 ROAS 162%(4/13 기준, 이후 누적 178%), 화상전화 동일 패턴.",
     validated_by_content_ids:["C002","C001"],
@@ -2542,7 +2542,7 @@ const INSIGHTS = [
     synergy_with:["I005","I007"],
     cross_track_ref:[]
   },
-  { id:"I005", track:"A",
+  { id:"I005", easy_title:"누가 말하느냐가 절반이다", easy_body:"같은 플로우에서 배우만 바꿨더니 68~108% → 169~206%. 인터뷰 포맷은 연기 되는 배우 섭외가 우선, 목소리는 TTS 말고 실제 인물.", track:"A",
     headline:"모델 연기력 = 몰입감 + 신뢰감",
     one_line:"동일 플로우 이건스킨(ROAS 68~108%) → 모델 교체 후 이건모델교체(ROAS 169~206%). 인터뷰 형식은 모델보다 연기 경력 있는 배우.",
     validated_by_content_ids:["C004","C021","C002"],
@@ -2556,7 +2556,7 @@ const INSIGHTS = [
     synergy_with:["I004","I006"],
     cross_track_ref:[]
   },
-  { id:"I006", track:"A",
+  { id:"I006", easy_title:"얼굴에 선 긋고 반만 증명하라 — '이거 진짜야' 인트로", easy_body:"실제 악플 멘트 + 얼굴 반반 BnA 증명이 비타민C 비교소구와 맞물린다. 또플반박2 ROAS 219% · CVR 5.58%.", track:"A",
     headline:"불신제거 인트로 (반반 선 긋기) — 증명 포맷이 비타민C 비교소구와 매치",
     one_line:"또플반박2 — 실제 악플 멘트 + 얼굴 반반 선 긋는 BnA 증명 장면. ROAS 219%, CTR 4.71%, CVR 5.58%.",
     validated_by_content_ids:["C021"],
@@ -2570,7 +2570,7 @@ const INSIGHTS = [
     synergy_with:["I002","I005"],
     cross_track_ref:[]
   },
-  { id:"I007", track:"A",
+  { id:"I007", easy_title:"AI 콘텐츠는 '설명해드리겠습니다' 톤으로", easy_body:"공감을 구하는 후킹(X)이 아니라 설명형 후킹(O). BnAAI ROAS 175%(4/23).", track:"A",
     headline:"AI 논리설득 콘텐츠는 \"설명형 후킹\"과 매치된다",
     one_line:"공감대 후킹(\"20대인데 얼굴은 40대 같죠?\") X / 설명형 후킹(\"20대인데 40대처럼 되는 이유 설명해드리겠습니다\") O. BnAAI ROAS 175% (4/23 기준).",
     validated_by_content_ids:["C030"],
@@ -2584,7 +2584,7 @@ const INSIGHTS = [
     synergy_with:["I004"],
     cross_track_ref:[]
   },
-  { id:"I008", track:"A",
+  { id:"I008", easy_title:"'미국에서 난리'보다 '피부과 언니가 추천'", easy_body:"외국 대세감 소재는 전부 OFF, 피부과 의사 페르소나 커뮤연출은 CVR 18.75%.", track:"A",
     headline:"후기형 콘텐츠는 외국 대세감보다 피부과 의사 페르소나가 설득한다",
     one_line:"미국에선(외국 대세감) ROAS<1 전부 OFF / 커뮤연출(피부과 언니 추천) ROAS 2.51 CVR 18.75%.",
     validated_by_content_ids:["C025","C026"],
@@ -2597,7 +2597,7 @@ const INSIGHTS = [
     synergy_with:["I005"],
     cross_track_ref:[]
   },
-  { id:"I009", track:"A",
+  { id:"I009", easy_title:"성분으로 팔려면 인트로부터 성분을 깔아라", easy_body:"나이아신·비타민C 나열 인트로가 고관여자를 후킹한다 — 성분비교1 CTR 6.21% · ROAS 139%. 성분 콘텐츠는 후킹도 성분이어야 한다.", track:"A",
     headline:"성분 이야기 설득 시 — 인트로부터 익숙한 미백 성분을 나열해 고관여자를 후킹",
     one_line:"성분비교1 ROAS 1.39 CTR 6.21% — 미백 성분 나열 인트로가 고관여자 후킹, 어려운 성분 이야기 설득까지 이어짐. 디오레퍼/간단해결은 후킹 약해 실패.",
     validated_by_content_ids:["C024"],
@@ -2611,7 +2611,7 @@ const INSIGHTS = [
     synergy_with:["I007"],
     cross_track_ref:[]
   },
-  { id:"I010", track:"A",
+  { id:"I010", easy_title:"어그로는 모으기만 하고, 팔지는 못한다", easy_body:"진상반박 CTR 4.7%인데 CVR 1.4% — 어그로에 반응하는 유저는 구매타겟이 아니다. 후킹은 구매타겟에게만 작동하게 설계.", track:"A",
     headline:"단순 어그로 후킹은 구매타겟을 미스해 CVR이 무너진다",
     one_line:"진상반박1 CTR 4.43% CVR 1.44%, 진상반박3 CTR 4.74% CVR 1.37% — 어그로 유저에게만 노출되어 구매로 이어지지 않음.",
     validated_by_content_ids:["C022"],
@@ -2626,7 +2626,7 @@ const INSIGHTS = [
   },
 
   // Track B
-  { id:"I011", track:"B",
+  { id:"I011", easy_title:"배운 단어로 말하라 — '자외선'보다 '선크림'", easy_body:"소비자가 두 번 생각하게 하면 진다. 이미 학습된 일상 키워드가 이긴다 — 선크림철벽 ROAS 2.34.", track:"B",
     headline:"직관적 카피가 모호한 카피를 이긴다 — \"자외선\"보다 \"선크림\" 키워드",
     one_line:"선크림철벽 ROAS 2.34 / 자외선잡티 거의 미집행. 소비자가 두 번 생각하지 않도록 학습된 키워드를 활용.",
     validated_by_content_ids:["C102","C103"],
@@ -2639,7 +2639,7 @@ const INSIGHTS = [
     synergy_with:["I012","I016"],
     cross_track_ref:[]
   },
-  { id:"I012", track:"B",
+  { id:"I012", easy_title:"'받을 수 있다'가 아니라 '이미 당첨됐다'", easy_body:"확정된 이득 톤 + 할인률·가격만 크게, 나머지는 작게. 첫구매 ROAS 1.81.", track:"B",
     headline:"직접적 이득 긍정 소구 — \"이미 당첨됐어!\" 톤이 먹힌다",
     one_line:"당첨 ROAS 1.18 (₩1.3M), 첫구매 ROAS 1.81, 두번꺾음 ROAS 1.12. \"다른 정보는 작게, 41% 비밀링크만 잘 보이게\" 구성.",
     validated_by_content_ids:["C110","C111","C112"],
@@ -2653,7 +2653,7 @@ const INSIGHTS = [
     synergy_with:["I014","I016"],
     cross_track_ref:[]
   },
-  { id:"I013", track:"B",
+  { id:"I013", easy_title:"BNA는 옅고 한곳에 몰린 잡티로", easy_body:"컨실러로 가릴 정도의 옅은 형태가 반응한다. 짙고 퍼진 기미는 무성과 (BNA3 1.19 vs BNA1·2 무성과).", track:"B",
     headline:"옅고 밀집된 기미 BNA 이미지가 배너에서도 통한다 — 짙고 퍼진 형태는 무성과",
     one_line:"BNA3(옅은 기미) ROAS 1.19 / BNA1·2(짙고 퍼진 기미) 거의 무성과. 충분해요1/2/3 BNA 배너 모두 ROAS 100 근접.",
     validated_by_content_ids:["C120","C121"],
@@ -2666,7 +2666,7 @@ const INSIGHTS = [
     synergy_with:[],
     cross_track_ref:["I002","I003"]
   },
-  { id:"I014", track:"B",
+  { id:"I014", easy_title:"'오월이라~' — 월초 시즌 카피는 시리즈가 된다", easy_body:"오월이라 ROAS 1.78, CPM 낮아 낮은 연령대 반응. 매월 초 시즈널 세트 하나씩.", track:"B",
     headline:"월초 시즈널 카피 — \"오월이라\" 시즌 한정 소구에 반응한다",
     one_line:"오월이라 ROAS 1.78 (CPM 낮음 → 낮은 연령대 반응). 월초마다 시즈널 세트 하나 만들면 좋을 듯 (유월이라, 칠월이라).",
     validated_by_content_ids:["C130"],
@@ -2679,7 +2679,7 @@ const INSIGHTS = [
     synergy_with:["I012","I015"],
     cross_track_ref:[]
   },
-  { id:"I015", track:"B",
+  { id:"I015", easy_title:"부모님 사드리라 했더니, 부모님이 자식 걸 산다", easy_body:"가정의달 1+1에 4050이 더 반응 — ROAS 1.98 · CVR 5.34%. 5월 한정 화력.", track:"B",
     headline:"가정의달 = 4050대 반응 우세 — 부모님이 자식 걸 사준다",
     one_line:"가정의달 ROAS 1.98 CVR 5.34%. 어버이날 1+1 카피인데 4050대가 더 많이 반응 — 부모님꺼 사라고 했더니 부모님이 자식 걸 사준다.",
     validated_by_content_ids:["C132"],
@@ -2692,7 +2692,7 @@ const INSIGHTS = [
     synergy_with:["I014"],
     cross_track_ref:[]
   },
-  { id:"I016", track:"B",
+  { id:"I016", easy_title:"배너는 카피 하나, 가격 하나, 제품 하나", easy_body:"요소가 늘수록 소비자는 둔감해진다. '가격 두번 꺾음 + 가격 + 제품 png'만 남겨라.", track:"B",
     headline:"카피는 1~2번만, 요소 줄이기 — \"가격 두번 꺾었습니다 + 가격 + 제품png\"",
     one_line:"동일한 메시지여도 반복하면 둔감해짐. 핵심 1~2개 요소만 배치하면 구매 전환에 도움.",
     validated_by_content_ids:["C112"],
@@ -2705,7 +2705,7 @@ const INSIGHTS = [
     synergy_with:["I011","I012"],
     cross_track_ref:[]
   },
-  { id:"I017", track:"B",
+  { id:"I017", easy_title:"롱폼 BNA를 배너에 그대로 써도 된다", easy_body:"충분해요 테스트 결과 매체 구분 없음 — 옅은 잡티 형태이기만 하면 BNA 라이브러리 공유 가능.", track:"B",
     headline:"롱폼/배너 BNA 이미지 구분 없음 — 같은 BNA 라이브러리 공유 가능",
     one_line:"충분해요1/2/3 분석 결과, 배너에 먹히는 BNA와 롱폼에 먹히는 BNA가 동일 — 연한 기미잡티 형태이기만 하면 됨.",
     validated_by_content_ids:["C121"],
@@ -2717,7 +2717,7 @@ const INSIGHTS = [
     synergy_with:["I013"],
     cross_track_ref:["I003"]
   },
-  { id:"I018", track:"A",
+  { id:"I018", easy_title:"악플은 숨기지 말고 인트로에서 읽어라", easy_body:"소비자가 실제로 쓴 부정 댓글을 인용하고 반박하는 플로우 — 억울해명2 ROAS 2.37 · CVR 10%.", track:"A",
     headline:"악플 직접 언급 불신제거 플로우 — 인트로에서 진짜 댓글 거론하면 CVR 10%",
     one_line:"억울해명2 (인트로2): 소비자가 실제로 쓴 부정 댓글을 인트로에서 직접 인용·반박하는 플로우가 구매설득. ROAS 2.37, CTR 2.39%, CVR 10.0% 달성.",
     validated_by_content_ids:["C064"],
@@ -2731,7 +2731,7 @@ const INSIGHTS = [
     synergy_with:["I013","I017"],
     cross_track_ref:[]
   },
-  { id:"I019", track:"B",
+  { id:"I019", easy_title:"토너에서 먹힌 긍정소구, 세트에서도 먹힌다", easy_body:"'지금이' 숏폼: 토너 긍정언어를 세트(토너+크림)에 적용해도 ROAS 2.26 · CVR 6.67%.", q:"2Q", track:"B",
     headline:"세트(토너+크림) 이득 긍정소구도 반응 — 토너 인사이트 확장 적용 가능",
     one_line:"지금이 숏폼: 토너 단독 이득 긍정언어 인사이트를 세트구성에 적용해도 ROAS 2.26, CVR 6.67% 달성. 세트 소구에도 긍정언어 유효.",
     validated_by_content_ids:[],
@@ -2744,7 +2744,7 @@ const INSIGHTS = [
     synergy_with:["I015","I016"],
     cross_track_ref:[]
   },
-  { id:"I020", track:"B",
+  { id:"I020", easy_title:"앞 3초를 비우지 마라", easy_body:"후크비율 68% vs 39%가 CTR 10.25% vs 5.35%를 갈랐다. 0~3초에 제품·페인포인트·사운드를 동시에 투입.", track:"B",
     headline:"인트로 앞 3초 최대 활용 — 후크비율 68% vs 39% 격차",
     one_line:"카톡노래AI 후크비율 68%(CTR 10.25%) vs 랩배틀AI 39%(CTR 5.35%): 인트로 3초 안에 여백 없이 시각·청각 자극을 채우면 후킹과 CTR이 급등.",
     validated_by_content_ids:["C143"],
@@ -2758,7 +2758,7 @@ const INSIGHTS = [
     cross_track_ref:[]
   },
 
-  { id:"I021", track:"A",
+  { id:"I021", easy_title:"'속는 셈치고 써봄' — 광고 티 없는 UGC가 불신을 우회한다", easy_body:"직원 반박보다 일반 소비자 페르소나의 오가닉 포맷. 3Q 검증 예정 (아직 미검증).", q:"3Q", track:"A",
     headline:"오가닉 UGC 포맷이 광고 불신을 우회한다 — '속는 셈치고 써봄' 류 소비자 포맷",
     one_line:"직원 반박 플로우보다 일반 소비자처럼 보이는 오가닉 SNS 콘텐츠 느낌(비#광고 포맷)이 신뢰 장벽을 낮출 수 있다. 자사 콘텐츠 분석 기반 미검증 가설.",
     validated_by_content_ids:[],
@@ -2772,7 +2772,7 @@ const INSIGHTS = [
     synergy_with:["I006","I018"],
     cross_track_ref:[]
   },
-  { id:"I022", track:"A",
+  { id:"I022", easy_title:"AI는 쓰되 B급 감성은 거른다", easy_body:"경쟁사 AI 트렌드는 B급 감성 — 색동서울의 신뢰 톤과 충돌한다. 브랜드 감도 필터 필수.", q:"3Q", track:"A",
     headline:"경쟁사 AI 콘텐츠 B급 감성 — 색동서울 브랜드 감도와 충돌 주의",
     one_line:"경쟁사 AI 생성 콘텐츠가 B급 감성으로 트렌드를 형성 중이나, 색동서울 신뢰·전문성 이미지와 톤 충돌 우려. AI 콘텐츠 활용 시 브랜드 감도 필수 유지.",
     validated_by_content_ids:[],
@@ -2785,7 +2785,7 @@ const INSIGHTS = [
     synergy_with:["I020"],
     cross_track_ref:[]
   },
-  { id:"I023", track:"B",
+  { id:"I023", easy_title:"코직산 크림 배너는 베네핏보다 기미잡티 소구", easy_body:"6월 배너 테스트에서 기능성 소구가 미세 우위. 임상수치 대신 소비자 만족도 수치도 테스트 여지.", track:"B",
     headline:"코직산 크림 배너 — 베네핏보다 기미잡티(기능성) 소구가 미세 우위",
     one_line:"코직산 크림 6월 배너 테스트에서 베네핏 소구보다 기미잡티 기능성 소구 소재가 미세하게 성과 우위. 임상수치 대신 소비자 만족도 수치 제시도 검토 여지.",
     validated_by_content_ids:["C186"],
@@ -2798,7 +2798,7 @@ const INSIGHTS = [
     synergy_with:[],
     cross_track_ref:[]
   },
-  { id:"I024", track:"B",
+  { id:"I024", easy_title:"첫 구매자에겐 대세감 — 단, 할인엔 이유를 달아라", easy_body:"'나빼고 다 써봄' CVR 14.29%. 네고왕식 가격소구는 할인 주체·이유가 없으면 전환이 약하다.", track:"B",
     headline:"첫 구매자 '대세감' 소구 — 배너·숏폼 모두 반응 (네고왕식 가격소구는 주체 불명확 시 약함)",
     one_line:"첫 구매자 타겟 대세감 강조가 배너(나빼고 CVR 14.29%)·숏폼(바르던데) 모두 반응. 단 네고왕 벤치마킹 가격소구는 할인 주체·이유가 불명확하면 구매전환이 약함.",
     validated_by_content_ids:["C187"],
@@ -4581,6 +4581,225 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
   );
 }
 
+// ── 분기 판별 헬퍼 ──
+function dateToQ(d) { if (!d) return null; return d < "2026-04-01" ? "1Q" : d < "2026-07-01" ? "2Q" : "3Q"; }
+function trackerQOf(r) {
+  // 기획·편집 = 아직 라이브 전, 지금 만드는 중 → 현재 분기(3Q)
+  if (r.s === "기획" || r.s === "편집") return "3Q";
+  // 그 외엔 기획주차 "3주차(12/19)"의 월 기준 (12월=2025, 1~9월=2026)
+  const m = ((r.wP||"") + " " + (r.wO||"")).match(/\((\d{1,2})\/(\d{1,2})/);
+  if (!m) return null;
+  const mo = parseInt(m[1]);
+  if (mo === 12 || mo <= 3) return "1Q";
+  if (mo <= 6) return "2Q";
+  return "3Q";
+}
+function contentSpendRoas(c) {
+  const spend = (c.variations||[]).reduce((a,v)=>a+(v.metrics?.spend||0), 0);
+  const roas = Math.max(0, ...(c.variations||[]).map(v=>v.metrics?.roas||0));
+  return { spend, roas };
+}
+const Q_META = { "1Q":{v:"success"}, "2Q":{v:"fail"}, "3Q":{v:"ongoing"} };
+const V_BADGE = { success:{t:"✅",c:"#4F7A4C"}, fail:{t:"❌",c:"#8A6573"}, ongoing:{t:"🔄",c:"#B58B1F"} };
+
+// ── 상세 팝업: H/I/C 어떤 ID든 표시 ──
+function DetailModal({ id, onClose }) {
+  if (!id) return null;
+  const h = id.startsWith("H") ? HYPOTHESES.find(x=>x.id===id) : null;
+  const ins = id.startsWith("I") ? INSIGHTS.find(x=>x.id===id) : null;
+  const c = id.startsWith("C") ? CONTENTS.find(x=>x.id===id) : null;
+  const relC = h ? CONTENTS.filter(x => (h.content_ids||[]).includes(x.id) || (x.hypothesis_ids||[]).includes(h.id))
+            : ins ? CONTENTS.filter(x => (ins.validated_by_content_ids||[]).includes(x.id))
+            : c ? [c] : [];
+  const title = ins ? (ins.easy_title || ins.headline) : h ? h.title : c ? c.title : id;
+  const body = ins ? (ins.easy_body || ins.one_line) : h ? h.full_text : null;
+  const srcPages = h ? (h.source_pages||[]) : ins && ins.validated_from_hypothesis_id
+    ? (HYPOTHESES.find(x=>x.id===ins.validated_from_hypothesis_id)?.source_pages||[]) : [];
+  return (
+    <div onClick={onClose} style={{position:"fixed", inset:0, background:"rgba(26,26,26,0.45)", zIndex:100,
+      display:"flex", alignItems:"center", justifyContent:"center", padding:"24px"}}>
+      <div onClick={e=>e.stopPropagation()} className="card-deep anim-fade"
+        style={{maxWidth:"640px", width:"100%", maxHeight:"82vh", overflowY:"auto", padding:"22px 24px"}}>
+        <div style={{display:"flex", alignItems:"center", gap:"8px", marginBottom:"10px"}}>
+          <span className="chip-id">{id}</span>
+          {(h||ins) && <Pill status={h ? h.status : "validated"}>{statusLabel(h ? h.status : "validated")}</Pill>}
+          <button onClick={onClose} style={{marginLeft:"auto", width:"26px", height:"26px", borderRadius:"50%",
+            background:"#F0EDE8", color:"#6B6B6B", fontSize:"13px", cursor:"pointer"}}>×</button>
+        </div>
+        <div className="font-display" style={{fontSize:"17px", lineHeight:1.4, marginBottom:"8px"}}>{title}</div>
+        {body && <div style={{fontSize:"13.5px", color:"#3A3733", lineHeight:1.7}}>{body}</div>}
+        {ins && (
+          <details style={{marginTop:"10px"}}>
+            <summary style={{fontSize:"11.5px", color:"#9B9690"}}>원문 보기</summary>
+            <div style={{fontSize:"12px", color:"#6B6B6B", lineHeight:1.6, marginTop:"5px", background:"#FAF8F4", borderRadius:"6px", padding:"9px 12px"}}>
+              {ins.headline}<br/>{ins.one_line}
+            </div>
+          </details>
+        )}
+        {ins && (ins.reproduction_checklist||[]).length > 0 && (
+          <div style={{marginTop:"14px"}}>
+            <div className="sp-sidebar-label">재현 체크리스트</div>
+            {ins.reproduction_checklist.map((x,i)=>(
+              <div key={i} style={{fontSize:"12.5px", color:"#3A3733", padding:"3px 0", display:"flex", gap:"7px"}}>
+                <span style={{color:"#B58B1F"}}>☐</span><span>{x}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {h && (h.evaluations||[]).length > 0 && (
+          <div style={{marginTop:"14px"}}>
+            <div className="sp-sidebar-label">평가</div>
+            {h.evaluations.map((x,i)=>(<div key={i} className="speech-bubble" style={{marginBottom:"5px"}}>{x}</div>))}
+          </div>
+        )}
+        {relC.length > 0 && (
+          <div style={{marginTop:"14px"}}>
+            <div className="sp-sidebar-label">근거 콘텐츠</div>
+            {relC.map(x=>{
+              const {spend, roas} = contentSpendRoas(x);
+              return (
+                <div key={x.id} style={{display:"flex", gap:"10px", alignItems:"center", padding:"7px 0", borderBottom:"1px solid #F3EFE8"}}>
+                  <ThumbMini driveUrl={x.drive_url} thumbnailUrl={x.thumbnail_url} w={54} h={72} />
+                  <div style={{flex:1, minWidth:0}}>
+                    <div style={{fontSize:"12.5px", fontWeight:600}}>{x.title}</div>
+                    <div className="font-mono" style={{fontSize:"11px", color:"#6B6B6B", marginTop:"2px"}}>
+                      {spend>0 ? `지출 ${fmtKRW(spend)} · ` : ""}{roas>0 ? `ROAS ${Math.round(roas*100)}%` : "집행 전"}
+                    </div>
+                  </div>
+                  {x.drive_url && <a href={x.drive_url} target="_blank" rel="noopener noreferrer" className="sp-resource-link">영상 ↗</a>}
+                </div>
+              );
+            })}
+          </div>
+        )}
+        {srcPages.length > 0 && (
+          <div style={{marginTop:"14px", display:"flex", gap:"6px", flexWrap:"wrap", alignItems:"center"}}>
+            <span className="sp-sidebar-label" style={{marginBottom:0}}>출처</span>
+            {srcPages.map((sp,i)=>{
+              const u = lookupSourceUrl(sp.name);
+              return u ? <a key={i} href={u} target="_blank" rel="noopener noreferrer" className="sp-resource-link">{sp.name} ↗</a>
+                : <span key={i} className="sp-resource-link">{sp.name}</span>;
+            })}
+          </div>
+        )}
+        {c && c.notion_url && <div style={{marginTop:"10px"}}><a href={c.notion_url} target="_blank" rel="noopener noreferrer" className="sp-resource-link">노션 기획 ↗</a></div>}
+      </div>
+    </div>
+  );
+}
+
+// ── 위너 인사이트: 분기별로 먹힌 것만 ──
+function ViewWinners({ openDetail }) {
+  const qOf = ins => ins.q || (() => {
+    const ds = (ins.validated_by_content_ids||[]).map(cid => CONTENTS.find(c=>c.id===cid)?.live_date).filter(Boolean);
+    return ds.length ? dateToQ(ds.sort()[0]) : "2Q";
+  })();
+  const groups = { "1Q":[], "2Q":[], "3Q":[] };
+  INSIGHTS.forEach(ins => { const q = qOf(ins); (groups[q] = groups[q]||[]).push(ins); });
+  return (
+    <div className="max-w-[880px] mx-auto px-5 py-8 anim-fade">
+      <div style={{marginBottom:"24px"}}>
+        <div className="font-display" style={{fontSize:"22px"}}>위너 인사이트</div>
+        <div style={{fontSize:"13px", color:"#6B6B6B", marginTop:"6px"}}>분기별로 검증되어 살아남은 배움만. 카드를 누르면 근거 수치·재현 체크리스트·원문이 열립니다.</div>
+      </div>
+      {QUARTERS.map(q=>(
+        <div key={q.key} style={{marginBottom:"28px"}}>
+          <div style={{display:"flex", alignItems:"baseline", gap:"10px", marginBottom:"10px", paddingBottom:"6px", borderBottom:"2px solid #1A1A1A"}}>
+            <span className="font-mono" style={{fontSize:"15px", fontWeight:700}}>{q.key}</span>
+            <span style={{fontSize:"12.5px", color:"#3A3733"}}>{q.goal}</span>
+            <span style={{marginLeft:"auto", fontSize:"12px", fontWeight:700, color:V_BADGE[q.verdict].c}}>{V_BADGE[q.verdict].t}</span>
+          </div>
+          {(groups[q.key]||[]).length === 0 && (
+            <div style={{fontSize:"12.5px", color:"#ABA89F", padding:"10px 2px"}}>아직 검증된 인사이트 없음 — 실험 진행 중</div>
+          )}
+          <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(380px,1fr))", gap:"10px"}}>
+            {(groups[q.key]||[]).map(ins=>{
+              const thumbC = (ins.validated_by_content_ids||[]).map(cid=>CONTENTS.find(c=>c.id===cid)).find(c=>c&&c.thumbnail_url);
+              return (
+                <div key={ins.id} onClick={()=>openDetail(ins.id)} className="card-deep"
+                  style={{padding:"14px 16px", cursor:"pointer", display:"flex", gap:"12px"}}>
+                  {thumbC && <img src={thumbC.thumbnail_url} alt="" onError={e=>{e.target.style.display="none";}}
+                    style={{width:"58px", height:"78px", objectFit:"cover", borderRadius:"6px", border:"1px solid #EBE7E0", flexShrink:0}} />}
+                  <div style={{minWidth:0}}>
+                    <div style={{display:"flex", gap:"6px", alignItems:"center", marginBottom:"4px"}}>
+                      <span style={{fontSize:"13px"}}>💡</span>
+                      <span className="font-mono" style={{fontSize:"10px", color:"#C0BCB4"}}>{ins.id}</span>
+                    </div>
+                    <div className="font-display semibold" style={{fontSize:"14.5px", lineHeight:1.4}}>{ins.easy_title || ins.headline}</div>
+                    <div style={{fontSize:"12.5px", color:"#6B6B6B", lineHeight:1.55, marginTop:"5px"}}>{ins.easy_body || ins.one_line}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── 콘텐츠: 분기별 전체 리스트 ──
+function ViewContentsList({ openDetail }) {
+  const rows = { "1Q":[], "2Q":[], "3Q":[] };
+  const placedCids = { "1Q":new Set(), "2Q":new Set(), "3Q":new Set() };
+  CONTENTS.forEach(c => {
+    const q = dateToQ(c.live_date);
+    if (!q) return;
+    const { spend, roas } = contentSpendRoas(c);
+    rows[q].push({ kind:"c", id:c.id, title:c.title, thumb:c.thumbnail_url, spend, roas, date:c.live_date, status:c.status });
+    placedCids[q].add(c.id);
+  });
+  TRACKER.forEach(r => {
+    const q = trackerQOf(r);
+    if (!q) return;
+    const cid = matchContentId(r.n);
+    if (cid && placedCids[q].has(cid)) return; // 이미 콘텐츠로 표시됨
+    rows[q].push({ kind:"t", id:cid, title:r.n, thumb:cid ? (CONTENTS.find(c=>c.id===cid)?.thumbnail_url) : null,
+      spend:r.m?.spend||0, roas:r.m?.roas||0, date:null, status:r.s, owner:OWNERS[r.o]?.split("·")[0]||r.o, format:r.f, angle:r.a });
+  });
+  Object.values(rows).forEach(list => list.sort((a,b)=> b.spend - a.spend));
+  return (
+    <div className="max-w-[1100px] mx-auto px-5 py-8 anim-fade">
+      <div style={{marginBottom:"24px"}}>
+        <div className="font-display" style={{fontSize:"22px"}}>콘텐츠 — 분기별 전체</div>
+        <div style={{fontSize:"13px", color:"#6B6B6B", marginTop:"6px"}}>플레이북 + 운영 트래커 통합. 지출 많은 순, 실패작 포함. 위너 = ROAS 150%↑ & 지출 10만↑.</div>
+      </div>
+      {QUARTERS.map(q=>(
+        <div key={q.key} style={{marginBottom:"30px"}}>
+          <div style={{display:"flex", alignItems:"baseline", gap:"10px", marginBottom:"10px", paddingBottom:"6px", borderBottom:"2px solid #1A1A1A"}}>
+            <span className="font-mono" style={{fontSize:"15px", fontWeight:700}}>{q.key}</span>
+            <span style={{fontSize:"12.5px", color:"#3A3733"}}>{q.goal}</span>
+            <span className="font-mono" style={{fontSize:"11px", color:"#9B9690"}}>{rows[q.key].length}건</span>
+            <span style={{marginLeft:"auto", fontSize:"12px", fontWeight:700, color:V_BADGE[q.verdict].c}}>{V_BADGE[q.verdict].t}</span>
+          </div>
+          <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(150px,1fr))", gap:"9px"}}>
+            {rows[q.key].map((x,i)=>(
+              <div key={i} onClick={x.id ? ()=>openDetail(x.id) : undefined}
+                style={{cursor: x.id ? "pointer" : "default", background:"#FFFFFF", border:"1px solid #E8EAED", borderRadius:"7px", overflow:"hidden"}}>
+                <div style={{position:"relative", aspectRatio:"4/3", background:"#FAF8F4"}}>
+                  {x.thumb && <img src={x.thumb} alt="" onError={e=>{e.target.style.display="none";}}
+                    style={{width:"100%", height:"100%", objectFit:"cover", display:"block"}} />}
+                  <div style={{position:"absolute", top:"5px", left:"5px", fontSize:"9px", fontWeight:700, padding:"1px 6px", borderRadius:"3px",
+                    background: x.roas>=1.5&&x.spend>=100000 ? "#E1EFDA" : (x.roas>0&&x.roas<1&&x.spend>=50000) ? "#EAE0E5" : "#F4F5F7",
+                    color: x.roas>=1.5&&x.spend>=100000 ? "#4F7A4C" : (x.roas>0&&x.roas<1&&x.spend>=50000) ? "#8A6573" : "#6B6B6B"}}>
+                    {x.roas>=1.5&&x.spend>=100000 ? "위너" : (x.roas>0&&x.roas<1&&x.spend>=50000) ? "저성과" : (x.status==="기획"||x.status==="편집") ? x.status : "—"}
+                  </div>
+                </div>
+                <div style={{padding:"7px 9px"}}>
+                  <div style={{fontSize:"11.5px", fontWeight:600, lineHeight:1.35, display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical", overflow:"hidden"}}>{x.title}</div>
+                  <div className="font-mono" style={{fontSize:"10px", color:"#9B9690", marginTop:"3px"}}>
+                    {x.spend>0 ? fmtKRW(x.spend) : "집행전"}{x.roas>0 ? ` · ${Math.round(x.roas*100)}%` : ""}{x.owner ? ` · ${x.owner}` : ""}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function ViewStory({ jumpToItem }) {
   const VERDICT = {
     success: { label:"성공", bg:"#E1EFDA", color:"#4F7A4C", border:"#4F7A4C", icon:"✅" },
@@ -4993,7 +5212,8 @@ const cleanTitle = s => (s||"")
 // ----------------- App Shell -----------------
 function App() {
   const [track, setTrack] = useState("A");
-  const [view, setView] = useState("V1"); // V1 Overview, V2 MindMap, V3 SuccessFormula, V4 Drilldown
+  const [view, setView] = useState("V5"); // V5 스토리(홈), W 위너 인사이트, CT 콘텐츠
+  const [modalId, setModalId] = useState(null);
   const [selectedH, setSelectedH] = useState(null);
   const [selectedI, setSelectedI] = useState(null);
   const [query, setQuery] = useState("");
@@ -5066,27 +5286,9 @@ function App() {
     }
   }
 
-  // 스토리 뷰 → H/I/C 어디로든 점프 (트랙 자동 전환)
-  function jumpToItem(id) {
-    if (id.startsWith("H")) {
-      const h = HYPOTHESES.find(x=>x.id===id);
-      if (h) { setTrack(h.track); jumpTo("V4", id); }
-    } else if (id.startsWith("I")) {
-      const it = INSIGHTS.find(x=>x.id===id);
-      if (it) { setTrack(it.track); jumpTo("V3", id); }
-    } else if (id.startsWith("C")) {
-      jumpToContent(id);
-    }
-  }
-
-  // 트래커 행 → 플레이북 상세(해당 콘텐츠의 가설 카드)로 점프
-  function jumpToContent(cid) {
-    const c = CONTENTS.find(x=>x.id===cid);
-    if (!c) return;
-    setTrack(c.track);
-    setView("V4");
-    setSelectedH(c.hypothesis_ids?.[0] || null);
-  }
+  // ID 클릭 → 상세 팝업 (구 드릴다운/성공공식 대체)
+  function jumpToItem(id) { if (id) setModalId(id); }
+  function jumpToContent(cid) { if (cid) setModalId(cid); }
 
   function onGlobalSearch(q) {
     setQuery(q);
@@ -5137,7 +5339,8 @@ function App() {
                     </div>
                     {k==="T" && searchResults[k].slice(0,5).map((item,ti)=>(
                       <button key={"t"+ti} onClick={()=>{
-                        setTrackerQuery(item.n); setTrack("E"); setView("V1");
+                        const cid = matchContentId(item.n);
+                        if (cid) setModalId(cid); else setView("CT");
                         setQuery(""); setSearchResults(null);
                       }} className="w-full text-left p-2 rounded flex items-start gap-2" style={{background:"transparent"}}>
                         <span className="chip-id">{OWNERS[item.o]?.slice(0,3)||item.o}</span>
@@ -5155,9 +5358,7 @@ function App() {
                       const catLabel = k==="H" ? item.category : null;
                       return (
                         <button key={item.id} onClick={()=>{
-                          if (k==="H") { setTrack(item.track); jumpTo("V4", item.id); }
-                          else if (k==="I") { setTrack(item.track); jumpTo("V3", item.id); }
-                          else { setTrack(item.track); jumpTo("V4", item.hypothesis_ids?.[0]); }
+                          setModalId(item.id);
                           setQuery(""); setSearchResults(null);
                         }} className="w-full text-left p-2 rounded flex items-start gap-2" style={{background:"transparent"}}>
                           <IdChip id={item.id} />
@@ -5201,15 +5402,12 @@ function App() {
       <div className="sp-tabnav sticky top-0 z-20">
         <div className="max-w-[1440px] mx-auto px-5 flex items-stretch" style={{height:"42px"}}>
           {[
-            {k:"V1", label:"Overview"},
-            {k:"V5", label:"스토리"},
-            {k:"V2", label:"Mind Map"},
-            {k:"V3", label:"성공공식"},
-            {k:"V4", label:"자세히 보기"},
-            {k:"E",  label:"운영 트래커"},
+            {k:"V5", label:"📖 스토리"},
+            {k:"W",  label:"🏆 위너 인사이트"},
+            {k:"CT", label:"🗂 콘텐츠"},
           ].map(t => (
             <button key={t.k}
-              onClick={()=>{ if(t.k==="E"){ setTrack("E"); setView("V1"); } else { if(track==="E") setTrack("A"); setView(t.k); } }}
+              onClick={()=>{ if(track==="E") setTrack("A"); setView(t.k); }}
               className={`sp-tab ${activeView===t.k ? "sp-tab--active" : ""}`}>
               {t.label}
             </button>
@@ -5279,40 +5477,16 @@ function App() {
       })()}
 
       {/* ── Body ── */}
-      {track === "E" ? (
-        <div className="max-w-[1440px] mx-auto px-5 py-5">
-          <ViewTracker extQuery={trackerQuery} jumpToContent={jumpToContent} />
-        </div>
-      ) : view === "V5" ? (
-        <ViewStory jumpToItem={jumpToItem} />
+      {view === "W" ? (
+        <ViewWinners openDetail={jumpToItem} />
+      ) : view === "CT" ? (
+        <ViewContentsList openDetail={jumpToItem} />
       ) : (
-        <div className="max-w-[1440px] mx-auto px-5 py-5 flex gap-5">
-
-          {/* Sidebar */}
-          <aside style={{width:"152px", flexShrink:0}}>
-            <div style={{background:"#FFFFFF", border:"1px solid #E8EAED", borderRadius:"8px", padding:"14px 10px", position:"sticky", top:"58px"}}>
-              <div className="sp-sidebar-label">트랙</div>
-              {Object.values(TRACKS).filter(t=>t.id!=="E").map(t=>(
-                <button key={t.id} onClick={()=>setTrack(t.id)}
-                  className={`sp-track-btn ${track===t.id ? "sp-track-btn--active" : ""}`}>
-                  <span style={{marginRight:"5px"}}>{t.icon}</span>{t.label}
-                </button>
-              ))}
-
-            </div>
-          </aside>
-
-          {/* Main content */}
-          <main style={{flex:1, minWidth:0}}>
-            {view==="V1" ? <ViewOverview track={track} jumpTo={jumpTo} />
-            : view==="V2" ? <ViewMindMap track={track} jumpTo={jumpTo} fStatus={mmFStatus} fCategory={mmFCategory} fSource={mmFSource} />
-            : view==="V3" ? <div id="insight-anchor"><ViewSuccessFormula track={track} jumpTo={jumpTo} selectedI={selectedI} /></div>
-            : view==="V4" ? <ViewDrilldown track={track} selectedId={selectedH} setSelectedId={setSelectedH} query={query} jumpTo={jumpTo} />
-            : null}
-          </main>
-
-        </div>
+        <ViewStory jumpToItem={jumpToItem} />
       )}
+
+      {/* ── 상세 팝업 ── */}
+      <DetailModal id={modalId} onClose={()=>setModalId(null)} />
 
     </div>
   );
