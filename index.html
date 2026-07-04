@@ -4583,13 +4583,36 @@ function ViewDrilldown({ track, selectedId, setSelectedId, query, jumpTo }) {
 
 // ── 분기 판별 헬퍼 ──
 function dateToQ(d) { if (!d) return null; return d < "2026-04-01" ? "1Q" : d < "2026-07-01" ? "2Q" : "3Q"; }
-function trackerQOf(r) {
-  // 기획·편집 = 아직 라이브 전, 지금 만드는 중 → 현재 분기(3Q)
-  if (r.s === "기획" || r.s === "편집") return "3Q";
-  // 그 외엔 기획주차 "3주차(12/19)"의 월 기준 (12월=2025, 1~9월=2026)
+// 지금 제작 중 목록 — 출처: 6월 2·3주차 업무 일지 (OPS006·OPS007).
+// 트래커에 아직 등록 전인 진행 건들. 주간 업데이트 때 최신 일지 기준으로 갱신하고,
+// 라이브되어 CONTENTS에 등록되면 여기서 제거.
+const CURRENT_PRODUCTION = [
+  { n:"길거리 인트로1·3", f:"롱폼", s:"편집", o:"레이첼" },
+  { n:"써마지", f:"롱폼", s:"편집", o:"레이첼" },
+  { n:"라방수정", f:"롱폼", s:"편집", o:"레이첼" },
+  { n:"요롱레퍼", f:"롱폼", s:"편집", o:"레이첼" },
+  { n:"AI건", f:"롱폼", s:"기획", o:"레이첼" },
+  { n:"코직산크림 베네핏 숏폼 2종", f:"숏폼", s:"기획", o:"레이첼" },
+  { n:"토너 올리브디벨롭", f:"숏폼", s:"기획", o:"레이첼" },
+  { n:"코직산크림·토너 베네핏 배너 8종", f:"배너", s:"기획", o:"레이첼" },
+  { n:"기미잡티 백색화 오가닉·커머셜 롱폼 6건", f:"롱폼", s:"기획", o:"촬영 기획" },
+];
+
+function trackerMonth(r) {
   const m = ((r.wP||"") + " " + (r.wO||"")).match(/\((\d{1,2})\/(\d{1,2})/);
-  if (!m) return null;
-  const mo = parseInt(m[1]);
+  return m ? parseInt(m[1]) : null;
+}
+// '지금 제작 중' = 기획/편집 상태 && 기획주차가 6월 이후(또는 날짜 없음)
+// — 트래커에는 상태 갱신이 안 된 옛 행(이건스킨 등)이 남아 있어 날짜로 걸러야 함
+function isCurrentProduction(r) {
+  if (r.s !== "기획" && r.s !== "편집") return false;
+  const mo = trackerMonth(r);
+  return mo === null || (mo >= 6 && mo <= 9);
+}
+function trackerQOf(r) {
+  if (isCurrentProduction(r)) return "3Q";
+  const mo = trackerMonth(r);
+  if (mo === null) return null;
   if (mo === 12 || mo <= 3) return "1Q";
   if (mo <= 6) return "2Q";
   return "3Q";
@@ -4748,6 +4771,9 @@ function ViewContentsList({ openDetail }) {
     const { spend, roas } = contentSpendRoas(c);
     rows[q].push({ kind:"c", id:c.id, title:c.title, thumb:c.thumbnail_url, spend, roas, date:c.live_date, status:c.status });
     placedCids[q].add(c.id);
+  });
+  CURRENT_PRODUCTION.forEach(r => {
+    rows["3Q"].push({ kind:"p", id:null, title:r.n, thumb:null, spend:0, roas:0, date:null, status:r.s, owner:r.o, format:r.f });
   });
   TRACKER.forEach(r => {
     const q = trackerQOf(r);
@@ -4917,11 +4943,11 @@ function ViewStory({ jumpToItem }) {
 
               {/* 진행중 분기: 제작 파이프라인 (트래커의 기획·편집 소재) */}
               {q.verdict === "ongoing" && (() => {
-                const pipeline = TRACKER.filter(r => r.s === "기획" || r.s === "편집");
+                const pipeline = [...TRACKER.filter(isCurrentProduction), ...CURRENT_PRODUCTION];
                 if (!pipeline.length) return null;
                 return (
                   <div style={{marginTop:"16px"}}>
-                    <div className="sp-sidebar-label">지금 제작 중 (운영 트래커 기준 — 편집 {pipeline.filter(r=>r.s==="편집").length} · 기획 {pipeline.filter(r=>r.s==="기획").length})</div>
+                    <div className="sp-sidebar-label">지금 제작 중 (6월 업무일지 기준 — 편집 {pipeline.filter(r=>r.s==="편집").length} · 기획 {pipeline.filter(r=>r.s==="기획").length})</div>
                     <div style={{display:"flex", gap:"5px", flexWrap:"wrap"}}>
                       {pipeline.map((r,i)=>{
                         const cid = matchContentId(r.n);
