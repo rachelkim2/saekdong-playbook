@@ -1898,7 +1898,7 @@ const HYPOTHESES = [
   },
   { id:"H178", track:"A", category:"메시지",
     title:"[고관여] 성분·임상·비교 등 깊은 설득 논리가 고관여 기미잡티 타겟의 CVR을 높인다",
-    source_type:"internal_evolved", parent_id:"H177", children_ids:[],
+    source_type:"internal_evolved", parent_id:"H177", children_ids:[], related_ids:["H040"],
     content_ids:[], insight_ids:[], status:"in_progress",
     created_date:"2026-07-03", updated_date:"2026-07-03",
     full_text:"고관여 세그먼트 전용 paid 롱폼. 기존 검증 근거: I002(BnA 입증 근거 누적 플로우), I009(익숙한 미백 성분 나열 인트로가 고관여자 후킹 — 성분비교1 ROAS 139%·CTR 6.21%), H040. 이 세그먼트는 정보 밀도를 높여도 이탈하지 않는다는 전제 검증.",
@@ -1907,7 +1907,7 @@ const HYPOTHESES = [
   },
   { id:"H179", track:"A", category:"메시지",
     title:"[저관여] 직관적 후킹 + 단일 압축 메시지(백색화 단독 등)가 저관여 타겟 신규 유입을 만든다",
-    source_type:"internal_evolved", parent_id:"H177", children_ids:[],
+    source_type:"internal_evolved", parent_id:"H177", children_ids:[], related_ids:["H006","H070"],
     content_ids:[], insight_ids:[], status:"in_progress",
     created_date:"2026-07-03", updated_date:"2026-07-03",
     full_text:"저관여 세그먼트 전용 paid 롱폼. 기존 검증 근거: I001(메시지는 단일 키워드로 압축 — 백색화 단독 ROAS 167% vs 성분 2개 조합 35~102%), H070(설명이 필요한 후킹은 저관여에서 작동 안 함), H006. 정보량을 줄이고 직관 후킹으로 모수를 확장하는 것이 유효한지 검증.",
@@ -1916,7 +1916,7 @@ const HYPOTHESES = [
   },
   { id:"H181", track:"B", category:"포맷",
     title:"숏폼 재정립 — 설득논리(백색화 원리)를 스킵해 메시지를 가볍게 만들면 진입장벽이 낮아진다",
-    source_type:"internal_evolved", parent_id:null, children_ids:[],
+    source_type:"internal_evolved", parent_id:null, children_ids:[], related_ids:["H152"],
     content_ids:[], insight_ids:[], status:"in_progress",
     created_date:"2026-07-04", updated_date:"2026-07-04",
     full_text:"숏폼의 개념 재정립: 백색화/코직산이 어떻게 하얗게 만드는지의 설득논리를 스킵하고 소비자의 언어로 메시지를 가볍게 가져간다. 고관여/저관여 소구 분리(H177)와 직교하는 포맷 축 — 숏폼도 고관여/저관여 타겟별로 제작하되 포맷 차원에서 가벼워진다. 근거: 정보량 과다 숏폼의 반복 실패(H152 — 소비자는 많은 정보에 피로감), Q2 병목(설득논리 메시지만으로는 무겁다).",
@@ -3127,233 +3127,201 @@ async function fetchMetaWinners(preset) {
 
 // ----------------- Mind Map (d3.tree) -----------------
 function MindMap({ track, hypotheses, onNodeClick, selectedId, filters }) {
-  const ref = useRef();
-  useEffect(()=>{
-    if (!ref.current) return;
-    const filtered = hypotheses.filter(h => {
-      if (filters.status.size && !filters.status.has(h.status)) return false;
-      if (filters.category.size && !filters.category.has(h.category)) return false;
-      if (filters.source.size && !filters.source.has(h.source_type)) return false;
-      return true;
+  // ── 계보 × 분기 매트릭스 레이아웃 ──
+  // 가로 = 분기(스토리 탭과 동일 구획), 세로 = 가족(같은 루트에서 나온 계보) 레인.
+  // 카테고리는 가지가 아닌 노드 태그로 표시. 필터는 숨기지 않고 흐리게(계보 모양 유지).
+  const byId = useMemo(()=>Object.fromEntries(hypotheses.map(h=>[h.id,h])), [hypotheses]);
+  const qIdx = d => !d ? 0 : d < "2026-04-01" ? 0 : d < "2026-07-01" ? 1 : 2;
+  const QCOLS = QUARTERS.map(q => ({ key:q.key, goal:q.goal, verdict:q.verdict, period:q.period }));
+
+  const { families, singles } = useMemo(()=>{
+    // union-find: 부모 계보 + 추가근거(related) 연결까지 한 가족으로 묶음
+    const par = {};
+    const find = x => { while (par[x] !== x) { par[x] = par[par[x]]; x = par[x]; } return x; };
+    const union = (a,b) => { const ra=find(a), rb=find(b); if (ra!==rb) par[rb]=ra; };
+    hypotheses.forEach(h => { par[h.id] = h.id; });
+    hypotheses.forEach(h => {
+      if (h.parent_id && byId[h.parent_id]) union(h.parent_id, h.id);
+      (h.related_ids||[]).forEach(r => { if (byId[r]) union(r, h.id); });
     });
-    const visibleIds = new Set(filtered.map(h=>h.id));
+    const fam = {};
+    hypotheses.forEach(h => { const r = find(h.id); (fam[r] = fam[r] || []).push(h); });
+    const fams = Object.entries(fam).filter(([,m]) => m.length > 1)
+      .sort((a,b) => b[1].length - a[1].length)
+      .map(([root, members]) => ({
+        root,
+        cells: [0,1,2].map(qi => members.filter(m => qIdx(m.created_date) === qi)
+          .sort((x,y) => (x.created_date||"").localeCompare(y.created_date||""))),
+      }));
+    const sing = Object.entries(fam).filter(([,m]) => m.length === 1).map(([,m]) => m[0])
+      .sort((a,b) => (b.created_date||"").localeCompare(a.created_date||""));
+    return { families: fams, singles: sing };
+  }, [hypotheses, byId]);
 
-    const trackLabelMap = { A:"롱폼", D:"바이럴 PA·PPL", B:"숏폼·배너" };
-    const rootName = `밀키토너 — ${trackLabelMap[track] || track}`;
-    // 카테고리 계층 — 부모 카테고리 매핑
-    const CAT_PARENT = { "불신제거": "메시지" };
-    const cats = Array.from(new Set(filtered.map(h=>h.category)));
-    // Build tree: root → category → top-level (orphan or filtered parent) → children
-    function pickChildren(parentId) {
-      return filtered.filter(h => h.parent_id === parentId || (parentId === null && (h.parent_id === null || !visibleIds.has(h.parent_id))))
-        .map(h => ({
-          name: h.id,
-          h,
-          children: pickChildren(h.id),
-        }));
-    }
-    function buildCatNode(c) {
-      // 이 카테고리의 서브카테고리들
-      const subCats = cats.filter(sc => CAT_PARENT[sc] === c);
-      return {
-        name: c,
-        isCat: true,
-        children: [
-          ...filtered.filter(h => h.category===c && (h.parent_id === null || !visibleIds.has(h.parent_id)))
-            .map(h => ({ name:h.id, h, children: pickChildren(h.id) })),
-          ...subCats.map(buildCatNode).filter(n => n.children.length>0)
-        ]
-      };
-    }
-    const topLevelCats = cats.filter(c => !CAT_PARENT[c]);
-    const data = {
-      name: rootName,
-      isRoot:true,
-      children: topLevelCats.map(buildCatNode).filter(c => c.children.length>0)
-    };
+  const isDim = h =>
+    (filters.status.size && !filters.status.has(h.status)) ||
+    (filters.category.size && !filters.category.has(h.category)) ||
+    (filters.source.size && !filters.source.has(h.source_type));
 
-    const svg = d3.select(ref.current);
-    svg.selectAll("*").remove();
-    const containerWidth = ref.current.parentElement.clientWidth;
-    const root = d3.hierarchy(data);
-
-    // nodeSize로 일관된 간격 — 행 높이 54 (태그 줄 여백 포함), 열 폭 340
-    const rowHeight = 54;
-    const colWidth = 340;
-    const treeLayout = d3.tree().nodeSize([rowHeight, colWidth])
-      .separation((a, b) => (a.parent === b.parent ? 1.1 : 1.5));
-    treeLayout(root);
-
-    // 실제 bounding box 계산 (음수 좌표 포함)
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    root.each(d => {
-      if (d.x < minX) minX = d.x;
-      if (d.x > maxX) maxX = d.x;
-      if (d.y < minY) minY = d.y;
-      if (d.y > maxY) maxY = d.y;
-    });
-    const padX = 100;         // 좌우 여백 (root 박스 폭 고려)
-    const padTextRight = 300; // 텍스트가 오른쪽으로 펴지는 공간
-    const svgWidth = (maxY - minY) + padX + padTextRight;
-    const svgHeight = (maxX - minX) + 80;
-    svg.attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
-    svg.attr("preserveAspectRatio", "xMinYMin meet");
-    svg.style("min-width", `${Math.max(svgWidth, containerWidth)}px`);
-
-    const zoomG = svg.append("g"); // 줌/팬 대상 래퍼
-    const g = zoomG.append("g").attr("transform", `translate(${padX - minY}, ${30 - minX})`);
-    // 휠 줌(0.35~2.5x) + 드래그 팬 — 트리가 커져도 화면 안에서 탐색 가능
-    svg.call(
-      d3.zoom()
-        .scaleExtent([0.35, 2.5])
-        .filter(ev => ev.type !== "dblclick") // 더블클릭 줌은 노드 클릭과 충돌하므로 제외
-        .on("zoom", ev => zoomG.attr("transform", ev.transform))
-    );
-    svg.style("cursor", "grab");
-
-    g.selectAll("path.link")
-      .data(root.links())
-      .enter()
-      .append("path")
-      .attr("class", d => "tree-link" + (d.target.data.h && d.target.data.h.status==="abandoned" ? " tree-link-abandoned" : ""))
-      .attr("d", d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
-
-    const nodes = g.selectAll("g.node")
-      .data(root.descendants())
-      .enter()
-      .append("g")
-      .attr("class","node")
-      .attr("transform", d => `translate(${d.y},${d.x})`)
-      .style("cursor", d => d.data.h ? "pointer" : "default")
-      .on("click", function(e, d) {
-        if (!d.data.h) return;
-        onNodeClick(d.data.h.id);
-        // 클릭 노드를 화면 중앙으로 스크롤 (가로 + 세로)
-        this.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+  // ── 엣지: 렌더 후 노드 위치를 측정해 SVG로 그림 ──
+  const contRef = useRef(null);
+  const nodeRefs = useRef({});
+  const [edges, setEdges] = React.useState([]);
+  const [svgSize, setSvgSize] = React.useState({w:0, h:0});
+  React.useEffect(()=>{
+    const measure = () => {
+      const cont = contRef.current; if (!cont) return;
+      const cr = cont.getBoundingClientRect();
+      const pos = {};
+      Object.entries(nodeRefs.current).forEach(([id, el])=>{
+        if (el && el.isConnected) {
+          const r = el.getBoundingClientRect();
+          pos[id] = { left:r.left-cr.left, right:r.right-cr.left, midY:(r.top+r.bottom)/2-cr.top, top:r.top-cr.top, bottom:r.bottom-cr.top };
+        }
       });
-
-    nodes.each(function(d){
-      const sel = d3.select(this);
-      if (d.data.isRoot) {
-        sel
-          .on("mouseenter", function(){
-            const tip = document.getElementById("mindmap-tooltip");
-            if (!tip) return;
-            tip.innerHTML = `<b>${d.data.name}</b>`;
-            tip.style.display = "block";
-          })
-          .on("mousemove", function(ev){
-            const tip = document.getElementById("mindmap-tooltip");
-            if (!tip) return;
-            tip.style.left = (ev.clientX + 14) + "px";
-            tip.style.top = (ev.clientY + 14) + "px";
-          })
-          .on("mouseleave", function(){
-            const tip = document.getElementById("mindmap-tooltip");
-            if (tip) tip.style.display = "none";
-          });
-        sel.append("rect").attr("x",-90).attr("y",-14).attr("width",180).attr("height",28).attr("rx",14)
-          .attr("fill","#3A3733").attr("stroke","#3A3733");
-        sel.append("text").attr("text-anchor","middle").attr("dy",4).attr("fill","#FFFFFF")
-          .style("font-size","12px").style("font-weight","600").style("font-family","Pretendard")
-          .text(d.data.name);
-      } else if (d.data.isCat) {
-        const catDesc = (typeof CATEGORY_DESCRIPTIONS !== "undefined" && CATEGORY_DESCRIPTIONS[d.data.name]) || d.data.name;
-        sel
-          .on("mouseenter", function(){
-            const tip = document.getElementById("mindmap-tooltip");
-            if (!tip) return;
-            tip.innerHTML = `<b>#${d.data.name}</b><br/>${catDesc}`;
-            tip.style.display = "block";
-          })
-          .on("mousemove", function(ev){
-            const tip = document.getElementById("mindmap-tooltip");
-            if (!tip) return;
-            tip.style.left = (ev.clientX + 14) + "px";
-            tip.style.top = (ev.clientY + 14) + "px";
-          })
-          .on("mouseleave", function(){
-            const tip = document.getElementById("mindmap-tooltip");
-            if (tip) tip.style.display = "none";
-          });
-        sel.append("rect").attr("x",-50).attr("y",-12).attr("width",100).attr("height",24).attr("rx",4)
-          .attr("fill","#FFF5C9").attr("stroke","#FFCB05");
-        sel.append("text").attr("text-anchor","middle").attr("dy",4).attr("fill","#7A5F00")
-          .style("font-size","11px").style("font-weight","600").style("font-family","Pretendard")
-          .text("#"+d.data.name);
-      } else {
-        const h = d.data.h;
-        const color = {validated:"#4F7A4C", in_progress:"#B58B1F", needs_more_data:"#6A7FA0", abandoned:"#8A6573"}[h.status];
-        const bg = {validated:"#E1EFDA", in_progress:"#FAEFCC", needs_more_data:"#E1E7F0", abandoned:"#EAE0E5"}[h.status];
-        const isSelected = h.id === selectedId;
-        // 선택 노드: 외부 노란 링
-        if (isSelected) {
-          sel.append("rect").attr("x",-37).attr("y",-16).attr("width",74).attr("height",32).attr("rx",16)
-            .attr("fill","none").attr("stroke","#FFCB05").attr("stroke-width",3).attr("opacity",1);
+      const es = [];
+      hypotheses.forEach(h=>{
+        const c = pos[h.id]; if (!c) return;
+        if (h.parent_id && pos[h.parent_id]) {
+          es.push({ key:h.parent_id+">"+h.id, p:pos[h.parent_id], c, dashed:false, dead:h.status==="abandoned",
+            dim: isDim(h) || isDim(byId[h.parent_id]) });
         }
-        // ID 배지 — 선택 시 반전색
-        sel.append("rect").attr("x",-30).attr("y",-10).attr("width",60).attr("height",20).attr("rx",10)
-          .attr("fill", isSelected ? color : bg)
-          .attr("stroke", isSelected ? color : color)
-          .attr("stroke-width", isSelected ? 0 : 1.2);
-        sel.append("text").attr("text-anchor","middle").attr("dy",3.5)
-          .attr("fill", isSelected ? "#FFFFFF" : color)
-          .style("font-size","10.5px").style("font-weight","600").style("font-family","JetBrains Mono")
-          .style("text-decoration", h.status==="abandoned" ? "line-through" : "none")
-          .text(h.id);
+        (h.related_ids||[]).forEach(rid=>{
+          if (pos[rid]) es.push({ key:rid+"~"+h.id, p:pos[rid], c, dashed:true, dead:false, dim:isDim(h) });
+        });
+      });
+      setEdges(es);
+      setSvgSize({ w: cont.scrollWidth, h: cont.scrollHeight });
+    };
+    const t = setTimeout(measure, 50);
+    window.addEventListener("resize", measure);
+    return () => { clearTimeout(t); window.removeEventListener("resize", measure); };
+  }, [hypotheses, filters, track, families]);
 
-        // 타이틀 — colWidth(340) 기준 30자 제한
-        const MAX_CHARS = 30;
-        const title = h.title.length > MAX_CHARS ? h.title.slice(0, MAX_CHARS-1)+"…" : h.title;
-        const tagsForNode = (typeof computeTags === "function") ? computeTags(h) : [];
-        sel
-          .on("mouseenter", function(){
-            const tip = document.getElementById("mindmap-tooltip");
-            if (!tip) return;
-            const tagLine = tagsForNode.length ? `<br/><span style="color:#FFCB05">${tagsForNode.map(t=>"#"+t).join(" ")}</span>` : "";
-            tip.innerHTML = `<b>[${h.id}]</b> ${h.title}${tagLine}<br/><br/>${h.full_text}`;
-            tip.style.display = "block";
-          })
-          .on("mousemove", function(ev){
-            const tip = document.getElementById("mindmap-tooltip");
-            if (!tip) return;
-            tip.style.left = (ev.clientX + 14) + "px";
-            tip.style.top = (ev.clientY + 14) + "px";
-          })
-          .on("mouseleave", function(){
-            const tip = document.getElementById("mindmap-tooltip");
-            if (tip) tip.style.display = "none";
-          });
-        // 배경 흰색 박스 (오버랩 방지용)
-        const textEl = sel.append("text").attr("x",40).attr("dy",4).attr("fill","#1A1A1A")
-          .style("font-size","12px").style("font-family","Pretendard")
-          .style("font-weight","500").style("pointer-events","none")
-          .text(title);
-        // 텍스트 뒷배경 (가독성)
-        const bbox = textEl.node().getBBox();
-        sel.insert("rect", "text:nth-of-type(2)")
-          .attr("x", bbox.x - 5).attr("y", bbox.y - 3)
-          .attr("width", bbox.width + 10).attr("height", bbox.height + 6)
-          .attr("fill", "#FFFFFF").attr("opacity", 1).attr("rx", 3);
-        // 다시 텍스트를 최상단으로
-        sel.append(() => textEl.remove().node());
-        // 전략 태그 소형 표시 (#AI / #불신제거 / #영상언어)
-        if (tagsForNode.length) {
-          sel.append("text")
-            .attr("x", 40)
-            .attr("dy", 18)
-            .attr("fill", "#B58B1F")
-            .style("font-size", "9.5px")
-            .style("font-family", "JetBrains Mono, monospace")
-            .style("font-weight", "600")
-            .style("pointer-events", "none")
-            .text(tagsForNode.map(t=>"#"+t).join("  "));
-        }
-      }
-    });
-  }, [hypotheses, filters, track, onNodeClick, selectedId]);
+  function edgePath(e) {
+    // 부모 오른쪽 → 자식 왼쪽 (같은 열에서 자식이 아래면 아래로 감아서)
+    const x1 = e.p.right, y1 = e.p.midY, x2 = e.c.left, y2 = e.c.midY;
+    if (x2 > x1 + 8) {
+      const mx = (x1 + x2) / 2;
+      return `M ${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`;
+    }
+    // 같은 열/역방향: 왼쪽으로 살짝 나갔다 들어오는 곡선
+    const off = 14;
+    return `M ${e.p.left} ${y1} C ${e.p.left - off} ${y1}, ${x2 - off} ${y2}, ${x2} ${y2}`;
+  }
 
-  return <svg ref={ref} style={{width:"100%", height:"auto"}} />;
+  const statusDot = { validated:"#4F7A4C", in_progress:"#B58B1F", needs_more_data:"#6A7FA0", abandoned:"#8A6573" };
+  const VBADGE = { success:{t:"✅ 성공",c:"#4F7A4C"}, fail:{t:"❌ 실패",c:"#8A6573"}, ongoing:{t:"🔄 진행중",c:"#B58B1F"} };
+
+  function Node({ h }) {
+    const dim = isDim(h);
+    const sel = selectedId === h.id;
+    return (
+      <div
+        ref={el => { nodeRefs.current[h.id] = el; }}
+        onClick={()=>onNodeClick(h.id)}
+        style={{
+          background: sel ? "#FFFBEA" : "#FFFFFF",
+          border: sel ? "2px solid #FFCB05" : (h.status==="abandoned" ? "1px dashed #C9A9B5" : "1px solid #E8EAED"),
+          borderRadius:"7px", padding:"8px 10px", cursor:"pointer", marginBottom:"6px",
+          opacity: dim ? 0.18 : (h.status==="abandoned" ? 0.75 : 1),
+          transition:"opacity 0.15s, border 0.15s", position:"relative", zIndex:2,
+          boxShadow: sel ? "0 2px 8px rgba(255,203,5,0.3)" : "0 1px 2px rgba(0,0,0,0.04)",
+        }}>
+        <div style={{display:"flex", alignItems:"center", gap:"6px", marginBottom:"3px"}}>
+          <span style={{width:"8px", height:"8px", borderRadius:"50%", background:statusDot[h.status]||"#999", flexShrink:0}} />
+          <span className="font-mono" style={{fontSize:"10px", fontWeight:700, color:"#6B6B6B"}}>{h.id}</span>
+          <span style={{fontSize:"9px", color:"#8B7BB8", background:"#F5F3FF", padding:"1px 5px", borderRadius:"3px", marginLeft:"auto"}}>#{h.category}</span>
+        </div>
+        <div style={{fontSize:"12px", lineHeight:1.45, color:"#1A1A1A", fontWeight:500,
+          textDecoration: h.status==="abandoned" ? "line-through" : "none",
+          display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical", overflow:"hidden"}}>
+          {h.title}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div ref={contRef} style={{position:"relative", minWidth:"920px"}}>
+        {/* 엣지 SVG (노드 뒤) */}
+        <svg width={svgSize.w} height={svgSize.h}
+          style={{position:"absolute", top:0, left:0, zIndex:1, pointerEvents:"none"}}>
+          {edges.map(e=>(
+            <path key={e.key} d={edgePath(e)} fill="none"
+              stroke={e.dashed ? "#B58B1F" : (e.dead ? "#C9A9B5" : "#C0BCB4")}
+              strokeWidth={e.dashed ? 1.3 : 1.8}
+              strokeDasharray={e.dashed ? "4,4" : (e.dead ? "3,3" : "none")}
+              opacity={e.dim ? 0.12 : 0.9} />
+          ))}
+        </svg>
+
+        {/* 분기 헤더 */}
+        <div style={{display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:"14px", marginBottom:"10px", position:"relative", zIndex:2}}>
+          {QCOLS.map(q=>(
+            <div key={q.key} style={{background:"#FAF8F4", border:"1px solid #EBE7E0", borderRadius:"7px", padding:"8px 12px"}}>
+              <div style={{display:"flex", alignItems:"center", gap:"8px"}}>
+                <span className="font-mono" style={{fontSize:"12px", fontWeight:700}}>{q.key}</span>
+                <span className="font-mono" style={{fontSize:"10px", color:"#9B9690"}}>{q.period}</span>
+                <span style={{marginLeft:"auto", fontSize:"10px", fontWeight:700, color:VBADGE[q.verdict].c}}>{VBADGE[q.verdict].t}</span>
+              </div>
+              <div style={{fontSize:"11px", color:"#3A3733", marginTop:"2px", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis"}}>{q.goal}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* 가족 레인 */}
+        {families.map((f, fi)=>(
+          <div key={f.root} style={{display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:"14px", padding:"10px 0",
+            borderTop: fi>0 ? "1px solid #F3EFE8" : "none", position:"relative", zIndex:2, background:"transparent"}}>
+            {f.cells.map((cell, qi)=>(
+              <div key={qi} style={{minHeight:"10px"}}>
+                {cell.map(h=><Node key={h.id} h={h} />)}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {/* 아직 계보 없는 단독 가설 — 접이식 (연결 대기 목록) */}
+      {singles.length > 0 && (
+        <details style={{marginTop:"14px"}}>
+          <summary style={{fontSize:"12px", fontWeight:600, color:"#6B6B6B", padding:"8px 12px",
+            background:"#FAF8F4", border:"1px solid #EBE7E0", borderRadius:"7px"}}>
+            🔗 아직 계보에 연결되지 않은 가설 {singles.length}개 — 펼쳐서 보기 (부모/자식 연결이 필요한 대기 목록)
+          </summary>
+          <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(260px,1fr))", gap:"8px", marginTop:"8px"}}>
+            {singles.map(h=>(
+              <div key={h.id} onClick={()=>onNodeClick(h.id)}
+                style={{background:"#FFFFFF", border: selectedId===h.id ? "2px solid #FFCB05" : "1px solid #E8EAED",
+                  borderRadius:"7px", padding:"8px 10px", cursor:"pointer",
+                  opacity: isDim(h) ? 0.18 : 1}}>
+                <div style={{display:"flex", alignItems:"center", gap:"6px", marginBottom:"3px"}}>
+                  <span style={{width:"7px", height:"7px", borderRadius:"50%", background:statusDot[h.status]||"#999"}} />
+                  <span className="font-mono" style={{fontSize:"10px", fontWeight:700, color:"#6B6B6B"}}>{h.id}</span>
+                  <span className="font-mono" style={{fontSize:"9px", color:"#C0BCB4"}}>{(h.created_date||"").slice(2)}</span>
+                  <span style={{fontSize:"9px", color:"#8B7BB8", background:"#F5F3FF", padding:"1px 5px", borderRadius:"3px", marginLeft:"auto"}}>#{h.category}</span>
+                </div>
+                <div style={{fontSize:"11.5px", lineHeight:1.4, color:"#1A1A1A",
+                  display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical", overflow:"hidden"}}>{h.title}</div>
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
+
+      {/* 범례 */}
+      <div style={{display:"flex", gap:"14px", marginTop:"10px", fontSize:"10.5px", color:"#6B6B6B", flexWrap:"wrap", alignItems:"center"}}>
+        <span><span style={{display:"inline-block", width:"18px", height:"2px", background:"#C0BCB4", verticalAlign:"middle", marginRight:"4px"}} />계보 (부모→자식)</span>
+        <span><span style={{display:"inline-block", width:"18px", borderTop:"2px dashed #B58B1F", verticalAlign:"middle", marginRight:"4px"}} />추가 근거</span>
+        {Object.entries({validated:"검증됨", in_progress:"진행중", needs_more_data:"추가검증", abandoned:"폐기"}).map(([k,v])=>(
+          <span key={k}><span style={{display:"inline-block", width:"8px", height:"8px", borderRadius:"50%", background:statusDot[k], verticalAlign:"middle", marginRight:"4px"}} />{v}</span>
+        ))}
+        <span style={{color:"#ABA89F"}}>필터는 노드를 숨기지 않고 흐리게 합니다 — 계보 모양 유지</span>
+      </div>
+    </div>
+  );
 }
 
 // ----------------- Views -----------------
