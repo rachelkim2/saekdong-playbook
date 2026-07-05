@@ -10,7 +10,7 @@ React 18 prod UMD + tools/artifact_tailwind.css + 인라인 썸네일(data URI) 
 주의: artifact_tailwind.css는 수동 생성 유틸리티 CSS — 덮어쓰지 말 것.
 새 tailwind 클래스를 쓰면 이 파일에 규칙 추가 필요.
 """
-import base64, glob, json, os, re, subprocess, sys, tempfile, urllib.request
+import base64, glob, json, os, re, shutil, subprocess, sys, tempfile, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.makedirs(os.path.join(ROOT, "dist"), exist_ok=True)
@@ -34,13 +34,23 @@ def fetch(url, cache):
 react = fetch("https://unpkg.com/react@18.3.1/umd/react.production.min.js", "react.min.js")
 reactdom = fetch("https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js", "react-dom.min.js")
 
+RESIZE_DIR = tempfile.mkdtemp(prefix="playbook_thumbs_")
 thumbs = {}
 for f in sorted(glob.glob(os.path.join(ROOT, "thumbs", "*.jpg"))):
-    cid = os.path.basename(f)[:-4]
-    # 원본이 크면 240px 축소본 권장 (ffmpeg -vf scale=240:-2 -q:v 6)
-    thumbs[cid] = "data:image/jpeg;base64," + base64.b64encode(open(f, "rb").read()).decode()
+    key = os.path.basename(f)[:-4]
+    small = os.path.join(RESIZE_DIR, key + ".jpg")
+    # 240px 축소본 (ffmpeg 있으면 사용, 없으면 원본 그대로 인라인)
+    if shutil.which("ffmpeg"):
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", f,
+                         "-vf", "scale=240:-2", "-q:v", "6", small], check=True)
+    else:
+        small = f
+    thumbs[key] = "data:image/jpeg;base64," + base64.b64encode(open(small, "rb").read()).decode()
+shutil.rmtree(RESIZE_DIR, ignore_errors=True)
 
-js = re.sub(r'thumbnail_url:\s*"thumbs/(C\d+)\.jpg"', r'thumbnail_url:THUMBS["\1"]||null', js)
+# 정적 "thumbs/<key>.jpg" 문자열 리터럴 전부 (thumbnail_url:, TRACKER_THUMBS 값 등) → THUMBS 참조
+js = re.sub(r'"thumbs/([A-Za-z0-9]+)\.jpg"', r'(THUMBS["\1"]||null)', js)
+# 동적 "thumbs/" + expr + ".jpg" 결합 (예: c.id, m.thumb)
 js = re.sub(r'"thumbs/"\s*\+\s*([A-Za-z_.$]+(?:\.[A-Za-z_$]+)?)\s*\+\s*"\.jpg"', r'(THUMBS[\1]||"")', js)
 
 html = f"""<title>색동서울 콘텐츠 플레이북</title>
