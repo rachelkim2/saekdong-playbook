@@ -216,7 +216,7 @@ const { useState, useEffect, useRef, useMemo } = React;
 const META = {
   title: "색동서울 콘텐츠 플레이북",
   version: "v2.0",
-  lastUpdate: "2026-07-10",
+  lastUpdate: "2026-07-19",
   brandRoot: "밀키토너",
   brandUSP: "코직애씨드 터메릭 나이아신아마이드 5% 밀키토너",
 };
@@ -1130,6 +1130,28 @@ const OPS_LOG = [
       "2주 모니터링 후 Demand Gen 80% / PMAX 20% 확대 여부 판단"
     ]
   },
+  { id:"OPS010", date:"2026-07-15", type:"콘텐츠리뷰",
+    title:"콘텐츠 분석 — 밀키토너 ABO 기간별 데이터 (ROAS 하락 추세 + 커머셜 관성 진단)",
+    notion_url:"https://app.notion.com/p/39e34579dc0180f6b89efdb4946b8110",
+    summary:"월별 ROAS 하락 추세 1.46(5월)→1.38(6월)→1.28(7월 1/2주차), 광고비·CTR 동반 하락. ① 6월 1/2주차 ROAS 1.50 반등은 전환단 개선이 아니라 고CVR 세트(단종얘기1 +171% 증액)로의 예산 이동 + CTR 하락으로 걸러진 트래픽 질 상승의 결과(유입 구조 변화). ② 6월 3/4주차 하락은 신규 소재 투입 증가가 원인 — 신규 소재가 100% 커머셜로 관성 제작되며 타율 미달(7월 1/2주차 신규 58개 ROAS 0.79). 세트 성격 분류 프레임 도출: 전환기계(6만원·단종얘기1·선크림보다·안버잘 — CTR 추가 하락 시 볼륨 고갈 리스크)/밸런스형(우쥬·조아유·고순도1·흔들흔들 — 계정 코어, 보호 우선)/쇠퇴(억울해명2 — 유일한 off 대상). 배너_6만원·안버잘은 CPM/CTR/ROAS 동반 하락으로 소재 수명 종료 신호. +@ 메타 미팅: 색동 계정 CPM이 타 광고주 대비 유난히 높은 편.",
+    next_actions:[
+      "증감액 판단은 ROAS 단일 기준이 아닌 CTR·CVR 밸런스 기준으로 전환",
+      "고순도 소재 다각화 — 같은 플로우를 오가닉/후기형 유형으로 전환 (CPM 높아도 CTR 유지 중)",
+      "커머셜 관성 탈피 — 신규 소재 유형 믹스 재설계",
+      "⚠️ 쇠퇴 세트(억울해명2) off 검토 — 실행 전 담당자 검토 필수"
+    ]
+  },
+  { id:"OPS011", date:"2026-07-16", type:"위클리체크인",
+    title:"7월 2주차 위클리 콘텐츠 리뷰 — 저/고관여자 타율 저하 + 토너크림 비주얼후킹 KEEP + 베티 PPL 화잘먹 DROP",
+    notion_url:"https://app.notion.com/p/39d34579dc0180f0b14bfa25b0ffffb8",
+    summary:"(7월 1주차는 데이터 부재로 리뷰 생략) ① 밀키토너 저/고관여자 PROBLEM: 타율 저하. 고관여자는 멤버들의 얕은 기획의도(플로우를 토막토막 바라봄) → 레퍼런스 단위 분석 + 타이트한 컨펌으로 핏 조정 중. 저관여자는 고객조사 단계 스킵(키워드 갈이만) → 커뮤니티 조사로 페르소나 확정 후 기획 재시작. ② 토너크림 비주얼후킹 KEEP: 총 지출 80만원, CPC 700원대 소재 발굴. CVR 2%대 저조 → PDP에 how-to-use 루틴 미소구가 원인으로 진단, PDP 개선(7/10). 원 세트는 7/9 off 후 사본 생성(CPM 상이, A/B 비교 불가 이슈). ③ 화잘먹 베티 PPL 2차가공 DROP: '프렙토너'에서 반응 발견했으나 워킹데이·우선순위(기미·화잘먹) 이슈로 화잘먹 소구 드랍. ④ PA 일정 지연 리스케줄: 컨택~계약이 7월 3~4주차로 밀림, 8월 2주차 업로드 총 10건 완료 목표. PA KEEP 기준: 무성=얼빡+뽀얀 피부 선망성(물광X 글로우X) / 유성=현실감 있는 리얼 비포 / 공통=2030 쌩얼 선망성 페르소나.",
+    next_actions:[
+      "저관여자: 커뮤니티 조사 기반 페르소나 확정 → 페인포인트 녹인 기획 (선크림/주근깨/유전 기미/레이저 고민 민감성 등 키워드)",
+      "고관여자: 커머셜이어도 이길 수 있는 콘텐츠 몰입력 기준 — 기획의도를 전체 플로우에 관통시키기",
+      "PA: 기미/잡티/주근깨/색소침착 키워드 테스트, 7월 3주차 컨택&리스트업 시작",
+      "토너크림 비주얼후킹: PDP 개선 후 CVR 모니터링 + 콘텐츠단 how-to 소구 신규 제작"
+    ]
+  },
 ];
 // ============================================================
 // 분기 회고 — 목표 → 판정 → 병목 → 다음 시도 (스토리 뷰)
@@ -2002,6 +2024,51 @@ const HYPOTHESES = [
     evaluations:["운영안 확정·집행 전 단계 — 성과 데이터 수집 전 (메타&구글 운영안 26.07.07)."],
     source_pages:[{name:"메타&구글 운영안_260707", date:"2026-07-07"}]
   },
+  { id:"H184", track:"A", category:"구조",
+    title:"PDP 상단에 how-to-use(토너+크림 루틴) 소구를 넣으면 비주얼후킹 유입의 CVR이 올라간다",
+    source_type:"internal_evolved", parent_id:null, children_ids:[], related_ids:["H185"],
+    content_ids:["C188"], insight_ids:["I026"], status:"in_progress",
+    created_date:"2026-07-15", updated_date:"2026-07-15",
+    full_text:"토너크림 비주얼후킹(BNA)이 CPC 729원·CTR 5.33%로 유입은 워킹하지만 CVR 2.19%로 저조. 영상에서는 '무언가 떼어내는 제품'으로 인지하고 들어왔는데 PDP에서 웬 토너·크림이 나오며 이탈 발생. PDP 상단에 '이렇게 사용해보세요' how-to-use 루틴 소구를 넣으면 CVR이 올라갈 것. PDP 개선 7/10 반영 완료 — 사본 세트에서 CVR 5%대 확인(단 CPC도 높아 A/B 비교는 불완전).",
+    evaluations:["7/9 원 세트 off + 사본 생성으로 모수가 달라져 순수 A/B 검증 불가 이슈 — 진행 중."],
+    source_pages:[{name:"7월 1/2주차 콘텐츠 액션", date:"2026-07-15"}]
+  },
+  { id:"H185", track:"A", category:"메시지",
+    title:"비주얼후킹 나열 외에 how-to를 소구하고 토너·크림 정체를 콘텐츠에서도 보여주면 CVR이 높아진다",
+    source_type:"internal_evolved", parent_id:null, children_ids:[], related_ids:["H184"],
+    content_ids:["C188"], insight_ids:["I026"], status:"in_progress",
+    created_date:"2026-07-15", updated_date:"2026-07-15",
+    full_text:"PDP단 개선(H184)과 별개로 콘텐츠단에서도 해결 — 비주얼후킹 나열에 그치지 않고 how-to 사용 장면을 소구하며 토너와 크림임을 영상 안에서 보여주면, 랜딩 인지 불일치로 인한 이탈이 줄어 CVR이 높아질 것.",
+    evaluations:["기획 단계 — 신규 소재 제작 전."],
+    source_pages:[{name:"7월 1/2주차 콘텐츠 액션", date:"2026-07-15"}]
+  },
+  { id:"H186", track:"B", category:"포맷",
+    title:"비주얼후킹 영상을 나래비하며 베네핏을 소구하는 '움직이는 배너'는 CTR·CPC 낙수효과로 ROAS가 오른다",
+    source_type:"internal_evolved", parent_id:null, children_ids:[], related_ids:[],
+    content_ids:["C191"], insight_ids:[], status:"in_progress",
+    created_date:"2026-07-15", updated_date:"2026-07-15",
+    full_text:"토너크림 배너세트(기미이별·어차피살·지금사야)는 ROAS 1.35로 베네핏 배너 평균(1.23)보다 낫지만 CTR 4.92%로 평균(7.31%) 대비 낮음 — 롱폼 비주얼후킹의 튀는 CTR·CPC 낙수효과가 정지 배너에는 없었다. 비주얼후킹 영상 컷을 나래비하는 '움직이는(모션) 배너'로 만들면 CTR·CPC 낙수효과가 일어나 ROAS가 올라갈 것.",
+    evaluations:["기획 단계."],
+    source_pages:[{name:"7월 1/2주차 콘텐츠 액션", date:"2026-07-15"}]
+  },
+  { id:"H187", track:"D", category:"메시지",
+    title:"베티 PPL 2차가공을 '프렙토너' 중심으로 진행하면 구매가 일어난다 (베티3_STST ROAS 3.87 근거)",
+    source_type:"internal_evolved", parent_id:null, children_ids:[], related_ids:[],
+    content_ids:["C192"], insight_ids:[], status:"in_progress",
+    created_date:"2026-07-15", updated_date:"2026-07-15",
+    full_text:"화잘먹 세트 전체가 처참한 ROAS 가운데 베티3_STST만 3.87(지출 2.6만원, CVR 20%)로 독주. 유일하게 '프렙 토너'라는 신개념 베이스 프렙 카테고리를 메인으로 소구한 콘텐츠(여름·땀은 서브 소구). 지출을 더 태워 구매가 안 늘어도 200%대로 추정 — 고객 반응 충분, 프렙토너 중심으로 PPL 2차가공을 디벨롭하면 구매가 일어날 것. (단, 화잘먹 소구 자체는 워킹데이·우선순위 이슈로 드랍된 상태)",
+    evaluations:["베티3_STST 단일 소재 근거 — 추가 디벨롭 가치 판단 완료, 실행은 우선순위 조정 대기."],
+    source_pages:[{name:"7월 1/2주차 콘텐츠 액션", date:"2026-07-15"}]
+  },
+  { id:"H188", track:"A", category:"구조",
+    title:"고순도 플로우는 CPM이 올라도 CTR이 유지된다 — 같은 플로우를 오가닉/후기형 유형으로 다각화하면 수명 연장 가능",
+    source_type:"internal_evolved", parent_id:null, children_ids:[], related_ids:[],
+    content_ids:[], insight_ids:[], status:"in_progress",
+    created_date:"2026-07-15", updated_date:"2026-07-15",
+    full_text:"★롱폼_고순도1은 감액 후에도 CTR 4~5%대를 유지하지만 CPM이 5.5만→8.3만원대로 상승(오디언스 소진 신호). 소재 자체의 후킹력은 살아있으므로, 같은 플로우를 다른 유형(오가닉/후기형)으로 다각화하면 신선한 오디언스에 다시 도달해 수명을 연장할 수 있을 것.",
+    evaluations:["콘텐츠 분석(7/15)에서 도출된 NEXT ACTION — 제작 전."],
+    source_pages:[{name:"콘텐츠 분석", date:"2026-07-15"}]
+  },
 ];
 
 const CONTENTS = [
@@ -2530,6 +2597,40 @@ const CONTENTS = [
     ],
     live_date:"2026-06-11", status:"off", hypothesis_ids:[], insight_ids:["I024"],
     thumbnail_url:"thumbs/C187.jpg", drive_url:"https://drive.google.com/file/d/1Gezh9Qmv0uq1fDQrg2E96AhvPxOw94iI/view", notion_url:"https://app.notion.com/p/32534579dc0180c9ba91ff52207f4dba" },
+  { id:"C188", track:"A", type:"longform_video", title:"토너크림_비주얼후킹 (BNA)",
+    variations:[{name:"BNA", metrics:{spend:869413, roas:1.11, ctr:0.0533, cvr:0.0219, cpc:729, cpm:38808, aov:38504}}],
+    live_date:"2026-06-26", status:"on", hypothesis_ids:["H184","H185"], insight_ids:["I026"],
+    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/39d34579dc0180f0b14bfa25b0ffffb8" },
+  { id:"C189", track:"A", type:"longform_video", title:"밀키토너_저관여자 (7월 2주차 리뷰, 4종)",
+    variations:[
+      {name:"거울1", metrics:{spend:79006, roas:0.58, ctr:0.0239, cvr:0.0513, cpc:1975, cpm:47224, aov:22800}},
+      {name:"거울2", metrics:{spend:170913, roas:0.37, ctr:0.0224, cvr:0.0513, cpc:2011, cpm:44942, aov:31700}},
+      {name:"길거리1", metrics:{spend:62668, roas:0.68, ctr:0.0204, cvr:0.0357, cpc:2089, cpm:42689, aov:42600}},
+      {name:"잡티자국", metrics:{spend:29928, roas:0.76, ctr:0.0138, cvr:0.1667, cpc:4275, cpm:59146, aov:22800}}
+    ],
+    live_date:"2026-07-01", status:"on", hypothesis_ids:[], insight_ids:["I027"],
+    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/39d34579dc0180f0b14bfa25b0ffffb8" },
+  { id:"C190", track:"A", type:"longform_video", title:"밀키토너_고관여자 (7월 2주차 리뷰, 4종)",
+    variations:[
+      {name:"품절1", metrics:{spend:167949, roas:0.78, ctr:0.0280, cvr:0.0500, cpc:2584, cpm:72361, aov:43800}},
+      {name:"품절2", metrics:{spend:120925, roas:0.57, ctr:0.0184, cvr:0.0769, cpc:3023, cpm:55521, aov:22800}},
+      {name:"기미뿌리", metrics:{spend:146739, roas:0.95, ctr:0.0268, cvr:0.0536, cpc:2293, cpm:61397, aov:46300}},
+      {name:"선크림2", metrics:{spend:92179, roas:1.10, ctr:0.0177, cvr:0.0870, cpc:3545, cpm:62622, aov:50650}}
+    ],
+    live_date:"2026-07-03", status:"on", hypothesis_ids:[], insight_ids:["I027"],
+    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/39d34579dc0180f0b14bfa25b0ffffb8" },
+  { id:"C191", track:"B", type:"banner", title:"토너크림 배너세트 (7월 2주차 리뷰, 3종)",
+    variations:[
+      {name:"기미이별", metrics:{spend:62121, roas:1.89, ctr:0.0239, cvr:0.0606, cpc:1679, cpm:40130, aov:58600}},
+      {name:"어차피살", metrics:{spend:303237, roas:1.43, ctr:0.0375, cvr:0.0413, cpc:1243, cpm:46594, aov:43340}},
+      {name:"지금사야", metrics:{spend:380943, roas:1.05, ctr:0.0231, cvr:0.0440, cpc:2037, cpm:47018, aov:50212}}
+    ],
+    live_date:"2026-07-01", status:"on", hypothesis_ids:["H186"], insight_ids:[],
+    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/39d34579dc0180f0b14bfa25b0ffffb8" },
+  { id:"C192", track:"D", type:"longform_video", title:"화잘먹 베티3_STST (PPL 2차가공)",
+    variations:[{name:"베티3_STST", metrics:{spend:25849, roas:3.87, ctr:0.0222, cvr:0.2000, cpc:1846, cpm:41030, aov:49993}}],
+    live_date:"2026-07-06", status:"off", hypothesis_ids:["H187"], insight_ids:[],
+    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/39d34579dc0180f0b14bfa25b0ffffb8" },
 ];
 
 const INSIGHTS = [
@@ -2868,6 +2969,62 @@ const INSIGHTS = [
       "재활용 소재 ROAS가 1.3 부근 정체·하락하면 연명 운영 신호 — 조기 정리",
       "예산은 신규 ABO 히어로 발굴·확장에 우선 배분",
       "재활용 캠 판정: 발굴 소재가 실제로 스케일업되며 효율 유지되는지로 판단"
+    ],
+    synergy_with:[],
+    cross_track_ref:[]
+  },
+  { id:"I026", easy_title:"비주얼후킹은 워킹한다 — 하지만 PDP가 안 받쳐주면 CVR에서 샌다", easy_body:"토너크림 비주얼후킹 BNA는 CPC 729원·CTR 5.33%로 유입은 뚫었지만 CVR 2.19%로 저조. 영상에서 '떼어내는 제품'으로 인지한 고객이 PDP에서 토너·크림을 만나며 이탈. 콘텐츠-랜딩 인지 일치가 전환의 전제조건이다.", track:"A",
+    headline:"비주얼후킹 유입은 콘텐츠-PDP 인지 일치가 없으면 전환되지 않는다",
+    one_line:"낮은 CPC(729원)·높은 CTR(5.33%)·적당한 CPM(3.9만원)으로 유입 검증 완료. 그러나 PDP에서 how-to-use 루틴을 소구하지 않아 '영상 속 제품 ≠ 랜딩 속 제품' 인지 불일치 → CVR 2.19% 이탈 발생.",
+    validated_by_content_ids:["C188"],
+    validated_from_hypothesis_id:null,
+    reproduction_checklist:[
+      "비주얼후킹 소재 론칭 시 PDP 상단에 동일한 사용 장면(how-to-use) 소구가 있는지 먼저 점검",
+      "영상이 보여주는 제품 인상과 PDP 첫 화면의 제품 정체가 일치하는지 확인",
+      "CTR 좋고 CVR 낮으면 소재가 아니라 콘텐츠-랜딩 연결성부터 의심",
+      "PDP 수정 시 기존 세트 off·사본 생성하면 모수가 달라져 A/B 비교 불가 — 세트 유지 상태에서 비교"
+    ],
+    synergy_with:[],
+    cross_track_ref:[]
+  },
+  { id:"I027", easy_title:"저관여자는 자기 니즈를 모른다 — 페인포인트를 찔러줘야 반응한다", easy_body:"저관여자에게 '스킨더스트' 키워드만 학습시키는 건 무의미. 그 단어가 너에게 어떤 불편을 주는지(선크림 안 발랐던 여름, 더 짙어지기 전에)를 먼저 소구해야 우리 솔루션이 명확해 보인다. 키워드 갈이만 한 저관여 4종은 ROAS 0.37~0.76에 그쳤다.", track:"A",
+    headline:"저관여 타겟은 페인포인트 자각 단계부터 설계해야 한다 — 키워드 학습만으로는 도달 불가",
+    one_line:"저관여 4종(거울1/2·길거리1·잡티자국) ROAS 0.37~0.76. 고객조사 단계가 스킵된 채 키워드만 교체한 것이 원인. 커뮤니티 조사로 페르소나 확정 → 페인포인트(선크림/주근깨/유전 기미/레이저 고민)를 인트로에 녹여야 함.",
+    validated_by_content_ids:["C189","C190"],
+    validated_from_hypothesis_id:null,
+    reproduction_checklist:[
+      "저관여 기획 전 커뮤니티 조사로 페르소나·페인포인트 확정 (고객조사 단계 스킵 금지)",
+      "키워드 소구 전에 '그 키워드가 주는 불편'을 먼저 보여주기 (ex. 지난 여름 선크림 안 발랐던 분들, 자세히 보면 이런 거 있죠?)",
+      "고관여용 소재는 기획의도가 인트로 한 컷이 아니라 전체 플로우를 관통하는지 점검",
+      "커머셜이라도 '에이 광고네'를 이길 몰입력이 있는지가 판단 기준"
+    ],
+    synergy_with:[],
+    cross_track_ref:[]
+  },
+  { id:"I028", easy_title:"커머셜 관성의 경고등 — 신규 소재 100%가 커머셜, ROAS 0.79", easy_body:"7월 1/2주차 신규 58종 전부 커머셜, ROAS 0.79로 계정 평균(1.28)을 갉아먹는 중. 같은 커머셜이어도 신규가 기존 타율을 못 따라간다 = 관성 제작 신호. 5월엔 오가닉(1.55)·논리설득(1.58)이 커머셜을 이겼었다.", track:"A",
+    headline:"신규 소재의 커머셜 편중(100%)이 계정 ROAS 하락의 구조적 원인 — 유형 믹스 재설계 필요",
+    one_line:"신규 소재 ROAS: 6월 1/2주차 1.05 → 6월 3/4주차 1.13 → 7월 1/2주차 0.79 (58종 전부 커머셜). 월별 계정 ROAS 1.46→1.38→1.28 하락과 동행. 기존 위너 커머셜은 TTS 없이 판매자 보이스로 '진정성'을 전달했다는 차이.",
+    validated_by_content_ids:[],
+    validated_from_hypothesis_id:null,
+    reproduction_checklist:[
+      "주차별 신규 소재의 유형(커머셜/오가닉/후기형/논리설득) 비중을 트래킹 — 커머셜 90%+ 지속되면 경고등",
+      "신규 커머셜 제작 시 기존 위너의 '왜 워킹했나'(판매자 보이스 진정성, TTS 미사용)를 체크리스트로",
+      "오가닉·후기형·논리설득 유형을 의도적으로 믹스에 포함",
+      "신규 소재 ROAS가 계정 평균을 2주 연속 밑돌면 유형 재설계 트리거"
+    ],
+    synergy_with:[],
+    cross_track_ref:[]
+  },
+  { id:"I029", easy_title:"증감액은 ROAS 하나로 판단하지 마라 — CTR·CVR 밸런스가 진짜 기준", easy_body:"6월 초 CVR 상승(5.22→6.18%)은 전환력이 좋아진 게 아니라, 고CVR 세트로 예산이 몰리고 CTR 하락으로 트래픽이 걸러진 '유입 구조 변화'였다. 세트를 전환기계/밸런스형/쇠퇴로 분류하면 증감액 판단이 달라진다.", track:"B",
+    headline:"세트 성격 3분류(전환기계/밸런스형/쇠퇴) — CVR 상승이 항상 개선은 아니다",
+    one_line:"전환기계(CTR↓·CVR↑: 6만원·단종얘기1·선크림보다·안버잘)는 살 사람만 유입 중 — CTR 추가 하락 시 볼륨 고갈 리스크. 밸런스형(우쥬 3.2%/9.1%·조아유·고순도1·흔들흔들)이 계정 코어로 보호 우선. 쇠퇴(억울해명2, 둘 다 하락)만 off 대상.",
+    validated_by_content_ids:[],
+    validated_from_hypothesis_id:null,
+    reproduction_checklist:[
+      "증감액 리뷰 시 ROAS와 함께 CTR·CVR 방향을 세트별로 확인 (둘 다 하락 = 쇠퇴, off 후보)",
+      "CVR만 오르고 CTR이 빠지면 유입 구조 변화 의심 — 전환단 개선으로 오판 금지",
+      "밸런스형(CTR·CVR 둘 다 양호) 세트는 계정 코어로 보호 우선, 과감한 실험 금지",
+      "CPM/CTR/ROAS 동반 하락(6만원·안버잘 패턴)은 소재 수명 종료 신호"
     ],
     synergy_with:[],
     cross_track_ref:[]
