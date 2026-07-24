@@ -216,7 +216,7 @@ const { useState, useEffect, useRef, useMemo } = React;
 const META = {
   title: "색동서울 콘텐츠 플레이북",
   version: "v2.0",
-  lastUpdate: "2026-07-19",
+  lastUpdate: "2026-07-24",
   brandRoot: "밀키토너",
   brandUSP: "코직애씨드 터메릭 나이아신아마이드 5% 밀키토너",
 };
@@ -1152,6 +1152,18 @@ const OPS_LOG = [
       "토너크림 비주얼후킹: PDP 개선 후 CVR 모니터링 + 콘텐츠단 how-to 소구 신규 제작"
     ]
   },
+  { id:"OPS012", date:"2026-07-23", type:"위클리체크인",
+    title:"7월 3주차 위클리 체크인 — 4554 커머셜 ROAS 급감 + 토너크림 비주얼후킹 KEEP + 콘텐츠 비율 재편(저관여자 사실상 드랍)",
+    notion_url:"https://app.notion.com/p/3a534579dc0180c49732c1dea1696c4c",
+    summary:"[7/1~7/21, 기간 진행률 67.7%] 누적 매출 약 8,246만원, 월 목표 대비 58.9%. ① 코직산 크림 라이브 소재 1개뿐 → 히어로 소재와 구분해 신규 아웃풋 소재를 즉시 추가 셋팅·운영. ② 스킨더스트 효율 우수는 착시 — CBO에 과거 고효율 소재가 셋팅돼 있어서지 최근 라이브 소재 효율은 저조. ③ 기미잡티 재점검 필요: 메인 소구점인데 설득력 하락(장바구니당 비용 1.29→1.47만원). ④ 연령별로 4554가 지출비중 최대(31.7%)인데 ROAS 1.23(-14%)로 전체 하락을 견인 — 커머셜 유형 1.44→1.18, 논리설득 1.51→0.65(-0.86) 급감. ⑤ 토너크림_비주얼후킹 KEEP(사용법2·불신제거1·시술대신1): 시술대신1 ROAS 1.86·CVR 8.51% 최고, 불신제거1 CVR 6.06%. 단 토너_저관여자(ROAS 0.55)·고관여자(0.86) 세트는 여전히 저조. ⑥ 콘텐츠 아웃풋 비율 재편(TO-BE): 비주얼후킹 50%/고관여자 40%/저관여자 10%(사실상 저관여자 드랍), 롱숏폼 6건·배너 8건, PA/PPL 룸 확보 위해 변동수량 삭제, 코직산 크림 배너는 기존 위너만 최소 운영. ⑦ PA 10명 픽스(7명 8/4~7 업로드·3명 2주차), 가이드 전달 완료·계약 진행 중. ⑧ 온드미디어 주2~3회(릴스2·피드1), 벤치마킹 풀리오/온그리디언츠/VDL/아이소이.",
+    next_actions:[
+      "코직산 크림: 아웃풋 나온 신규 소재를 히어로와 구분해 즉시 추가 셋팅·운영",
+      "기미잡티 소구 설득력 재점검 — 4554 커머셜 효율 하락 원인 분석 및 대응",
+      "콘텐츠 비율 재편 실행(비주얼후킹 50%/고관여자 40%/저관여자 10%)",
+      "⚠️ 저관여자 세트 사실상 드랍(0~1건) — 실행 전 담당자 검토 필수",
+      "PA 기획안·1차 가편 차주 확인, PPL 리스트업+컨택 메일 차주 월요일까지 발송(ALL)"
+    ]
+  },
 ];
 // ============================================================
 // 분기 회고 — 목표 → 판정 → 병목 → 다음 시도 (스토리 뷰)
@@ -2069,6 +2081,24 @@ const HYPOTHESES = [
     evaluations:["콘텐츠 분석(7/15)에서 도출된 NEXT ACTION — 제작 전."],
     source_pages:[{name:"콘텐츠 분석", date:"2026-07-15"}]
   },
+  { id:"H189", track:"A", category:"메시지",
+    title:"불신 기반 후킹멘트 + USP로 제거해주는 플로우가 구매를 설득시킨다",
+    source_type:"internal_evolved", parent_id:null, children_ids:[], related_ids:["H190"],
+    content_ids:["C193","C194","C195"], insight_ids:["I030"], status:"in_progress",
+    created_date:"2026-07-23", updated_date:"2026-07-23",
+    full_text:"토너크림_비주얼후킹 세트 리뷰(7/23)에서 도출. 소비자의 불신(효과 의심)을 자극하는 후킹멘트로 주의를 끈 뒤, 그 불신을 우리 제품 USP로 해소해주는 플로우가 구매를 설득한다. 불신제거1(CVR 6.06%)·시술대신1(CVR 8.51%)이 근거.",
+    evaluations:["7/23 위클리 체크인 콘텐츠 리뷰에서 도출된 가설 — 검증 진행 중."],
+    source_pages:[{name:"[색동서울팀] 위클리 체크인", date:"2026-07-23"}]
+  },
+  { id:"H190", track:"A", category:"구조",
+    title:"반복되는 <비주얼 후킹 + 루틴소구 + BNA> 장면 구성이 CTR을 높이고 CPC를 낮춘다",
+    source_type:"internal_evolved", parent_id:null, children_ids:[], related_ids:["H189"],
+    content_ids:["C193","C194","C195"], insight_ids:["I030"], status:"in_progress",
+    created_date:"2026-07-23", updated_date:"2026-07-23",
+    full_text:"토너크림_비주얼후킹 세트에서 <비주얼 후킹 + 루틴 소구 + BNA> 장면을 반복 구성한 소재들이 CTR 3.3~4.2%를 확보. 반복 구조가 시청 지속과 클릭을 끌어올려 CTR을 높이고 CPC를 낮췄을 것으로 추정.",
+    evaluations:["7/23 위클리 체크인 콘텐츠 리뷰에서 도출된 가설 — 검증 진행 중."],
+    source_pages:[{name:"[색동서울팀] 위클리 체크인", date:"2026-07-23"}]
+  },
 ];
 
 const CONTENTS = [
@@ -2631,6 +2661,18 @@ const CONTENTS = [
     variations:[{name:"베티3_STST", metrics:{spend:25849, roas:3.87, ctr:0.0222, cvr:0.2000, cpc:1846, cpm:41030, aov:49993}}],
     live_date:"2026-07-06", status:"off", hypothesis_ids:["H187"], insight_ids:[],
     thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/39d34579dc0180f0b14bfa25b0ffffb8" },
+  { id:"C193", track:"A", type:"shortform_video", title:"토너크림 기미잡티 백색화 (커머셜) — 사용법2",
+    variations:[{name:"사용법2", metrics:{spend:186322, roas:1.24, ctr:0.0417, cvr:0.0343, cpc:887, cpm:36954, aov:33114}}],
+    live_date:"2026-07-10", status:"live", hypothesis_ids:["H189","H190"], insight_ids:["I030"],
+    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/3a534579dc0180c49732c1dea1696c4c" },
+  { id:"C194", track:"A", type:"shortform_video", title:"토너크림 기미잡티 백색화 (커머셜) — 불신제거1",
+    variations:[{name:"불신제거1", metrics:{spend:56016, roas:1.47, ctr:0.0337, cvr:0.0606, cpc:1514, cpm:51063, aov:41300}}],
+    live_date:"2026-07-15", status:"live", hypothesis_ids:["H189","H190"], insight_ids:["I030"],
+    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/3a534579dc0180c49732c1dea1696c4c" },
+  { id:"C195", track:"A", type:"longform_video", title:"토너크림 기미잡티 백색화 (커머셜) — 시술대신1",
+    variations:[{name:"시술대신1", metrics:{spend:197455, roas:1.86, ctr:0.0369, cvr:0.0851, cpc:1917, cpm:70646, aov:45900}}],
+    live_date:"2026-06-26", status:"live", hypothesis_ids:["H189","H190"], insight_ids:["I030"],
+    thumbnail_url:null, drive_url:null, notion_url:"https://app.notion.com/p/3a534579dc0180c49732c1dea1696c4c" },
 ];
 
 const INSIGHTS = [
@@ -3029,7 +3071,20 @@ const INSIGHTS = [
     synergy_with:[],
     cross_track_ref:[]
   },
-
+  { id:"I030", easy_title:"기미 '닦이는' 비주얼 + 루틴 노출이 전환을 올린다", easy_body:"토너크림_비주얼후킹 세트에서 시술대신1(ROAS 1.86·CVR 8.51%)과 불신제거1(CVR 6.06%)이 사용법2(CVR 3.43%)보다 전환이 높았다. 기미가 닦이는 비주얼 후킹에 제품 루틴/USP 소구를 함께 얹을수록 전환값이 오른다.", track:"A",
+    headline:"비주얼 후킹(기미 닦임)에 루틴·USP 소구를 결합하면 CVR이 오른다",
+    one_line:"토너크림_비주얼후킹 3소재 중 루틴/불신제거 플로우를 얹은 시술대신1(CVR 8.51%·ROAS 1.86)·불신제거1(CVR 6.06%)이, 사용법만 보여준 사용법2(CVR 3.43%)보다 전환 우위.",
+    validated_by_content_ids:["C193","C194","C195"],
+    validated_from_hypothesis_id:null,
+    reproduction_checklist:[
+      "기미가 '닦이는' 비주얼 후킹을 오프닝에 배치",
+      "후킹 뒤에 제품 사용 루틴/USP(불신 제거) 플로우를 반드시 연결",
+      "비주얼 후킹 단독으로 끝내지 말 것 — 루틴 소구 없으면 CVR 하락(사용법2 3.43%)",
+      "BNA(전후 비교) 장면을 루틴 소구와 함께 반복 노출"
+    ],
+    synergy_with:[],
+    cross_track_ref:[]
+  },
 ];
 
 
